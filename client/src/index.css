@@ -73,7 +73,7 @@
   }
   
   .crypto-card {
-    @apply bg-[var(--crypto-card)] border-[var(--crypto-border)];
+    @apply bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white;
   }
   
   .crypto-hover {

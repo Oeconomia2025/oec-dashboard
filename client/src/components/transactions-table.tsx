@@ -101,8 +101,8 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
                 </tr>
               </thead>
               <tbody>
-                {transactions.map((tx) => (
-                  <tr key={tx.hash} className="border-b border-[var(--crypto-border)]/50 hover:bg-[var(--crypto-dark)]/30">
+                {transactions.map((tx, index) => (
+                  <tr key={`${tx.hash}-${index}`} className="border-b border-[var(--crypto-border)]/50 hover:bg-[var(--crypto-dark)]/30">
                     <td className="py-4">
                       <Badge className={`${getTypeColor(tx.type)} border-0`}>
                         {tx.type}
