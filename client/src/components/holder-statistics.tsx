@@ -18,12 +18,7 @@ export function HolderStatistics({ contractAddress, tokenData }: HolderStatistic
   };
 
   const formatBalance = (balance: number, symbol: string = "TONE") => {
-    if (balance >= 1000000) {
-      return `${(balance / 1000000).toFixed(1)}M ${symbol}`;
-    } else if (balance >= 1000) {
-      return `${(balance / 1000).toFixed(1)}K ${symbol}`;
-    }
-    return `${balance.toLocaleString()} ${symbol}`;
+    return `${balance.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symbol}`;
   };
 
   const getRankColor = (rank: number) => {

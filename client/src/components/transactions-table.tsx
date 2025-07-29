@@ -13,12 +13,7 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
   const { data: transactions, isLoading } = useTransactions(contractAddress);
 
   const formatAmount = (amount: number, symbol: string = "TONE") => {
-    if (amount >= 1000000) {
-      return `${(amount / 1000000).toFixed(1)}M ${symbol}`;
-    } else if (amount >= 1000) {
-      return `${(amount / 1000).toFixed(1)}K ${symbol}`;
-    }
-    return `${amount.toLocaleString()} ${symbol}`;
+    return `${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symbol}`;
   };
 
   const formatAddress = (address: string) => {
