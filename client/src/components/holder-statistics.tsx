@@ -18,7 +18,12 @@ export function HolderStatistics({ contractAddress, tokenData }: HolderStatistic
   };
 
   const formatBalance = (balance: number, symbol: string = "TONE") => {
-    return `${balance.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ${symbol}`;
+    const fixed = balance.toFixed(5);
+    const formatted = parseFloat(fixed).toLocaleString('en-US', { 
+      minimumFractionDigits: 0, 
+      maximumFractionDigits: 5 
+    });
+    return `${formatted} ${symbol}`;
   };
 
   const getRankColor = (rank: number) => {
