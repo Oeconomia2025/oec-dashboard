@@ -3,7 +3,15 @@ import { createServer, type Server } from "http";
 import { bscApiService } from "./services/bsc-api";
 import { pancakeSwapApiService } from "./services/pancakeswap-api";
 import { coinGeckoApiService } from "./services/coingecko-api";
-import { TONE_TOKEN_CONFIG, type TokenData, type Holder } from "@shared/schema";
+import { storage } from "./storage";
+import { 
+  TONE_TOKEN_CONFIG, 
+  type TokenData, 
+  type Holder,
+  insertTrackedTokenSchema,
+  insertTokenSnapshotSchema,
+  insertUserWatchlistSchema
+} from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get comprehensive token data
@@ -147,6 +155,200 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get token configuration
   app.get("/api/token-config", (req, res) => {
     res.json(TONE_TOKEN_CONFIG);
+  });
+
+  // Database-enabled endpoints
+  
+  // Track a new token - automatically saves to database
+  app.post("/api/tracked-tokens", async (req, res) => {
+    try {
+      const tokenData = insertTrackedTokenSchema.parse(req.body);
+      
+      // Check if token already exists
+      const existingToken = await storage.getTrackedToken(tokenData.contractAddress);
+      if (existingToken) {
+        return res.status(409).json({ message: "Token already being tracked" });
+      }
+      
+      const trackedToken = await storage.createTrackedToken(tokenData);
+      res.status(201).json(trackedToken);
+    } catch (error) {
+      console.error("Error tracking token:", error);
+      res.status(500).json({ 
+        message: "Failed to track token",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get all tracked tokens
+  app.get("/api/tracked-tokens", async (req, res) => {
+    try {
+      const tokens = await storage.getAllTrackedTokens();
+      res.json(tokens);
+    } catch (error) {
+      console.error("Error fetching tracked tokens:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch tracked tokens",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Save token snapshot (for historical data)
+  app.post("/api/token-snapshots", async (req, res) => {
+    try {
+      const snapshotData = insertTokenSnapshotSchema.parse(req.body);
+      const snapshot = await storage.createTokenSnapshot(snapshotData);
+      res.status(201).json(snapshot);
+    } catch (error) {
+      console.error("Error saving token snapshot:", error);
+      res.status(500).json({ 
+        message: "Failed to save token snapshot",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get historical snapshots for a token
+  app.get("/api/token-snapshots/:tokenId", async (req, res) => {
+    try {
+      const tokenId = parseInt(req.params.tokenId);
+      const limit = parseInt(req.query.limit as string) || 100;
+      
+      const snapshots = await storage.getTokenSnapshots(tokenId, limit);
+      res.json(snapshots);
+    } catch (error) {
+      console.error("Error fetching token snapshots:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch token snapshots",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // User watchlist endpoints
+  app.get("/api/watchlist/:userAddress", async (req, res) => {
+    try {
+      const { userAddress } = req.params;
+      const watchlist = await storage.getUserWatchlist(userAddress);
+      res.json(watchlist);
+    } catch (error) {
+      console.error("Error fetching watchlist:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch watchlist",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  app.post("/api/watchlist", async (req, res) => {
+    try {
+      const watchlistData = insertUserWatchlistSchema.parse(req.body);
+      const watchlistItem = await storage.addToWatchlist(watchlistData);
+      res.status(201).json(watchlistItem);
+    } catch (error) {
+      console.error("Error adding to watchlist:", error);
+      res.status(500).json({ 
+        message: "Failed to add to watchlist",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  app.delete("/api/watchlist/:userAddress/:tokenId", async (req, res) => {
+    try {
+      const { userAddress, tokenId } = req.params;
+      const success = await storage.removeFromWatchlist(userAddress, parseInt(tokenId));
+      
+      if (success) {
+        res.json({ message: "Removed from watchlist" });
+      } else {
+        res.status(404).json({ message: "Watchlist item not found" });
+      }
+    } catch (error) {
+      console.error("Error removing from watchlist:", error);
+      res.status(500).json({ 
+        message: "Failed to remove from watchlist",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Enhanced token data endpoint that also saves to database
+  app.get("/api/token/:contractAddress", async (req, res) => {
+    try {
+      const { contractAddress } = req.params;
+      
+      // Get or create tracked token
+      let trackedToken = await storage.getTrackedToken(contractAddress);
+      
+      // Fetch data from multiple sources
+      const [coinGeckoData, pancakeSwapData, pairData] = await Promise.all([
+        coinGeckoApiService.getTokenDataByContract(contractAddress),
+        pancakeSwapApiService.getTokenData(contractAddress),
+        pancakeSwapApiService.getPairData(contractAddress),
+      ]);
+
+      // Combine data with fallbacks
+      const tokenData: TokenData = {
+        id: contractAddress,
+        name: coinGeckoData?.name || pancakeSwapData?.name || "Unknown Token",
+        symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || "UNK",
+        contractAddress,
+        price: coinGeckoData?.price || pancakeSwapData?.price || 0,
+        priceChange24h: coinGeckoData?.priceChange24h || 0,
+        priceChangePercent24h: coinGeckoData?.priceChangePercent24h || 0,
+        marketCap: coinGeckoData?.marketCap || (coinGeckoData?.price || 0) * (coinGeckoData?.totalSupply || 0),
+        volume24h: coinGeckoData?.volume24h || pairData?.volume24h || 0,
+        totalSupply: coinGeckoData?.totalSupply || 0,
+        circulatingSupply: coinGeckoData?.circulatingSupply || 0,
+        liquidity: pairData?.liquidity || 0,
+        txCount24h: pairData?.txCount24h || 0,
+        network: "BSC",
+        lastUpdated: new Date().toISOString(),
+      };
+
+      // Create tracked token if it doesn't exist and has valid data
+      if (!trackedToken && tokenData.name !== "Unknown Token") {
+        try {
+          trackedToken = await storage.createTrackedToken({
+            contractAddress,
+            name: tokenData.name,
+            symbol: tokenData.symbol,
+            network: "BSC",
+            isActive: true,
+          });
+          
+          // Save initial snapshot
+          if (trackedToken && tokenData.price > 0) {
+            await storage.createTokenSnapshot({
+              tokenId: trackedToken.id,
+              price: tokenData.price,
+              marketCap: tokenData.marketCap,
+              volume24h: tokenData.volume24h,
+              liquidity: tokenData.liquidity,
+              txCount24h: tokenData.txCount24h,
+              priceChange24h: tokenData.priceChange24h,
+              priceChangePercent24h: tokenData.priceChangePercent24h,
+              totalSupply: tokenData.totalSupply,
+              circulatingSupply: tokenData.circulatingSupply,
+            });
+          }
+        } catch (dbError) {
+          console.warn("Failed to save token to database:", dbError);
+          // Continue without database save
+        }
+      }
+
+      res.json(tokenData);
+    } catch (error) {
+      console.error("Error fetching token data:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch token data",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   });
 
   const httpServer = createServer(app);

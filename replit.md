@@ -29,7 +29,9 @@ Preferred communication style: Simple, everyday language.
 - **Database ORM**: Drizzle ORM configured for PostgreSQL
 - **Database Provider**: Neon Database (serverless PostgreSQL)
 - **Session Storage**: PostgreSQL-based session storage with connect-pg-simple
-- **In-Memory Storage**: Fallback storage implementation for development
+- **Token Tracking**: Persistent storage for tracked tokens and historical snapshots
+- **User Watchlists**: Database-backed user preferences and price alerts
+- **Historical Data**: Token price and market data snapshots for analytics
 
 ## Key Components
 
