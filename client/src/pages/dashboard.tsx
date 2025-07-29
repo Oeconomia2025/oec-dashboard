@@ -31,8 +31,12 @@ export default function Dashboard() {
       <header className="bg-[var(--crypto-card)] border-b border-[var(--crypto-border)] px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 crypto-gradient rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-lg">O</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              <img 
+                src="/oec-logo.png" 
+                alt="Oeconomia Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
             <div>
               <h1 className="text-xl font-bold">Oeconomia Token</h1>
