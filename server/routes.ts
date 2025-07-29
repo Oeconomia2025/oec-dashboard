@@ -29,8 +29,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Combine data with fallbacks
       const tokenData: TokenData = {
         id: contractAddress,
-        name: coinGeckoData?.name || pancakeSwapData?.name || "ThisOne",
-        symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || "TONE",
+        name: coinGeckoData?.name || pancakeSwapData?.name || "Oeconomia",
+        symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || "OEC",
         contractAddress,
         price: coinGeckoData?.price || pancakeSwapData?.price || 0.0045,
         priceChange24h: coinGeckoData?.priceChange24h || 0,

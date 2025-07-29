@@ -17,7 +17,7 @@ export function HolderStatistics({ contractAddress, tokenData }: HolderStatistic
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const formatBalance = (balance: number, symbol: string = "TONE") => {
+  const formatBalance = (balance: number, symbol: string = "OEC") => {
     const fixed = balance.toFixed(5);
     const formatted = parseFloat(fixed).toLocaleString('en-US', { 
       minimumFractionDigits: 0, 

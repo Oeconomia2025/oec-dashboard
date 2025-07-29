@@ -32,11 +32,11 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 crypto-gradient rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-lg">T</span>
+              <span className="text-black font-bold text-lg">O</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold">ThisOne Token</h1>
-              <p className="text-gray-400 text-sm">TONE Dashboard</p>
+              <h1 className="text-xl font-bold">Oeconomia Token</h1>
+              <p className="text-gray-400 text-sm">OEC Dashboard</p>
             </div>
           </div>
           <div className="flex items-center space-x-4">

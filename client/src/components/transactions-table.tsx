@@ -12,7 +12,7 @@ interface TransactionsTableProps {
 export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
   const { data: transactions, isLoading } = useTransactions(contractAddress);
 
-  const formatAmount = (amount: number, symbol: string = "TONE") => {
+  const formatAmount = (amount: number, symbol: string = "OEC") => {
     const fixed = amount.toFixed(5);
     const formatted = parseFloat(fixed).toLocaleString('en-US', { 
       minimumFractionDigits: 0, 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a cryptocurrency token dashboard application built for the "ThisOne" (TONE) token on the BSC (Binance Smart Chain) network. The application provides comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap.
+This is a cryptocurrency token dashboard application built for the "Oeconomia" (OEC) token on the BSC (Binance Smart Chain) network. The application provides comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap.
 
 ## User Preferences
 

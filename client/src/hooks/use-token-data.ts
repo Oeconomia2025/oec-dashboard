@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { TokenData, Transaction, Holder, NetworkStatus, PriceHistory } from "@shared/schema";
 
 export function useTokenData(contractAddress: string) {
-  return useQuery({
+  return useQuery<TokenData>({
     queryKey: ["/api/token", contractAddress],
     refetchInterval: 30000, // Refresh every 30 seconds
     enabled: !!contractAddress,
