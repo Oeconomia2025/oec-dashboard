@@ -33,11 +33,11 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
     );
   }
 
-  const formatPrice = (price: number) => `$${price.toFixed(2)}`;
-  const formatMarketCap = (cap: number) => `$${cap.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  const formatVolume = (vol: number) => `$${vol.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  const formatLiquidity = (liq: number) => `$${liq.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  const formatSupply = (supply: number) => `${supply.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${tokenData.symbol}`;
+  const formatPrice = (price: number) => `$${price.toFixed(4)}`;
+  const formatMarketCap = (cap: number) => `$${cap.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  const formatVolume = (vol: number) => `$${vol.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  const formatLiquidity = (liq: number) => `$${liq.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })}`;
+  const formatSupply = (supply: number) => `${supply.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ${tokenData.symbol}`;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

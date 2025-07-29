@@ -13,7 +13,7 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
   const { data: transactions, isLoading } = useTransactions(contractAddress);
 
   const formatAmount = (amount: number, symbol: string = "TONE") => {
-    return `${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symbol}`;
+    return `${amount.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} ${symbol}`;
   };
 
   const formatAddress = (address: string) => {
