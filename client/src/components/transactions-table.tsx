@@ -1,0 +1,137 @@
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ExternalLink } from "lucide-react";
+import { useTransactions } from "@/hooks/use-token-data";
+import type { Transaction } from "@shared/schema";
+
+interface TransactionsTableProps {
+  contractAddress: string;
+}
+
+export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
+  const { data: transactions, isLoading } = useTransactions(contractAddress);
+
+  const formatAmount = (amount: number, symbol: string = "TONE") => {
+    if (amount >= 1000000) {
+      return `${(amount / 1000000).toFixed(1)}M ${symbol}`;
+    } else if (amount >= 1000) {
+      return `${(amount / 1000).toFixed(1)}K ${symbol}`;
+    }
+    return `${amount.toLocaleString()} ${symbol}`;
+  };
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const formatTime = (timestamp: string) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 60) {
+      return `${diffMins}m ago`;
+    } else if (diffMins < 1440) {
+      return `${Math.floor(diffMins / 60)}h ago`;
+    } else {
+      return `${Math.floor(diffMins / 1440)}d ago`;
+    }
+  };
+
+  const getTypeColor = (type: Transaction['type']) => {
+    switch (type) {
+      case 'BUY':
+        return 'bg-crypto-green/20 text-crypto-green';
+      case 'SELL':
+        return 'bg-crypto-red/20 text-crypto-red';
+      case 'TRANSFER':
+        return 'bg-crypto-blue/20 text-crypto-blue';
+      default:
+        return 'bg-gray-500/20 text-gray-400';
+    }
+  };
+
+  const getBSCScanUrl = (hash: string) => {
+    return `https://bscscan.com/tx/${hash}`;
+  };
+
+  return (
+    <div className="mt-8">
+      <Card className="crypto-card p-6 border">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-semibold">Recent Transactions</h2>
+          <a 
+            href={`https://bscscan.com/token/${contractAddress}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-crypto-blue hover:text-crypto-blue/80 text-sm flex items-center gap-1"
+          >
+            View on BSCScan <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+        
+        {isLoading ? (
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center space-x-4 py-3">
+                <Skeleton className="h-6 w-16" />
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-24" />
+              </div>
+            ))}
+          </div>
+        ) : !transactions || transactions.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-400">No recent transactions found</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[var(--crypto-border)]">
+                  <th className="text-left py-3 text-gray-400 font-medium">Type</th>
+                  <th className="text-left py-3 text-gray-400 font-medium">Amount</th>
+                  <th className="text-left py-3 text-gray-400 font-medium">From/To</th>
+                  <th className="text-left py-3 text-gray-400 font-medium">Time</th>
+                  <th className="text-left py-3 text-gray-400 font-medium">Hash</th>
+                </tr>
+              </thead>
+              <tbody>
+                {transactions.map((tx) => (
+                  <tr key={tx.hash} className="border-b border-[var(--crypto-border)]/50 hover:bg-[var(--crypto-dark)]/30">
+                    <td className="py-4">
+                      <Badge className={`${getTypeColor(tx.type)} border-0`}>
+                        {tx.type}
+                      </Badge>
+                    </td>
+                    <td className="py-4 font-medium">{formatAmount(tx.amount)}</td>
+                    <td className="py-4">
+                      <code className="text-sm text-gray-400">
+                        {tx.type === 'BUY' ? formatAddress(tx.to) : formatAddress(tx.from)}
+                      </code>
+                    </td>
+                    <td className="py-4 text-gray-400">{formatTime(tx.timestamp)}</td>
+                    <td className="py-4">
+                      <a 
+                        href={getBSCScanUrl(tx.hash)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-crypto-blue hover:text-crypto-blue/80 text-sm flex items-center gap-1"
+                      >
+                        {formatAddress(tx.hash)} <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
+    </div>
+  );
+}
