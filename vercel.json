@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "./build.sh",
+  "buildCommand": "npm install --include=dev && npx vite build && npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && mkdir -p api && cp -r dist/public/* . && cp dist/index.js api/index.js",
   "functions": {
     "api/index.js": {
       "runtime": "@vercel/node"
@@ -12,8 +12,14 @@
       "dest": "/api/index.js"
     },
     {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/index.html"
     }
   ]
 }
