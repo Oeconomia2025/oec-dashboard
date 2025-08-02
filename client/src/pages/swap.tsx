@@ -184,7 +184,7 @@ function SwapContent() {
                 <Settings className="w-4 h-4" />
               </Button>
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="space-y-1">
               {/* Settings Panel */}
               {showSettings && (
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
