@@ -50,6 +50,13 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
 - **Content**: Clear messaging about placeholder/demo status with warning not to use real funds
 - **Result**: Professional disclaimer system that informs users about development status
 
+### Light/Dark Mode Toggle Implementation
+- **Issue**: Theme toggle button implemented but visual changes not applying despite JavaScript state changes
+- **Status**: Theme classes being applied to document root correctly, but CSS variables not updating visually
+- **User Feedback**: "It doesn't work still" - toggle not producing visible theme changes
+- **Technical Details**: ThemeProvider working, toggle button functional, localStorage persistence working
+- **Note**: Considered acceptable limitation per user acknowledgment that "it's okay" if too difficult
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
