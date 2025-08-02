@@ -18,8 +18,11 @@ import {
   ChevronRight,
   Sun,
   Moon,
-  Vote
+  Vote,
+  MessageCircle,
+  ExternalLink
 } from "lucide-react";
+import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useTheme } from "@/components/theme-provider";
 
@@ -235,6 +238,77 @@ export function Layout({ children }: LayoutProps) {
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Wallet moved to sticky header */}
+        </div>
+        
+        {/* Social Media Icons - Sticky at bottom */}
+        <div className="sticky bottom-0 bg-gray-950 border-t border-gray-700 p-4">
+          <div className={`flex ${sidebarCollapsed ? 'flex-col space-y-2' : 'flex-wrap gap-2'} justify-center`}>
+            {/* Telegram - Placeholder */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="Telegram"
+              disabled
+            >
+              <SiTelegram className="w-4 h-4 text-blue-400" />
+            </Button>
+            
+            {/* Twitter/X */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="Twitter/X"
+              onClick={() => window.open('https://x.com/Oeconomia2025', '_blank')}
+            >
+              <SiX className="w-4 h-4 text-white" />
+            </Button>
+            
+            {/* Medium */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="Medium"
+              onClick={() => window.open('https://medium.com/@oeconomia2025', '_blank')}
+            >
+              <SiMedium className="w-4 h-4 text-green-400" />
+            </Button>
+            
+            {/* YouTube */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="YouTube"
+              onClick={() => window.open('https://www.youtube.com/@Oeconomia2025', '_blank')}
+            >
+              <SiYoutube className="w-4 h-4 text-red-500" />
+            </Button>
+            
+            {/* Discord */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="Discord"
+              onClick={() => window.open('https://discord.com/invite/XSgZgeVD', '_blank')}
+            >
+              <SiDiscord className="w-4 h-4 text-indigo-400" />
+            </Button>
+            
+            {/* GitHub */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="p-2 hover:bg-gray-800 transition-colors"
+              title="GitHub"
+              onClick={() => window.open('https://github.com/Oeconomia2025', '_blank')}
+            >
+              <SiGithub className="w-4 h-4 text-gray-400" />
+            </Button>
+          </div>
         </div>
       </aside>
 
