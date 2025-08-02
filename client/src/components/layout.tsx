@@ -17,7 +17,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Sun,
-  Moon
+  Moon,
+  Vote
 } from "lucide-react";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useTheme } from "@/components/theme-provider";
@@ -47,6 +48,10 @@ const pageInfo = {
   '/swap': {
     title: 'Token Swap',
     description: 'Trade tokens instantly on the Oeconomia ecosystem'
+  },
+  '/governance': {
+    title: 'Governance',
+    description: 'Participate in decentralized decision-making and protocol governance'
   }
 } as const;
 
@@ -153,6 +158,7 @@ export function Layout({ children }: LayoutProps) {
     { icon: Wallet, label: 'Portfolio', path: '/portfolio', active: location === '/portfolio' },
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
     { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
+    { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     { icon: Zap, label: 'DeFi', path: '/defi', active: location === '/defi' },
     { icon: Bell, label: 'Alerts', path: '/alerts', active: location === '/alerts' },
     { icon: Settings, label: 'Settings', path: '/settings', active: location === '/settings' },
