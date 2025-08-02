@@ -202,9 +202,9 @@ export function Layout({ children }: LayoutProps) {
         />
       )}
 
-      {/* Floating Expand Button (visible when collapsed) */}
+      {/* Floating Expand Button (visible when collapsed) - positioned at header level */}
       {sidebarCollapsed && (
-        <div className="fixed left-2 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
+        <div className="fixed left-20 top-4 z-40 hidden lg:block">
           <Button
             onClick={toggleCollapsed}
             className="bg-crypto-blue hover:bg-crypto-blue/80 text-black border-2 border-crypto-blue/50 hover:border-crypto-blue shadow-lg hover:shadow-xl transition-all duration-300 rounded-full p-3 group"
