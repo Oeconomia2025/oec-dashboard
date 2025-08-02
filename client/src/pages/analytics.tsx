@@ -202,17 +202,14 @@ export default function Analytics() {
             {protocolsData.map((protocol, index) => {
               const IconComponent = protocol.icon;
               return (
-                <Card key={index} className={`crypto-card border overflow-hidden bg-gradient-to-br ${protocol.gradient} text-white`}>
-                  <div className="p-8">
+                <Card key={index} className={`crypto-card border overflow-hidden bg-gradient-to-br ${protocol.gradient} text-white flex flex-col`}>
+                  <div className="p-8 flex-1 flex flex-col">
                     {/* Header */}
                     <div className="flex items-start justify-between mb-6">
                       <div>
-                        <div className="flex items-center space-x-3 mb-2">
-                          <IconComponent className="w-8 h-8" />
-                          <div>
-                            <h2 className="text-2xl font-bold">{protocol.name}</h2>
-                            <p className="text-blue-100 text-lg">{protocol.type}</p>
-                          </div>
+                        <div className="mb-2">
+                          <h2 className="text-2xl font-bold">{protocol.name}</h2>
+                          <p className="text-blue-100 text-lg">{protocol.type}</p>
                         </div>
                         <p className="text-blue-100 text-sm max-w-sm">{protocol.description}</p>
                       </div>
@@ -226,8 +223,9 @@ export default function Analytics() {
                     </div>
 
                     {/* Metrics */}
-                    {protocol.metrics ? (
-                      <div className="space-y-4">
+                    <div className="flex-1">
+                      {protocol.metrics ? (
+                        <div className="space-y-4">
                         {protocol.metrics.health && (
                           <div className="flex justify-between items-center">
                             <span className="text-blue-100">Health</span>
@@ -283,15 +281,16 @@ export default function Analytics() {
                             </div>
                           </div>
                         )}
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-center h-32">
-                        <div className="text-center">
-                          <Construction className="w-12 h-12 mx-auto mb-3 text-blue-200" />
-                          <p className="text-blue-100">Under Development</p>
                         </div>
-                      </div>
-                    )}
+                      ) : (
+                        <div className="flex items-center justify-center h-32">
+                          <div className="text-center">
+                            <Construction className="w-12 h-12 mx-auto mb-3 text-blue-200" />
+                            <p className="text-blue-100">Under Development</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Action Button */}
                     <div className="mt-6 pt-6 border-t border-blue-200/20">
