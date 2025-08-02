@@ -175,18 +175,11 @@ export function WalletConnect() {
           
           {hasMoreWallets && !showAllWallets && (
             <Button
-              variant="outline"
+              variant="ghost"
               onClick={() => setShowAllWallets(true)}
-              className="col-span-3 flex-col justify-center items-center h-10 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+              className="col-span-3 w-full text-xs text-gray-400 hover:text-gray-300"
             >
-              <div className="flex flex-col items-center space-y-1">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-600/20 flex items-center justify-center group-hover:from-crypto-blue/30 group-hover:to-purple-500/30 transition-all duration-200">
-                  <span className="text-sm">⋯</span>
-                </div>
-                <span className="font-medium text-gray-300 group-hover:text-white text-xs">
-                  Other Wallets ({connectors.length - 6})
-                </span>
-              </div>
+              Other Wallets ({connectors.length - 6})
             </Button>
           )}
         </div>
