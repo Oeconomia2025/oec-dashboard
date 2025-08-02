@@ -92,8 +92,8 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto">
-          <nav className="sticky top-0 p-4">
+        <nav className="flex-1 overflow-y-auto">
+          <div className="sticky top-0 bg-[var(--crypto-card)] p-4 z-10">
             <ul className="space-y-2">
               {sidebarItems.map((item, index) => (
                 <li key={index}>
@@ -116,8 +116,8 @@ export default function Dashboard() {
                 </li>
               ))}
             </ul>
-          </nav>
-        </div>
+          </div>
+        </nav>
       </aside>
 
       {/* Overlay for mobile */}
