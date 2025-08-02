@@ -9,6 +9,7 @@ import { WalletIcon } from './wallet-icons'
 
 export function WalletConnect() {
   const [isOpen, setIsOpen] = useState(false)
+  const [showAllWallets, setShowAllWallets] = useState(false)
   const { address, isConnected, chain } = useAccount()
   const { connect, connectors, isPending } = useConnect()
   const { disconnect } = useDisconnect()
@@ -40,6 +41,22 @@ export function WalletConnect() {
       }
     }
   }
+
+  // Define preferred wallet order and limit
+  const preferredWallets = ['MetaMask', 'WalletConnect', 'Coinbase Wallet', 'Trust Wallet']
+  const getDisplayedConnectors = () => {
+    if (showAllWallets) {
+      return connectors
+    }
+    
+    const preferred = connectors.filter(c => preferredWallets.includes(c.name))
+    const others = connectors.filter(c => !preferredWallets.includes(c.name))
+    
+    // Show first 4 preferred wallets, fill remaining with others if needed
+    return [...preferred, ...others].slice(0, 4)
+  }
+
+  const hasMoreWallets = connectors.length > 4
 
   if (isConnected && address) {
     return (
@@ -127,7 +144,7 @@ export function WalletConnect() {
         </DialogHeader>
         
         <div className="grid gap-3 mt-6">
-          {connectors.map((connector) => (
+          {getDisplayedConnectors().map((connector) => (
             <Button
               key={connector.uid}
               variant="outline"
@@ -161,7 +178,36 @@ export function WalletConnect() {
               </div>
             </Button>
           ))}
+          
+          {hasMoreWallets && !showAllWallets && (
+            <Button
+              variant="outline"
+              onClick={() => setShowAllWallets(true)}
+              className="justify-center h-12 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+            >
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-600/20 flex items-center justify-center group-hover:from-crypto-blue/30 group-hover:to-purple-500/30 transition-all duration-200">
+                  <span className="text-sm">⋯</span>
+                </div>
+                <span className="font-medium text-gray-300 group-hover:text-white">
+                  Other Wallets ({connectors.length - 4})
+                </span>
+              </div>
+            </Button>
+          )}
         </div>
+        
+        {showAllWallets && (
+          <div className="mt-3">
+            <Button
+              variant="ghost"
+              onClick={() => setShowAllWallets(false)}
+              className="w-full text-xs text-gray-400 hover:text-gray-300"
+            >
+              Show Less
+            </Button>
+          </div>
+        )}
         
         <div className="mt-6 p-4 bg-gradient-to-r from-[var(--crypto-dark)] to-gray-900/50 rounded-xl border border-gray-700/50">
           <p className="text-xs text-gray-400 text-center leading-relaxed">
