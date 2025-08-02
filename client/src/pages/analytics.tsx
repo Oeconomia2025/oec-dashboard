@@ -73,6 +73,23 @@ export default function Analytics() {
   // Mock data for demonstration - in a real app, this would come from APIs
   const protocolsData: ProtocolData[] = [
     {
+      name: "Oeconomia",
+      type: "Governance",
+      status: 'active',
+      icon: Vote,
+      gradient: "from-indigo-600 to-purple-700",
+      description: "Decentralized governance protocol for ecosystem decisions and proposals",
+      metrics: {
+        activeUsers: 1247,
+        stakers: 892,
+        delegates: 156,
+        proposals: 23,
+        activeVotes: 4,
+        totalStaked: "$12,450,890",
+        votingPower: "85.2%"
+      }
+    },
+    {
       name: "Alluria",
       type: "Lending",
       status: 'active',
@@ -123,23 +140,6 @@ export default function Analytics() {
       icon: FileText,
       gradient: "from-orange-600 to-red-700",
       description: "No-code smart contract deployment and management platform"
-    },
-    {
-      name: "Oeconomia",
-      type: "Governance",
-      status: 'active',
-      icon: Vote,
-      gradient: "from-indigo-600 to-purple-700",
-      description: "Decentralized governance protocol for ecosystem decisions and proposals",
-      metrics: {
-        activeUsers: 1247,
-        stakers: 892,
-        delegates: 156,
-        proposals: 23,
-        activeVotes: 4,
-        totalStaked: "$12,450,890",
-        votingPower: "85.2%"
-      }
     }
   ];
 
