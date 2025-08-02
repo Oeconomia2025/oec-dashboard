@@ -16,6 +16,18 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
   - Added immediate post-navigation state restoration callbacks
 - **Result**: Sidebar now maintains collapsed state consistently across all page navigation
 
+### Portfolio Pools/Farms Enhancement
+- **Feature Added**: Individual card styling for each pool/farm position in portfolio
+- **Visual Improvements**: Applied gradient coloring (blue-to-purple) with hover effects
+- **User Experience**: Enhanced visual hierarchy and distinction from main container card
+- **Result**: Professional crypto-themed display with improved readability
+
+### Development Disclaimer Modal
+- **Feature Added**: One-time popup modal for new visitors warning about DApp development status
+- **Implementation**: localStorage-based tracking to show only once per user
+- **Content**: Clear messaging about placeholder/demo status with warning not to use real funds
+- **Result**: Professional disclaimer system that informs users about development status
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
