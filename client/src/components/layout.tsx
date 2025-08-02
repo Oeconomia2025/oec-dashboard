@@ -254,6 +254,13 @@ export function Layout({ children }: LayoutProps) {
         {/* Page Content */}
         <main className="flex-1">
           {children}
+          
+          {/* Footer */}
+          <footer className="border-t border-gray-700 mt-8 py-6 px-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              © 2025 Oeconomia. All rights reserved.
+            </p>
+          </footer>
         </main>
       </div>
     </div>
