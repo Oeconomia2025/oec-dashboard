@@ -92,9 +92,9 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 relative overflow-hidden">
-          <nav className="h-full overflow-y-auto p-4">
-            <div className="sticky top-0 bg-[var(--crypto-card)] -m-4 p-4 mb-4 border-b border-[var(--crypto-border)]">
+        <div className="flex-1 overflow-y-auto">
+          <div className="sticky top-0 bg-[var(--crypto-card)] z-10 p-4">
+            <nav>
               <ul className="space-y-2">
                 {sidebarItems.map((item, index) => (
                   <li key={index}>
@@ -117,10 +117,14 @@ export default function Dashboard() {
                   </li>
                 ))}
               </ul>
-            </div>
-            {/* This creates content below the sticky menu to allow scrolling */}
-            <div className="h-96"></div>
-          </nav>
+            </nav>
+          </div>
+          {/* Add some content below to demonstrate scrolling */}
+          <div className="p-4 space-y-4">
+            {Array.from({ length: 20 }, (_, i) => (
+              <div key={i} className="h-12 bg-[var(--crypto-dark)] rounded opacity-20"></div>
+            ))}
+          </div>
         </div>
       </aside>
 
