@@ -211,7 +211,7 @@ export function Portfolio() {
         </div>
 
         {/* Token Holdings */}
-        <Card className="crypto-card p-6 border">
+        <Card className="crypto-card p-6 border mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold">Holdings</h2>
             <Button 
