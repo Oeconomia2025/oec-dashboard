@@ -55,8 +55,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col overflow-hidden`}>
-        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
               <img 
@@ -92,9 +92,9 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 flex flex-col">
-          <div className="sticky top-0 bg-[var(--crypto-card)] z-10 border-b border-[var(--crypto-border)]">
-            <nav className="p-4">
+        <div className="flex-1 overflow-y-auto">
+          <div className="sticky top-0 bg-[var(--crypto-card)] z-10 p-4">
+            <nav>
               <ul className="space-y-2">
                 {sidebarItems.map((item, index) => (
                   <li key={index}>
@@ -119,9 +119,10 @@ export default function Dashboard() {
               </ul>
             </nav>
           </div>
-          <div className="flex-1 overflow-y-auto p-4">
+          
+          <div className="p-4 space-y-4">
             <div className="text-gray-500 text-sm">
-              <p>Future expandable sections for each menu item will appear here</p>
+              <p>Additional menu sections will expand here when selected</p>
             </div>
           </div>
         </div>
