@@ -33,10 +33,19 @@ export function Layout({ children }: LayoutProps) {
   useEffect(() => {
     if (isNavigatingRef.current && !sidebarCollapsed) {
       // If we're navigating and sidebar got expanded, force it back to collapsed
+      console.log('useEffect detected expansion during navigation, forcing collapse');
       setSidebarCollapsed(true);
-      isNavigatingRef.current = false;
     }
   }, [sidebarCollapsed]);
+
+  // Clear navigation flag when location changes
+  useEffect(() => {
+    if (isNavigatingRef.current) {
+      setTimeout(() => {
+        isNavigatingRef.current = false;
+      }, 100);
+    }
+  }, [location]);
 
   const handleNavigation = (path: string) => {
     // Mark that we're navigating
@@ -64,8 +73,14 @@ export function Layout({ children }: LayoutProps) {
 
   const toggleCollapsed = () => {
     isNavigatingRef.current = false; // Clear navigation flag
+    console.log('Toggle clicked, changing from', sidebarCollapsed, 'to', !sidebarCollapsed);
     setSidebarCollapsed(!sidebarCollapsed);
   };
+
+  // Debug: Monitor all state changes
+  useEffect(() => {
+    console.log('sidebarCollapsed state changed to:', sidebarCollapsed);
+  }, [sidebarCollapsed]);
 
   const sidebarItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
