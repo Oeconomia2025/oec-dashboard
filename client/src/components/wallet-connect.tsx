@@ -181,11 +181,12 @@ export function WalletConnect() {
                 </div>
                 <div className="text-center">
                   <div className="font-medium text-gray-800 group-hover:text-gray-900 text-xs leading-tight">
-                    {connector.name
-                      .replace(' Wallet', '')
-                      .replace('Wallet', '')
-                      .replace('Connect', '')
-                      .trim()}
+                    {connector.name === 'WalletConnect' 
+                      ? 'WalletConnect'
+                      : connector.name
+                          .replace(' Wallet', '')
+                          .replace('Wallet', '')
+                          .trim()}
                   </div>
                 </div>
               </div>
