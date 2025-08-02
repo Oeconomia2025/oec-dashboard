@@ -52,11 +52,11 @@ export function WalletConnect() {
     const preferred = connectors.filter(c => preferredWallets.includes(c.name))
     const others = connectors.filter(c => !preferredWallets.includes(c.name))
     
-    // Show first 4 preferred wallets, fill remaining with others if needed
-    return [...preferred, ...others].slice(0, 4)
+    // Show first 6 preferred wallets, fill remaining with others if needed
+    return [...preferred, ...others].slice(0, 6)
   }
 
-  const hasMoreWallets = connectors.length > 4
+  const hasMoreWallets = connectors.length > 6
 
   if (isConnected && address) {
     return (
@@ -143,7 +143,7 @@ export function WalletConnect() {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="grid grid-cols-3 gap-2 mt-4">
           {getDisplayedConnectors().map((connector) => (
             <Button
               key={connector.uid}
@@ -153,15 +153,15 @@ export function WalletConnect() {
                 setIsOpen(false)
               }}
               disabled={isPending}
-              className="flex-col justify-center items-center h-16 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-2"
+              className="flex-col justify-center items-center h-14 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-1 bg-white/95 hover:bg-white"
             >
               <div className="flex flex-col items-center space-y-1">
                 <div className="relative">
-                  <WalletIcon wallet={connector.name} className="w-6 h-6" />
+                  <WalletIcon wallet={connector.name} className="w-5 h-5" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent to-black/10 group-hover:from-white/5 group-hover:to-white/10 transition-all duration-200"></div>
                 </div>
                 <div className="text-center">
-                  <div className="font-medium text-white text-sm leading-tight">
+                  <div className="font-medium text-gray-800 group-hover:text-gray-900 text-xs leading-tight">
                     {connector.name
                       .replace(' Wallet', '')
                       .replace('Wallet', '')
@@ -177,14 +177,14 @@ export function WalletConnect() {
             <Button
               variant="outline"
               onClick={() => setShowAllWallets(true)}
-              className="col-span-2 flex-col justify-center items-center h-12 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+              className="col-span-3 flex-col justify-center items-center h-10 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
             >
               <div className="flex flex-col items-center space-y-1">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-600/20 flex items-center justify-center group-hover:from-crypto-blue/30 group-hover:to-purple-500/30 transition-all duration-200">
                   <span className="text-sm">⋯</span>
                 </div>
-                <span className="font-medium text-gray-300 group-hover:text-white text-sm">
-                  Other Wallets ({connectors.length - 4})
+                <span className="font-medium text-gray-300 group-hover:text-white text-xs">
+                  Other Wallets ({connectors.length - 6})
                 </span>
               </div>
             </Button>
