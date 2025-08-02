@@ -132,10 +132,10 @@ export function Layout({ children }: LayoutProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
+    <div className="min-h-screen bg-white dark:bg-[var(--crypto-dark)] text-gray-900 dark:text-white flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
-        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-white dark:bg-[var(--crypto-card)] border-r border-gray-200 dark:border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
+        <div className="sticky top-0 z-10 bg-white dark:bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-[var(--crypto-border)]">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
               <img 
@@ -171,7 +171,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </div>
         
-        <div className="sticky top-16 bg-[var(--crypto-card)] z-10 border-b border-[var(--crypto-border)]">
+        <div className="sticky top-16 bg-white dark:bg-[var(--crypto-card)] z-10 border-b border-gray-200 dark:border-[var(--crypto-border)]">
           <nav className="p-4">
             <ul className="space-y-2">
               {sidebarItems.map((item, index) => (
@@ -181,7 +181,7 @@ export function Layout({ children }: LayoutProps) {
                     className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
                       item.active 
                         ? 'bg-crypto-blue text-black font-medium' 
-                        : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[var(--crypto-dark)]'
                     }`}
                     title={sidebarCollapsed ? item.label : undefined}
                   >
@@ -215,7 +215,7 @@ export function Layout({ children }: LayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
         {/* Sticky Header Navigation */}
-        <header className="sticky top-0 z-30 bg-[var(--crypto-card)] border-b border-[var(--crypto-border)] px-6 py-4">
+        <header className="sticky top-0 z-30 bg-white dark:bg-[var(--crypto-card)] border-b border-gray-200 dark:border-[var(--crypto-border)] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button

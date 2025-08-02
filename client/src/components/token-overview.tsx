@@ -50,9 +50,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Price Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 dark:from-green-600 dark:via-emerald-600 dark:to-green-700 light:from-green-400 light:via-emerald-400 light:to-green-500 border-green-500 hover:from-green-500 hover:via-emerald-500 hover:to-green-600 transition-all duration-300 shadow-lg shadow-green-500/20">
+      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 border-green-500 hover:from-green-500 hover:via-emerald-500 hover:to-green-600 transition-all duration-300 shadow-lg shadow-green-500/20">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white text-sm font-medium">Current Price</h3>
+          <h3 className="text-white dark:text-white text-sm font-medium">Current Price</h3>
           <span className={`px-2 py-1 rounded text-xs font-medium ${
             tokenData.priceChangePercent24h >= 0 
               ? 'bg-white/20 text-white border border-white/30' 
