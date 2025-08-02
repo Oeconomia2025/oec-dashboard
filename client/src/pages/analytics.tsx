@@ -328,7 +328,11 @@ export default function Analytics() {
                   Active protocols show real-time metrics while those under construction display development status.
                 </p>
               </div>
-              <Button variant="outline" className="border-crypto-blue text-crypto-blue hover:bg-crypto-blue hover:text-black">
+              <Button 
+                variant="outline" 
+                className="border-crypto-blue text-crypto-blue hover:bg-crypto-blue hover:text-black"
+                onClick={() => window.open('https://oeconomia.tech/tokeninfo/#roadmap-section', '_blank')}
+              >
                 <ExternalLink className="w-4 h-4 mr-2" />
                 View Roadmap
               </Button>
