@@ -102,11 +102,11 @@ export default function Analytics() {
       }
     },
     {
-      name: "Ativya",
+      name: "Artivya",
       type: "NFT Marketplace",
       status: 'construction',
       icon: ShoppingBag,
-      gradient: "from-teal-600 to-blue-700",
+      gradient: "from-purple-600 to-pink-700",
       description: "Next-generation NFT marketplace with advanced trading features"
     },
     {
@@ -114,7 +114,7 @@ export default function Analytics() {
       type: "Contract Creator",
       status: 'construction',
       icon: FileText,
-      gradient: "from-blue-600 to-teal-700",
+      gradient: "from-orange-600 to-red-700",
       description: "No-code smart contract deployment and management platform"
     }
   ];
@@ -217,12 +217,7 @@ export default function Analytics() {
                         <p className="text-blue-100 text-sm max-w-sm">{protocol.description}</p>
                       </div>
                       
-                      {protocol.status === 'construction' ? (
-                        <Badge className="bg-purple-600 hover:bg-purple-700 text-white border-none">
-                          <Construction className="w-3 h-3 mr-1" />
-                          Under Construction
-                        </Badge>
-                      ) : (
+                      {protocol.status === 'active' && (
                         <Badge className="bg-green-600 hover:bg-green-700 text-white border-none">
                           <Activity className="w-3 h-3 mr-1" />
                           Live
@@ -293,7 +288,7 @@ export default function Analytics() {
                       <div className="flex items-center justify-center h-32">
                         <div className="text-center">
                           <Construction className="w-12 h-12 mx-auto mb-3 text-blue-200" />
-                          <p className="text-blue-100">Coming Soon</p>
+                          <p className="text-blue-100">Under Development</p>
                         </div>
                       </div>
                     )}
