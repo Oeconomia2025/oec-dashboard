@@ -331,15 +331,13 @@ export function Layout({ children }: LayoutProps) {
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
+                className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
                 onClick={() => window.open('https://oeconomia.tech/', '_blank')}
-                className="p-2"
                 title="Visit Oeconomia Website"
               >
-                <Globe className="w-4 h-4" />
-              </Button>
+                <Globe className="w-5 h-5 text-white group-hover:text-white" />
+              </button>
               <Button
                 variant="ghost"
                 size="sm"
