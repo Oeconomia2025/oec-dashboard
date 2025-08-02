@@ -81,7 +81,7 @@ export function WalletConnect() {
     return (
       <Button 
         onClick={() => disconnect()}
-        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white hover:text-white border-green-500 hover:border-green-400 border-2 shadow-lg transition-all duration-200 font-medium"
+        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
       >
         <Wallet className="w-4 h-4 mr-2" />
         {formatAddress(address)}
