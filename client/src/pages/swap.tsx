@@ -320,7 +320,7 @@ function SwapContent() {
               )}
 
               {/* From Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mb-0">
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">
                     {activeTab === "Buy" ? "Buy" : activeTab === "Sell" ? "Sell" : "From"}
@@ -376,20 +376,20 @@ function SwapContent() {
                 )}
               </div>
 
-              {/* Swap Arrow - Hovering above */}
-              <div className="relative flex justify-center -my-2 z-10">
+              {/* Swap Arrow - Overlapping between boxes */}
+              <div className="relative flex justify-center -my-6 z-20">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleSwapTokens}
-                  className="bg-[var(--crypto-card)] border-2 border-[var(--crypto-border)] rounded-full w-10 h-10 p-0 hover:bg-[var(--crypto-card)]/80 shadow-lg"
+                  className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
                 >
-                  <ArrowUpDown className="w-4 h-4 text-gray-400" />
+                  <ArrowUpDown className="w-5 h-5 text-gray-400" />
                 </Button>
               </div>
 
               {/* To Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-0">
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">
                     {activeTab === "Buy" ? "For" : activeTab === "Sell" ? "For" : "To"}
