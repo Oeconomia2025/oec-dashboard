@@ -7,6 +7,8 @@ import { Activity } from "lucide-react";
 import { TokenOverview } from "@/components/token-overview";
 import { PriceChart } from "@/components/price-chart";
 import { TokenInfoPanel } from "@/components/token-info-panel";
+import { VolumeLiquidityAnalytics } from "@/components/volume-liquidity-analytics";
+import { HistoricalPerformance } from "@/components/historical-performance";
 import { TransactionsTable } from "@/components/transactions-table";
 import { HolderStatistics } from "@/components/holder-statistics";
 import { QuickActions } from "@/components/quick-actions";
@@ -39,6 +41,12 @@ export default function Dashboard() {
           {/* Token Information Panel */}
           <TokenInfoPanel tokenData={tokenData} isLoading={isLoading} />
         </div>
+
+        {/* Volume and Liquidity Analytics */}
+        <VolumeLiquidityAnalytics contractAddress={contractAddress} />
+
+        {/* Historical Performance Charts */}
+        <HistoricalPerformance contractAddress={contractAddress} />
 
         {/* Recent Transactions Table */}
         <TransactionsTable contractAddress={contractAddress} />
