@@ -316,7 +316,7 @@ export function Portfolio() {
 
           <div className="space-y-4">
             {poolsFarms.map((item) => (
-              <Card key={item.id} className="crypto-card p-4 border bg-[var(--crypto-card)]">
+              <Card key={item.id} className="p-4 border border-crypto-border/40 bg-gradient-to-r from-crypto-blue/5 to-crypto-purple/5 hover:from-crypto-blue/10 hover:to-crypto-purple/10 transition-all duration-200">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue to-crypto-purple rounded-full flex items-center justify-center">
