@@ -22,7 +22,8 @@ import {
   MessageCircle,
   ExternalLink,
   Globe,
-  BookOpen
+  BookOpen,
+  MoreHorizontal
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -271,7 +272,7 @@ export function Layout({ children }: LayoutProps) {
               title="Medium"
               onClick={() => window.open('https://medium.com/@oeconomia2025', '_blank')}
             >
-              <SiMedium className="w-5 h-5 text-white group-hover:text-white" />
+              <MoreHorizontal className="w-5 h-5 text-white group-hover:text-white" />
             </button>
             
             {/* YouTube */}
