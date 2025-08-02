@@ -347,9 +347,7 @@ function SwapContent() {
                       <SelectValue placeholder="Select token">
                         {fromToken && (
                           <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
-                              {fromToken.symbol.charAt(0)}
-                            </div>
+                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
                             <span>{fromToken.symbol}</span>
                           </div>
                         )}
@@ -359,9 +357,7 @@ function SwapContent() {
                       {tokens.map((token) => (
                         <SelectItem key={token.symbol} value={token.symbol}>
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
-                              {token.symbol.charAt(0)}
-                            </div>
+                            <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
                             <span>{token.symbol}</span>
                           </div>
                         </SelectItem>
@@ -416,9 +412,7 @@ function SwapContent() {
                       <SelectValue placeholder="Select token">
                         {toToken && (
                           <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
-                              {toToken.symbol.charAt(0)}
-                            </div>
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
                             <span>{toToken.symbol}</span>
                           </div>
                         )}
@@ -428,9 +422,7 @@ function SwapContent() {
                       {tokens.map((token) => (
                         <SelectItem key={token.symbol} value={token.symbol}>
                           <div className="flex items-center space-x-2">
-                            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
-                              {token.symbol.charAt(0)}
-                            </div>
+                            <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
                             <span>{token.symbol}</span>
                           </div>
                         </SelectItem>
