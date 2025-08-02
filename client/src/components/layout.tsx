@@ -46,6 +46,7 @@ export function Layout({ children }: LayoutProps) {
   useEffect(() => {
     // If we have a locked state during navigation, enforce it immediately
     if (lockedCollapsedStateRef.current !== null && sidebarCollapsed !== lockedCollapsedStateRef.current) {
+      console.log('Enforcing locked collapsed state:', lockedCollapsedStateRef.current);
       // Use multiple approaches to ensure the state sticks
       setSidebarCollapsed(lockedCollapsedStateRef.current);
       // Also update localStorage immediately
@@ -65,6 +66,7 @@ export function Layout({ children }: LayoutProps) {
       setTimeout(() => {
         isNavigatingRef.current = false;
         lockedCollapsedStateRef.current = null; // Unlock the state
+        console.log('Navigation completed, unlocking state');
       }, 100);
     }
   }, [location]);
@@ -72,6 +74,7 @@ export function Layout({ children }: LayoutProps) {
   const handleNavigation = (path: string) => {
     // Store and lock the current collapsed state BEFORE any navigation
     const wasCollapsed = sidebarCollapsed;
+    console.log('Navigation clicked, current collapsed state:', wasCollapsed);
     
     // On mobile, just navigate and close sidebar
     if (window.innerWidth < 1024) {
@@ -83,6 +86,7 @@ export function Layout({ children }: LayoutProps) {
     // On desktop, prevent any state changes during navigation
     lockedCollapsedStateRef.current = wasCollapsed;
     isNavigatingRef.current = true;
+    console.log('Locking collapsed state to:', wasCollapsed);
     
     // Force the current state to localStorage before navigation
     localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
@@ -92,6 +96,7 @@ export function Layout({ children }: LayoutProps) {
     
     // Immediately after navigation, force the state back
     setTimeout(() => {
+      console.log('Post-navigation: forcing state back to', wasCollapsed);
       setSidebarCollapsed(wasCollapsed);
       localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
     }, 1);
@@ -100,10 +105,16 @@ export function Layout({ children }: LayoutProps) {
   const toggleCollapsed = () => {
     isNavigatingRef.current = false; // Clear navigation flag
     const newState = !sidebarCollapsed;
+    console.log('Toggle clicked, changing from', sidebarCollapsed, 'to', newState);
     setSidebarCollapsed(newState);
     // Immediately save to localStorage to prevent reset
     localStorage.setItem('sidebar-collapsed', newState.toString());
   };
+
+  // Debug: Monitor all state changes
+  useEffect(() => {
+    console.log('sidebarCollapsed state changed to:', sidebarCollapsed);
+  }, [sidebarCollapsed]);
 
   const sidebarItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
@@ -120,64 +131,40 @@ export function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
       <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
-        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] h-16 px-4 border-b border-[var(--crypto-border)]">
-          {sidebarCollapsed ? (
-            /* Collapsed state: Logo and toggle button centered */
-            <div className="flex items-center justify-center h-full space-x-2">
-              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                <img 
-                  src="/oec-logo.png" 
-                  alt="Oeconomia Logo" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={toggleCollapsed}
-                className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
-                title="Expand sidebar"
-              >
-                <ChevronRight className="w-4 h-4 text-gray-400 hover:text-black" />
-              </Button>
+        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
+          <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
+            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+              <img 
+                src="/oec-logo.png" 
+                alt="Oeconomia Logo" 
+                className="w-full h-full object-cover"
+              />
             </div>
-          ) : (
-            /* Expanded state: Logo + title on left, toggle on right */
-            <div className="flex items-center justify-between h-full">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                  <img 
-                    src="/oec-logo.png" 
-                    alt="Oeconomia Logo" 
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold">Oeconomia</h2>
-                  <p className="text-xs text-gray-400">OEC Dashboard</p>
-                </div>
+            {!sidebarCollapsed && (
+              <div>
+                <h2 className="text-lg font-bold">Oeconomia</h2>
+                <p className="text-xs text-gray-400">OEC Dashboard</p>
               </div>
-              <div className="flex items-center space-x-1">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={toggleCollapsed}
-                  className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
-                  title="Collapse sidebar"
-                >
-                  <ChevronLeft className="w-4 h-4 text-gray-400 hover:text-black" />
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={() => setSidebarOpen(false)}
-                  className="lg:hidden"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
+          <div className="flex items-center space-x-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={toggleCollapsed}
+              className="hidden lg:flex"
+            >
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
         
         <div className="sticky top-16 bg-[var(--crypto-card)] z-10 border-b border-[var(--crypto-border)]">
@@ -220,8 +207,6 @@ export function Layout({ children }: LayoutProps) {
           onClick={() => setSidebarOpen(false)}
         />
       )}
-
-
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
