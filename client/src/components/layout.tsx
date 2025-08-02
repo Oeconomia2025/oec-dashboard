@@ -28,6 +28,27 @@ export function Layout({ children }: LayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [location, navigate] = useLocation();
 
+  const handleNavigation = (path: string) => {
+    // Store current collapsed state
+    const wasCollapsed = sidebarCollapsed;
+    
+    // Navigate to the path
+    navigate(path);
+    
+    // On mobile, close the sidebar
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false);
+    }
+    
+    // Explicitly restore collapsed state on desktop to prevent expansion
+    if (window.innerWidth >= 1024 && wasCollapsed) {
+      // Use setTimeout to ensure the state is set after navigation
+      setTimeout(() => {
+        setSidebarCollapsed(true);
+      }, 0);
+    }
+  };
+
   const sidebarItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
     { icon: TrendingUp, label: 'Analytics', path: '/analytics', active: location === '/analytics' },
@@ -85,14 +106,7 @@ export function Layout({ children }: LayoutProps) {
               {sidebarItems.map((item, index) => (
                 <li key={index}>
                   <button 
-                    onClick={() => {
-                      navigate(item.path);
-                      // On mobile, close the sidebar after navigation
-                      if (window.innerWidth < 1024) {
-                        setSidebarOpen(false);
-                      }
-                      // On desktop, keep the collapsed state unchanged
-                    }}
+                    onClick={() => handleNavigation(item.path)}
                     className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
                       item.active 
                         ? 'bg-crypto-blue text-black font-medium' 
