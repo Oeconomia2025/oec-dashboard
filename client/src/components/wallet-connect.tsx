@@ -133,7 +133,7 @@ export function WalletConnect() {
           Connect Wallet
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-gradient-to-br from-[var(--crypto-card)] to-[var(--crypto-dark)] border-crypto-blue/20 shadow-xl max-w-md">
+      <DialogContent className="bg-gradient-to-br from-[var(--crypto-card)] to-[var(--crypto-dark)] border-crypto-blue/20 shadow-xl max-w-sm max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold bg-gradient-to-r from-crypto-blue to-purple-400 bg-clip-text text-transparent">
             Connect Your Wallet
@@ -143,7 +143,7 @@ export function WalletConnect() {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid grid-cols-2 gap-4 mt-6">
+        <div className="grid grid-cols-2 gap-3 mt-4">
           {getDisplayedConnectors().map((connector) => (
             <Button
               key={connector.uid}
@@ -153,11 +153,11 @@ export function WalletConnect() {
                 setIsOpen(false)
               }}
               disabled={isPending}
-              className="flex-col justify-center items-center h-24 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-3"
+              className="flex-col justify-center items-center h-16 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-2"
             >
-              <div className="flex flex-col items-center space-y-2">
+              <div className="flex flex-col items-center space-y-1">
                 <div className="relative">
-                  <WalletIcon wallet={connector.name} className="w-8 h-8" />
+                  <WalletIcon wallet={connector.name} className="w-6 h-6" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent to-black/10 group-hover:from-white/5 group-hover:to-white/10 transition-all duration-200"></div>
                 </div>
                 <div className="text-center">
@@ -177,7 +177,7 @@ export function WalletConnect() {
             <Button
               variant="outline"
               onClick={() => setShowAllWallets(true)}
-              className="col-span-2 flex-col justify-center items-center h-16 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+              className="col-span-2 flex-col justify-center items-center h-12 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
             >
               <div className="flex flex-col items-center space-y-1">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-600/20 flex items-center justify-center group-hover:from-crypto-blue/30 group-hover:to-purple-500/30 transition-all duration-200">
@@ -203,7 +203,7 @@ export function WalletConnect() {
           </div>
         )}
         
-        <div className="mt-6 p-4 bg-gradient-to-r from-[var(--crypto-dark)] to-gray-900/50 rounded-xl border border-gray-700/50">
+        <div className="mt-4 p-3 bg-gradient-to-r from-[var(--crypto-dark)] to-gray-900/50 rounded-xl border border-gray-700/50">
           <p className="text-xs text-gray-400 text-center leading-relaxed">
             🔒 Secure connection to BSC network<br/>
             Supports all major EVM wallets including MetaMask, Trust, Rabby, and more
