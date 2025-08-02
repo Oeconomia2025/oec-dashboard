@@ -50,7 +50,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Price Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-green-500/30 hover:from-green-500/15 hover:to-emerald-500/15 transition-all duration-300">
+      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-green-500/25 via-emerald-500/20 to-green-600/15 border-green-500/40 hover:from-green-500/35 hover:via-emerald-500/30 hover:to-green-600/25 transition-all duration-300 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-gray-300 text-sm font-medium">Current Price</h3>
           <span className={`px-2 py-1 rounded text-xs font-medium ${
@@ -72,7 +72,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Market Cap Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border-blue-500/30 hover:from-blue-500/15 hover:to-cyan-500/15 transition-all duration-300">
+      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-blue-500/25 via-cyan-500/20 to-blue-600/15 border-blue-500/40 hover:from-blue-500/35 hover:via-cyan-500/30 hover:to-blue-600/25 transition-all duration-300 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-gray-300 text-sm font-medium">Market Cap</h3>
           <BarChart3 className="text-blue-400 w-5 h-5" />
@@ -84,7 +84,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Volume Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30 hover:from-amber-500/15 hover:to-orange-500/15 transition-all duration-300">
+      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-amber-500/25 via-orange-500/20 to-amber-600/15 border-amber-500/40 hover:from-amber-500/35 hover:via-orange-500/30 hover:to-amber-600/25 transition-all duration-300 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-gray-300 text-sm font-medium">24h Volume</h3>
           <ArrowUpDown className="text-amber-400 w-5 h-5" />
@@ -96,7 +96,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Liquidity Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/30 hover:from-purple-500/15 hover:to-pink-500/15 transition-all duration-300">
+      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-purple-500/25 via-pink-500/20 to-purple-600/15 border-purple-500/40 hover:from-purple-500/35 hover:via-pink-500/30 hover:to-purple-600/25 transition-all duration-300 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-gray-300 text-sm font-medium">Liquidity Pool</h3>
           <Droplets className="text-purple-400 w-5 h-5" />
