@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -30,7 +31,11 @@ import {
   Target,
   Trophy,
   Medal,
-  Flame
+  Flame,
+  Calculator,
+  BarChart3,
+  PieChart,
+  Percent
 } from "lucide-react";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useAccount } from "wagmi";
@@ -210,12 +215,17 @@ const getPoolAchievements = (poolId: number, userStaked: number, stakingDays: nu
 
 export function Staking() {
   const { isConnected } = useAccount();
-  const [selectedPool, setSelectedPool] = useState<number | null>(null);
+  const [selectedPoolId, setSelectedPoolId] = useState<number | null>(null);
   const [stakeAmount, setStakeAmount] = useState("");
   const [unstakeAmount, setUnstakeAmount] = useState("");
   const [isStaking, setIsStaking] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
   const [isClaiming, setIsClaiming] = useState(false);
+  
+  // ROI Calculator states
+  const [calcAmount, setCalcAmount] = useState("1000");
+  const [calcDays, setCalcDays] = useState("30");
+  const [selectedPool, setSelectedPool] = useState(mockStakingPools[0]);
 
   const formatNumber = (num: number) => {
     return num.toLocaleString('en-US', { 
@@ -254,6 +264,29 @@ export function Staking() {
       console.log('Achievement unlocked: High Staker!');
     }
   };
+
+  // ROI Calculator functions
+  const calculateROI = (amount: number, apy: number, days: number) => {
+    const principal = amount;
+    const annualReturn = principal * (apy / 100);
+    const dailyReturn = annualReturn / 365;
+    const totalReturn = dailyReturn * days;
+    const finalAmount = principal + totalReturn;
+    
+    return {
+      principal,
+      totalReturn,
+      finalAmount,
+      dailyReturn,
+      percentage: (totalReturn / principal) * 100
+    };
+  };
+
+  const roiData = calculateROI(
+    parseFloat(calcAmount) || 0,
+    selectedPool.apy,
+    parseInt(calcDays) || 0
+  );
 
   const handleUnstake = async (poolId: number) => {
     if (!unstakeAmount || isUnstaking) return;
@@ -359,6 +392,158 @@ export function Staking() {
               </div>
             </Card>
           </div>
+
+          {/* ROI Calculator Section */}
+          <Card className="crypto-card p-6 border mb-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30">
+            <div className="flex items-center space-x-2 mb-6">
+              <Calculator className="w-6 h-6 text-crypto-blue" />
+              <h2 className="text-xl font-semibold">Interactive ROI Calculator</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Calculator Controls */}
+              <div className="space-y-6">
+                <div>
+                  <Label htmlFor="calc-amount" className="text-sm font-medium mb-2 block">
+                    Stake Amount (OEC)
+                  </Label>
+                  <Input
+                    id="calc-amount"
+                    type="number"
+                    value={calcAmount}
+                    onChange={(e) => setCalcAmount(e.target.value)}
+                    placeholder="Enter amount to stake"
+                    className="bg-black/30 border-white/20"
+                  />
+                </div>
+                
+                <div>
+                  <Label htmlFor="calc-days" className="text-sm font-medium mb-2 block">
+                    Staking Period (Days)
+                  </Label>
+                  <Input
+                    id="calc-days"
+                    type="number"
+                    value={calcDays}
+                    onChange={(e) => setCalcDays(e.target.value)}
+                    placeholder="Enter staking period"
+                    className="bg-black/30 border-white/20"
+                  />
+                  <div className="flex gap-2 mt-2">
+                    {[30, 90, 180, 365].map((days) => (
+                      <Button
+                        key={days}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCalcDays(days.toString())}
+                        className="text-xs bg-black/20 border-white/20 hover:bg-white/10"
+                      >
+                        {days}d
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label className="text-sm font-medium mb-2 block">
+                    Select Pool
+                  </Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {mockStakingPools.map((pool) => (
+                      <Button
+                        key={pool.id}
+                        variant={selectedPool.id === pool.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedPool(pool)}
+                        className={`text-xs ${
+                          selectedPool.id === pool.id
+                            ? 'bg-crypto-blue hover:bg-crypto-blue/80'
+                            : 'bg-black/20 border-white/20 hover:bg-white/10'
+                        }`}
+                      >
+                        {pool.apy}% APY
+                        <br />
+                        <span className="text-xs opacity-75">{pool.lockPeriod}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              
+              {/* ROI Results */}
+              <div className="space-y-4">
+                <div className="bg-black/30 p-4 rounded-lg border border-white/10">
+                  <h3 className="text-lg font-semibold mb-4 flex items-center">
+                    <BarChart3 className="w-5 h-5 mr-2 text-crypto-green" />
+                    ROI Breakdown
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Initial Stake:</span>
+                      <span className="font-medium">{formatNumber(roiData.principal)} OEC</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Daily Rewards:</span>
+                      <span className="font-medium text-crypto-green">
+                        {formatNumber(roiData.dailyReturn)} OEC
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">Total Rewards:</span>
+                      <span className="font-medium text-crypto-green">
+                        {formatNumber(roiData.totalReturn)} OEC
+                      </span>
+                    </div>
+                    
+                    <Separator className="bg-white/20" />
+                    
+                    <div className="flex justify-between items-center text-lg">
+                      <span className="font-medium">Final Amount:</span>
+                      <span className="font-bold text-crypto-gold">
+                        {formatNumber(roiData.finalAmount)} OEC
+                      </span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-300">ROI Percentage:</span>
+                      <span className="font-medium text-crypto-blue">
+                        +{roiData.percentage.toFixed(2)}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-black/30 p-4 rounded-lg border border-white/10">
+                  <h3 className="text-sm font-medium mb-3 flex items-center">
+                    <PieChart className="w-4 h-4 mr-2 text-crypto-purple" />
+                    USD Value Estimation
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Initial Value:</span>
+                      <span>{formatPrice(roiData.principal * 1.00)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Reward Value:</span>
+                      <span className="text-crypto-green">{formatPrice(roiData.totalReturn * 1.00)}</span>
+                    </div>
+                    <div className="flex justify-between font-medium">
+                      <span>Total Value:</span>
+                      <span className="text-crypto-gold">{formatPrice(roiData.finalAmount * 1.00)}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="text-xs text-gray-400 bg-black/20 p-3 rounded-lg">
+                  <Info className="w-3 h-3 inline mr-1" />
+                  Calculations based on current APY rates. Actual returns may vary based on market conditions and smart contract performance.
+                </div>
+              </div>
+            </div>
+          </Card>
 
           {/* Achievement Badges Section */}
           <Card className="crypto-card p-6 border mb-8">
