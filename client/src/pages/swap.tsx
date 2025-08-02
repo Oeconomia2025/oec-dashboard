@@ -184,7 +184,7 @@ function SwapContent() {
                 <Settings className="w-4 h-4" />
               </Button>
             </CardHeader>
-            <CardContent className="space-y-1">
+            <CardContent className="space-y-0">
               {/* Settings Panel */}
               {showSettings && (
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
@@ -235,7 +235,7 @@ function SwapContent() {
               )}
 
               {/* From Token */}
-              <div className="space-y-2">
+              <div className="mb-1">
                 <label className="text-sm text-gray-400">From</label>
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
                   <CardContent className="p-4">
@@ -298,7 +298,7 @@ function SwapContent() {
               </div>
 
               {/* Swap Button */}
-              <div className="flex justify-center">
+              <div className="flex justify-center -my-2 relative z-10">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -310,7 +310,7 @@ function SwapContent() {
               </div>
 
               {/* To Token */}
-              <div className="space-y-2">
+              <div className="mt-1">
                 <label className="text-sm text-gray-400">To</label>
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
                   <CardContent className="p-4">
