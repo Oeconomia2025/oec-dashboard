@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { usePriceHistory, useTokenData } from "@/hooks/use-token-data";
@@ -54,6 +55,23 @@ function SwapContent() {
   const [showChart, setShowChart] = useState(false);
   const [chartTimeframe, setChartTimeframe] = useState("1D");
   const [activeTab, setActiveTab] = useState("Swap");
+  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to'>('from');
+
+  // Helper functions for token selection
+  const openTokenModal = (type: 'from' | 'to') => {
+    setTokenSelectionFor(type);
+    setIsTokenModalOpen(true);
+  };
+
+  const selectToken = (token: Token) => {
+    if (tokenSelectionFor === 'from') {
+      setFromToken(token);
+    } else {
+      setToToken(token);
+    }
+    setIsTokenModalOpen(false);
+  };
 
   // Mock token list - in real implementation, this would come from API
   const tokens: Token[] = [
@@ -349,31 +367,20 @@ function SwapContent() {
                       boxShadow: 'none'
                     }}
                   />
-                  <Select value={fromToken?.symbol || ""} onValueChange={(value) => {
-                    const token = tokens.find(t => t.symbol === value);
-                    if (token) setFromToken(token);
-                  }}>
-                    <SelectTrigger className="w-auto bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
-                      <SelectValue placeholder="Select token">
-                        {fromToken && (
-                          <div className="flex items-center space-x-2">
-                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
-                            <span>{fromToken.symbol}</span>
-                          </div>
-                        )}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {tokens.map((token) => (
-                        <SelectItem key={token.symbol} value={token.symbol}>
-                          <div className="flex items-center space-x-2">
-                            <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
-                            <span>{token.symbol}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Button
+                    variant="outline"
+                    onClick={() => openTokenModal('from')}
+                    className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                  >
+                    {fromToken ? (
+                      <div className="flex items-center space-x-2">
+                        <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                        <span>{fromToken.symbol}</span>
+                      </div>
+                    ) : (
+                      <span>Select token</span>
+                    )}
+                  </Button>
                 </div>
                 {fromToken && (
                   <div className="text-right text-gray-400 text-sm mt-2">
@@ -424,31 +431,20 @@ function SwapContent() {
                       boxShadow: 'none'
                     }}
                   />
-                  <Select value={toToken?.symbol || ""} onValueChange={(value) => {
-                    const token = tokens.find(t => t.symbol === value);
-                    if (token) setToToken(token);
-                  }}>
-                    <SelectTrigger className="w-auto bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
-                      <SelectValue placeholder="Select token">
-                        {toToken && (
-                          <div className="flex items-center space-x-2">
-                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
-                            <span>{toToken.symbol}</span>
-                          </div>
-                        )}
-                      </SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {tokens.map((token) => (
-                        <SelectItem key={token.symbol} value={token.symbol}>
-                          <div className="flex items-center space-x-2">
-                            <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
-                            <span>{token.symbol}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Button
+                    variant="outline"
+                    onClick={() => openTokenModal('to')}
+                    className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                  >
+                    {toToken ? (
+                      <div className="flex items-center space-x-2">
+                        <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                        <span>{toToken.symbol}</span>
+                      </div>
+                    ) : (
+                      <span>Select token</span>
+                    )}
+                  </Button>
                 </div>
                 {toToken && quote && (
                   <div className="text-right text-gray-400 text-sm mt-2">
@@ -748,6 +744,41 @@ function SwapContent() {
           </Card>
         </div>
       </div>
+
+      {/* Token Selection Modal */}
+      <Dialog open={isTokenModalOpen} onOpenChange={setIsTokenModalOpen}>
+        <DialogContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              Select {tokenSelectionFor === 'from' ? 'From' : 'To'} Token
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {tokens.map((token) => (
+              <Button
+                key={token.symbol}
+                variant="ghost"
+                onClick={() => selectToken(token)}
+                className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+              >
+                <div className="flex items-center space-x-3">
+                  <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full" />
+                  <div className="text-left">
+                    <div className="font-medium">{token.symbol}</div>
+                    <div className="text-sm text-gray-400">{token.name}</div>
+                  </div>
+                  <div className="ml-auto text-right">
+                    <div className="text-sm text-white">${formatNumber(token.price, 6)}</div>
+                    <div className="text-xs text-gray-400">
+                      Balance: {formatNumber(token.balance || 0, 2)}
+                    </div>
+                  </div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
