@@ -103,6 +103,23 @@ export class BSCApiService {
     }
   }
 
+  async getTokenBalance(walletAddress: string, tokenAddress: string): Promise<string> {
+    try {
+      const result = await this.makeRequest({
+        module: "account",
+        action: "tokenbalance",
+        contractaddress: tokenAddress,
+        address: walletAddress,
+        tag: "latest",
+      });
+      
+      return result || "0";
+    } catch (error) {
+      console.error(`Error fetching token balance for ${tokenAddress}:`, error);
+      return "0";
+    }
+  }
+
   private determineTransactionType(tx: any): Transaction['type'] {
     // Simple heuristic - could be improved with DEX router analysis
     if (tx.from.toLowerCase() === "0x0000000000000000000000000000000000000000") {

@@ -144,6 +144,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get portfolio data for a wallet address
+  app.get("/api/portfolio/:walletAddress", async (req, res) => {
+    try {
+      const { walletAddress } = req.params;
+      const tokens = req.query.tokens as string;
+      
+      if (!tokens) {
+        return res.json([]);
+      }
+
+      const tokenAddresses = tokens.split(',');
+      const portfolio = [];
+
+      for (const tokenAddress of tokenAddresses) {
+        try {
+          // Get token balance using BSCScan API
+          const balance = await bscApiService.getTokenBalance(walletAddress, tokenAddress);
+          
+          // Get token info from our existing API
+          const [coinGeckoData, pancakeSwapData] = await Promise.all([
+            coinGeckoApiService.getTokenDataByContract(tokenAddress).catch(() => null),
+            pancakeSwapApiService.getTokenData(tokenAddress).catch(() => null),
+          ]);
+
+          const tokenInfo = {
+            address: tokenAddress,
+            name: coinGeckoData?.name || pancakeSwapData?.name || 'Unknown Token',
+            symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || 'UNK',
+            balance: balance || '0',
+            decimals: 18, // Default to 18, could be improved by fetching from contract
+            price: coinGeckoData?.price || pancakeSwapData?.price || 0,
+          };
+
+          // Calculate USD value
+          const balanceNum = parseFloat(tokenInfo.balance) / Math.pow(10, tokenInfo.decimals);
+          tokenInfo.value = balanceNum * (tokenInfo.price || 0);
+
+          portfolio.push(tokenInfo);
+        } catch (error) {
+          console.log(`Error fetching data for token ${tokenAddress}:`, error);
+          // Continue with other tokens
+        }
+      }
+
+      res.json(portfolio);
+    } catch (error) {
+      console.error("Error fetching portfolio:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch portfolio",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   // Get price history
   app.get("/api/price-history/:contractAddress/:timeframe", async (req, res) => {
     try {

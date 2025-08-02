@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const [inputAddress, setInputAddress] = useState(contractAddress);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [location, navigate] = useLocation();
   
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
 
@@ -43,14 +45,14 @@ export default function Dashboard() {
   };
 
   const sidebarItems = [
-    { icon: BarChart3, label: 'Dashboard', active: true },
-    { icon: TrendingUp, label: 'Analytics', active: false },
-    { icon: Wallet, label: 'Portfolio', active: false },
-    { icon: Users, label: 'Holders', active: false },
-    { icon: Lock, label: 'Staking', active: false },
-    { icon: Zap, label: 'DeFi', active: false },
-    { icon: Bell, label: 'Alerts', active: false },
-    { icon: Settings, label: 'Settings', active: false },
+    { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
+    { icon: TrendingUp, label: 'Analytics', path: '/analytics', active: location === '/analytics' },
+    { icon: Wallet, label: 'Portfolio', path: '/portfolio', active: location === '/portfolio' },
+    { icon: Users, label: 'Holders', path: '/holders', active: location === '/holders' },
+    { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
+    { icon: Zap, label: 'DeFi', path: '/defi', active: location === '/defi' },
+    { icon: Bell, label: 'Alerts', path: '/alerts', active: location === '/alerts' },
+    { icon: Settings, label: 'Settings', path: '/settings', active: location === '/settings' },
   ];
 
   return (
@@ -99,6 +101,7 @@ export default function Dashboard() {
               {sidebarItems.map((item, index) => (
                 <li key={index}>
                   <button 
+                    onClick={() => navigate(item.path)}
                     className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
                       item.active 
                         ? 'bg-crypto-blue text-black font-medium' 
