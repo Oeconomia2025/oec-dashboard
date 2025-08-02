@@ -7,12 +7,18 @@ html {
   background-color: hsl(219, 39%, 11%);
 }
 
+html.light {
+  background-color: hsl(0, 0%, 98%);
+}
+
 body {
-  background-color: hsl(219, 39%, 11%);
-  color: hsl(0, 0%, 98%);
+  background-color: var(--crypto-dark);
+  color: var(--foreground);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 :root {
+  /* Light mode colors */
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);
   --muted: hsl(60, 4.8%, 95.9%);
@@ -34,10 +40,10 @@ body {
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
 
-  /* Crypto dashboard specific colors */
-  --crypto-dark: hsl(219, 39%, 11%);
-  --crypto-card: hsl(220, 26%, 14%);
-  --crypto-border: hsl(215, 16%, 25%);
+  /* Crypto dashboard specific colors - Light mode */
+  --crypto-dark: hsl(0, 0%, 98%);
+  --crypto-card: hsl(0, 0%, 100%);
+  --crypto-border: hsl(220, 13%, 91%);
   --crypto-green: hsl(142, 76%, 36%);
   --crypto-red: hsl(0, 84%, 60%);
   --crypto-gold: hsl(43, 96%, 56%);
@@ -65,6 +71,15 @@ body {
   --destructive-foreground: hsl(0, 0%, 98%);
   --ring: hsl(240, 4.9%, 83.9%);
   --radius: 0.5rem;
+
+  /* Crypto dashboard specific colors - Dark mode */
+  --crypto-dark: hsl(219, 39%, 11%);
+  --crypto-card: hsl(220, 26%, 14%);
+  --crypto-border: hsl(215, 16%, 25%);
+  --crypto-green: hsl(142, 76%, 36%);
+  --crypto-red: hsl(0, 84%, 60%);
+  --crypto-gold: hsl(43, 96%, 56%);
+  --crypto-blue: hsl(217, 91%, 60%);
 }
 
 @layer base {
