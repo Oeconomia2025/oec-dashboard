@@ -143,7 +143,7 @@ export function WalletConnect() {
           </DialogDescription>
         </DialogHeader>
         
-        <div className="grid gap-3 mt-6">
+        <div className="grid grid-cols-2 gap-4 mt-6">
           {getDisplayedConnectors().map((connector) => (
             <Button
               key={connector.uid}
@@ -153,26 +153,20 @@ export function WalletConnect() {
                 setIsOpen(false)
               }}
               disabled={isPending}
-              className="justify-start h-16 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+              className="flex-col justify-center items-center h-24 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-3"
             >
-              <div className="flex items-center space-x-4 w-full">
+              <div className="flex flex-col items-center space-y-2">
                 <div className="relative">
-                  <WalletIcon wallet={connector.name} className="w-10 h-10" />
+                  <WalletIcon wallet={connector.name} className="w-8 h-8" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-transparent to-black/10 group-hover:from-white/5 group-hover:to-white/10 transition-all duration-200"></div>
                 </div>
-                <div className="text-left flex-1">
-                  <div className="font-semibold text-white">{connector.name}</div>
-                  <div className="text-xs text-gray-400">
-                    {connector.name === 'MetaMask' && 'Browser extension wallet'}
-                    {connector.name === 'Coinbase Wallet' && 'Coinbase wallet app'}
-                    {connector.name === 'WalletConnect' && 'Scan with mobile wallet'}
-                    {connector.name === 'Trust Wallet' && 'Mobile & browser wallet'}
-                    {connector.name === 'Rabby Wallet' && 'Multi-chain browser wallet'}
-                    {connector.name === 'OKX Wallet' && 'OKX exchange wallet'}
-                    {connector.name === 'Binance Wallet' && 'Binance Chain wallet'}
-                    {connector.name === 'Phantom Wallet' && 'Multi-chain wallet'}
-                    {connector.name === 'Safe Wallet' && 'Multi-sig smart wallet'}
-                    {connector.name === 'Injected' && 'Browser wallet extension'}
+                <div className="text-center">
+                  <div className="font-medium text-white text-sm leading-tight">
+                    {connector.name
+                      .replace(' Wallet', '')
+                      .replace('Wallet', '')
+                      .replace('Connect', '')
+                      .trim()}
                   </div>
                 </div>
               </div>
@@ -183,13 +177,13 @@ export function WalletConnect() {
             <Button
               variant="outline"
               onClick={() => setShowAllWallets(true)}
-              className="justify-center h-12 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
+              className="col-span-2 flex-col justify-center items-center h-16 border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group"
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex flex-col items-center space-y-1">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-500/20 to-gray-600/20 flex items-center justify-center group-hover:from-crypto-blue/30 group-hover:to-purple-500/30 transition-all duration-200">
                   <span className="text-sm">⋯</span>
                 </div>
-                <span className="font-medium text-gray-300 group-hover:text-white">
+                <span className="font-medium text-gray-300 group-hover:text-white text-sm">
                   Other Wallets ({connectors.length - 4})
                 </span>
               </div>
