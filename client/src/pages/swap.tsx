@@ -174,7 +174,7 @@ function SwapContent() {
       <div className={`grid gap-6 ${showChart ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
         {/* Main Swap Interface */}
         <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
-          <Card className="crypto-card border">
+          <Card className="crypto-card border h-full">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-white">Swap Tokens</CardTitle>
               <div className="flex items-center space-x-2">
