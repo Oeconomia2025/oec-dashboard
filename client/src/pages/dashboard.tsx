@@ -92,32 +92,36 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <nav className="flex-1 overflow-y-auto">
-          <div className="sticky top-0 bg-[var(--crypto-card)] p-4 z-10">
-            <ul className="space-y-2">
-              {sidebarItems.map((item, index) => (
-                <li key={index}>
-                  <button 
-                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
-                      item.active 
-                        ? 'bg-crypto-blue text-black font-medium' 
-                        : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                    }`}
-                    title={sidebarCollapsed ? item.label : undefined}
-                  >
-                    <item.icon className="w-5 h-5 flex-shrink-0" />
-                    {!sidebarCollapsed && <span>{item.label}</span>}
-                    {sidebarCollapsed && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                        {item.label}
-                      </div>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
+        <div className="flex-1 relative overflow-hidden">
+          <nav className="h-full overflow-y-auto p-4">
+            <div className="sticky top-0 bg-[var(--crypto-card)] -m-4 p-4 mb-4 border-b border-[var(--crypto-border)]">
+              <ul className="space-y-2">
+                {sidebarItems.map((item, index) => (
+                  <li key={index}>
+                    <button 
+                      className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
+                        item.active 
+                          ? 'bg-crypto-blue text-black font-medium' 
+                          : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      {!sidebarCollapsed && <span>{item.label}</span>}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                          {item.label}
+                        </div>
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* This creates content below the sticky menu to allow scrolling */}
+            <div className="h-96"></div>
+          </nav>
+        </div>
       </aside>
 
       {/* Overlay for mobile */}
@@ -129,7 +133,7 @@ export default function Dashboard() {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 lg:ml-0">
+      <div className="flex-1 lg:ml-0 relative">
         {/* Sticky Header Navigation */}
         <header className="sticky top-0 z-30 bg-[var(--crypto-card)] border-b border-[var(--crypto-border)] px-6 py-4">
           <div className="flex items-center justify-between">
@@ -158,6 +162,8 @@ export default function Dashboard() {
             </div>
           </div>
         </header>
+
+
 
         <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Token Overview Cards */}
