@@ -7,9 +7,14 @@ npm install --include=dev
 echo "Building the application..."
 npm run build
 
-echo "Copying files to public directory for Vercel..."
-mkdir -p public
-cp -r dist/public/* public/
+echo "Preparing files for deployment..."
+if [ -d "dist/public" ]; then
+    echo "Copying React build files..."
+    cp -r dist/public/* ./
+    echo "React build deployed successfully!"
+else
+    echo "Build directory not found, using fallback index.html"
+fi
 
-echo "Build completed successfully!"
-ls -la public/
+echo "Final deployment files:"
+ls -la *.html
