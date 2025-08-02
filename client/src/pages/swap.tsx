@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +38,7 @@ interface SwapQuote {
   route: string[];
 }
 
-export default function Swap() {
+function SwapContent() {
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
   const [fromAmount, setFromAmount] = useState("");
@@ -512,5 +513,13 @@ export default function Swap() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Swap() {
+  return (
+    <Layout>
+      <SwapContent />
+    </Layout>
   );
 }
