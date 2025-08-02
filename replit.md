@@ -14,6 +14,14 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
 - **User Feedback**: "This is reeeeaaally nice looking" - highly positive response to colorful design
 - **Result**: Professional staking interface ready for contract integration with excellent visual appeal
 
+### Interactive ROI Calculator & Achievement System
+- **ROI Calculator**: Real-time calculations with adjustable amounts, time periods, and pool selection
+- **Achievement Badges**: Gamified system with 6 badge types (First Stake, Diamond Hands, Whale Staker, etc.)
+- **Collapsible Interface**: Both sections feature prominent toggle buttons with smooth expand/collapse
+- **Visual Polish**: Enhanced toggle styling with proper spacing and hover effects
+- **User Feedback**: "This is what I wanted. Very well done" - perfect spacing and functionality
+- **Result**: Complete interactive staking experience with professional UI/UX design
+
 ### Dashboard Analytics Enhancement
 - **Feature Added**: Volume & Liquidity Analytics and Historical Performance charts positioned under price chart
 - **Layout Optimization**: Aligned analytics components with matching width for cohesive dashboard flow
