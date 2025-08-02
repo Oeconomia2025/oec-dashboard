@@ -165,40 +165,40 @@ export default function Analytics() {
 
           {/* Ecosystem Overview Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="crypto-card p-6 border">
+            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Total Value Locked</h3>
-                <DollarSign className="text-crypto-green w-5 h-5" />
+                <h3 className="text-white text-sm">Total Value Locked</h3>
+                <DollarSign className="text-white w-5 h-5" />
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-white">
                 {ecosystemStats?.totalValueLocked || "$156.8M"}
               </div>
-              <div className="text-sm text-crypto-green mt-2 flex items-center">
+              <div className="text-sm text-green-300 mt-2 flex items-center">
                 <ArrowUpRight className="w-4 h-4 mr-1" />
                 +12.4% this week
               </div>
             </Card>
 
-            <Card className="crypto-card p-6 border">
+            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Total Users</h3>
-                <Users className="text-crypto-blue w-5 h-5" />
+                <h3 className="text-white text-sm">Total Users</h3>
+                <Users className="text-white w-5 h-5" />
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-white">
                 {ecosystemStats?.totalUsers ? formatNumber(ecosystemStats.totalUsers) : "3,247"}
               </div>
-              <div className="text-sm text-crypto-blue mt-2 flex items-center">
+              <div className="text-sm text-blue-300 mt-2 flex items-center">
                 <ArrowUpRight className="w-4 h-4 mr-1" />
                 +8.2% this month
               </div>
             </Card>
 
-            <Card className="crypto-card p-6 border">
+            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Active Protocols</h3>
-                <Activity className="text-crypto-green w-5 h-5" />
+                <h3 className="text-white text-sm">Active Protocols</h3>
+                <Activity className="text-white w-5 h-5" />
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-white">
                 {ecosystemStats?.activeProtocols || "2"}
               </div>
               <div className="text-sm text-gray-400 mt-2">
@@ -206,15 +206,15 @@ export default function Analytics() {
               </div>
             </Card>
 
-            <Card className="crypto-card p-6 border">
+            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Total Transactions</h3>
-                <TrendingUp className="text-crypto-blue w-5 h-5" />
+                <h3 className="text-white text-sm">Total Transactions</h3>
+                <TrendingUp className="text-white w-5 h-5" />
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-white">
                 {ecosystemStats?.totalTransactions ? formatNumber(ecosystemStats.totalTransactions) : "45.7K"}
               </div>
-              <div className="text-sm text-crypto-green mt-2 flex items-center">
+              <div className="text-sm text-green-300 mt-2 flex items-center">
                 <ArrowUpRight className="w-4 h-4 mr-1" />
                 +23.1% today
               </div>
