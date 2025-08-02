@@ -253,18 +253,52 @@ export function Staking() {
               </Button>
             </div>
 
-            <div className="space-y-4">
-              {mockStakingPools.map((pool) => (
-                <Card key={pool.id} className="p-6 border border-crypto-border/40 bg-gradient-to-r from-crypto-blue/5 to-crypto-purple/5 hover:from-crypto-blue/10 hover:to-crypto-purple/10 transition-all duration-200">
+            <div className="space-y-6">
+              {mockStakingPools.map((pool, index) => {
+                // Different color schemes for each pool
+                const colorSchemes = [
+                  {
+                    gradient: 'from-blue-500/20 to-cyan-500/20',
+                    hoverGradient: 'hover:from-blue-500/30 hover:to-cyan-500/30',
+                    border: 'border-blue-500/50',
+                    icon: 'from-blue-500 to-cyan-500',
+                    badge: 'bg-blue-500/20 text-blue-300'
+                  },
+                  {
+                    gradient: 'from-emerald-500/20 to-teal-500/20',
+                    hoverGradient: 'hover:from-emerald-500/30 hover:to-teal-500/30',
+                    border: 'border-emerald-500/50',
+                    icon: 'from-emerald-500 to-teal-500',
+                    badge: 'bg-emerald-500/20 text-emerald-300'
+                  },
+                  {
+                    gradient: 'from-purple-500/20 to-pink-500/20',
+                    hoverGradient: 'hover:from-purple-500/30 hover:to-pink-500/30',
+                    border: 'border-purple-500/50',
+                    icon: 'from-purple-500 to-pink-500',
+                    badge: 'bg-purple-500/20 text-purple-300'
+                  },
+                  {
+                    gradient: 'from-amber-500/20 to-orange-500/20',
+                    hoverGradient: 'hover:from-amber-500/30 hover:to-orange-500/30',
+                    border: 'border-amber-500/50',
+                    icon: 'from-amber-500 to-orange-500',
+                    badge: 'bg-amber-500/20 text-amber-300'
+                  }
+                ];
+                const scheme = colorSchemes[index % colorSchemes.length];
+                
+                return (
+                <Card key={pool.id} className={`p-6 border ${scheme.border} bg-gradient-to-r ${scheme.gradient} ${scheme.hoverGradient} transition-all duration-300 backdrop-blur-sm`}>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-crypto-blue to-crypto-purple rounded-full flex items-center justify-center">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${scheme.icon} rounded-full flex items-center justify-center shadow-lg`}>
                         <Lock className="w-6 h-6 text-white" />
                       </div>
                       <div>
                         <div className="flex items-center space-x-2">
                           <h3 className="text-lg font-semibold">{pool.name}</h3>
-                          <Badge variant="outline" className="border-crypto-green/30 text-crypto-green">
+                          <Badge className={`${scheme.badge} border-0 font-semibold shadow-sm`}>
                             {pool.apy}% APY
                           </Badge>
                         </div>
@@ -290,7 +324,7 @@ export function Staking() {
                     </div>
                   </div>
 
-                  <Separator className="my-4" />
+                  <Separator className="my-4 bg-white/20" />
 
                   <Tabs defaultValue="stake" className="w-full">
                     <TabsList className="grid grid-cols-3 w-full max-w-md">
@@ -323,7 +357,7 @@ export function Staking() {
                             Min: {pool.minStake} OEC | Max: {formatNumber(pool.maxStake)} OEC
                           </div>
                         </div>
-                        <div className="bg-crypto-dark/50 p-4 rounded">
+                        <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
                           <div className="text-sm space-y-2">
                             <div className="flex justify-between">
                               <span>Estimated Daily Rewards:</span>
@@ -371,7 +405,7 @@ export function Staking() {
                             Available: {formatNumber(pool.userStaked)} OEC
                           </div>
                         </div>
-                        <div className="bg-crypto-dark/50 p-4 rounded">
+                        <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
                           <div className="text-sm space-y-2">
                             <div className="flex justify-between">
                               <span>You will receive:</span>
@@ -399,7 +433,7 @@ export function Staking() {
                     <TabsContent value="rewards" className="mt-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <div className="bg-crypto-dark/50 p-4 rounded">
+                          <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
                             <div className="text-center">
                               <div className="text-2xl font-bold text-crypto-green mb-2">
                                 {formatNumber(pool.userRewards)} OEC
@@ -422,7 +456,7 @@ export function Staking() {
                             </div>
                           </div>
                         </div>
-                        <div className="bg-crypto-dark/50 p-4 rounded">
+                        <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
                           <div className="text-sm space-y-2">
                             <div className="flex justify-between">
                               <span>Total Earned:</span>
@@ -450,7 +484,8 @@ export function Staking() {
                     </TabsContent>
                   </Tabs>
                 </Card>
-              ))}
+                );
+              })}
             </div>
           </Card>
         </div>
