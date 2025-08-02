@@ -2,7 +2,7 @@ import { useAccount, useBalance } from 'wagmi'
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink } from 'lucide-react'
+import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink, Droplets, Sprout, Gift } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { WalletConnect } from "@/components/wallet-connect"
@@ -18,6 +18,22 @@ interface TokenBalance {
   value?: number
 }
 
+interface PoolFarm {
+  id: string
+  protocol: string
+  type: 'pool' | 'farm'
+  pair: string
+  apr: number
+  tvl: number
+  userBalance: number
+  userValue: number
+  rewards?: {
+    token: string
+    amount: number
+    value: number
+  }[]
+}
+
 export function Portfolio() {
   const { address, isConnected } = useAccount()
   const [watchedTokens, setWatchedTokens] = useState<string[]>([
@@ -26,6 +42,49 @@ export function Portfolio() {
     '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d', // USDC
     '0x2170Ed0880ac9A755fd29B2688956BD959F933F8', // ETH
     '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', // BTCB
+  ])
+
+  // Mock pools/farms data - in real implementation, this would come from API
+  const [poolsFarms] = useState<PoolFarm[]>([
+    {
+      id: 'pancake-bnb-usdt',
+      protocol: 'PancakeSwap',
+      type: 'pool',
+      pair: 'BNB-USDT',
+      apr: 12.5,
+      tvl: 125000000,
+      userBalance: 0.45,
+      userValue: 156.78,
+      rewards: [
+        { token: 'CAKE', amount: 0.023, value: 0.068 }
+      ]
+    },
+    {
+      id: 'pancake-cake-farm',
+      protocol: 'PancakeSwap',
+      type: 'farm',
+      pair: 'CAKE-BNB',
+      apr: 28.3,
+      tvl: 89000000,
+      userBalance: 0.12,
+      userValue: 89.45,
+      rewards: [
+        { token: 'CAKE', amount: 0.087, value: 0.25 }
+      ]
+    },
+    {
+      id: 'venus-usdt',
+      protocol: 'Venus',
+      type: 'pool',
+      pair: 'USDT Supply',
+      apr: 5.8,
+      tvl: 450000000,
+      userBalance: 250,
+      userValue: 250.00,
+      rewards: [
+        { token: 'XVS', amount: 0.012, value: 0.084 }
+      ]
+    }
   ])
 
   // Get native BNB balance
@@ -62,6 +121,14 @@ export function Portfolio() {
   }, 0) || 0
 
   const bnbValue = bnbBalance && bnbBalance.value ? parseFloat(bnbBalance.formatted) * 300 : 0 // Approximate BNB price
+  
+  // Calculate pools/farms value
+  const poolsFarmsValue = poolsFarms.reduce((sum, item) => sum + item.userValue, 0)
+  
+  // Total rewards value
+  const totalRewardsValue = poolsFarms.reduce((sum, item) => {
+    return sum + (item.rewards?.reduce((rewardSum, reward) => rewardSum + reward.value, 0) || 0)
+  }, 0)
 
   if (!isConnected) {
     return (
@@ -100,10 +167,10 @@ export function Portfolio() {
               <DollarSign className="text-crypto-green w-5 h-5" />
             </div>
             <div className="text-2xl font-bold">
-              {formatPrice(totalValue + bnbValue)}
+              {formatPrice(totalValue + bnbValue + poolsFarmsValue)}
             </div>
             <div className="text-sm text-gray-400 mt-2">
-              Across {(tokenBalances?.length || 0) + 1} assets
+              Including {poolsFarms.length} DeFi positions
             </div>
           </Card>
 
@@ -231,6 +298,108 @@ export function Portfolio() {
               )}
             </div>
           )}
+        </Card>
+
+        {/* Pools & Farms */}
+        <Card className="crypto-card p-6 border mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold">Pools & Farms</h2>
+            <Button 
+              variant="outline" 
+              size="sm"
+              className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Position
+            </Button>
+          </div>
+
+          <div className="space-y-4">
+            {poolsFarms.map((item) => (
+              <div key={item.id} className="p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue to-crypto-purple rounded-full flex items-center justify-center">
+                      {item.type === 'pool' ? (
+                        <Droplets className="w-5 h-5 text-white" />
+                      ) : (
+                        <Sprout className="w-5 h-5 text-white" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium">{item.pair}</span>
+                        <span className="text-xs bg-crypto-blue/20 text-crypto-blue px-2 py-1 rounded">
+                          {item.type === 'pool' ? 'Pool' : 'Farm'}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-400">{item.protocol}</div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-medium">{formatPrice(item.userValue)}</div>
+                    <div className="text-sm text-gray-400">
+                      {item.type === 'pool' ? `${formatNumber(item.userBalance)} LP` : `${formatNumber(item.userBalance)} tokens`}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-3 border-t border-gray-700">
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">APR</div>
+                    <div className="text-sm font-medium text-crypto-green">
+                      {item.apr.toFixed(1)}%
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">TVL</div>
+                    <div className="text-sm">
+                      {formatPrice(item.tvl)}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-400 mb-1">Pending Rewards</div>
+                    <div className="text-sm">
+                      {item.rewards && item.rewards.length > 0 ? (
+                        <div className="flex items-center space-x-1">
+                          <Gift className="w-3 h-3 text-crypto-gold" />
+                          <span>{formatPrice(item.rewards.reduce((sum, r) => sum + r.value, 0))}</span>
+                        </div>
+                      ) : (
+                        <span>None</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="border-crypto-green/30 text-crypto-green hover:bg-crypto-green/10 text-xs"
+                    >
+                      Claim
+                    </Button>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10 text-xs"
+                    >
+                      Manage
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {poolsFarms.length === 0 && (
+              <div className="text-center py-8">
+                <Droplets className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-400 mb-2">No DeFi positions found</p>
+                <p className="text-sm text-gray-500">
+                  Add liquidity or stake tokens to see your pools and farms here
+                </p>
+              </div>
+            )}
+          </div>
         </Card>
         </div>
       </div>
