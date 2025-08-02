@@ -24,6 +24,7 @@ import { TokenInfoPanel } from "@/components/token-info-panel";
 import { TransactionsTable } from "@/components/transactions-table";
 import { HolderStatistics } from "@/components/holder-statistics";
 import { QuickActions } from "@/components/quick-actions";
+import { WalletConnect } from "@/components/wallet-connect";
 import { useTokenData } from "@/hooks/use-token-data";
 import { TONE_TOKEN_CONFIG } from "@shared/schema";
 
@@ -119,8 +120,8 @@ export default function Dashboard() {
           </nav>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-4">
-          {/* Future expandable sections will appear here */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <WalletConnect />
         </div>
       </aside>
 
