@@ -55,7 +55,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col overflow-hidden`}>
         <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
@@ -92,31 +92,38 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 p-4">
-          <nav>
-            <ul className="space-y-2">
-              {sidebarItems.map((item, index) => (
-                <li key={index}>
-                  <button 
-                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
-                      item.active 
-                        ? 'bg-crypto-blue text-black font-medium' 
-                        : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                    }`}
-                    title={sidebarCollapsed ? item.label : undefined}
-                  >
-                    <item.icon className="w-5 h-5 flex-shrink-0" />
-                    {!sidebarCollapsed && <span>{item.label}</span>}
-                    {sidebarCollapsed && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                        {item.label}
-                      </div>
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+        <div className="flex-1 flex flex-col">
+          <div className="sticky top-0 bg-[var(--crypto-card)] z-10 border-b border-[var(--crypto-border)]">
+            <nav className="p-4">
+              <ul className="space-y-2">
+                {sidebarItems.map((item, index) => (
+                  <li key={index}>
+                    <button 
+                      className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
+                        item.active 
+                          ? 'bg-crypto-blue text-black font-medium' 
+                          : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                      }`}
+                      title={sidebarCollapsed ? item.label : undefined}
+                    >
+                      <item.icon className="w-5 h-5 flex-shrink-0" />
+                      {!sidebarCollapsed && <span>{item.label}</span>}
+                      {sidebarCollapsed && (
+                        <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                          {item.label}
+                        </div>
+                      )}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4">
+            <div className="text-gray-500 text-sm">
+              <p>Future expandable sections for each menu item will appear here</p>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -130,34 +137,7 @@ export default function Dashboard() {
 
 
 
-      {/* Sticky Navigation Menu - Fixed to viewport with responsive positioning */}
-      <div className={`fixed z-40 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg p-2 shadow-lg ${
-        sidebarCollapsed 
-          ? 'top-20 left-20' 
-          : 'top-20 left-4 lg:left-72'
-      } transition-all duration-300`}>
-        <nav>
-          <ul className="space-y-1">
-            {sidebarItems.map((item, index) => (
-              <li key={index}>
-                <button 
-                  className={`p-2 rounded-md transition-colors group relative ${
-                    item.active 
-                      ? 'bg-crypto-blue text-black' 
-                      : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                  }`}
-                  title={item.label}
-                >
-                  <item.icon className="w-5 h-5" />
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                    {item.label}
-                  </div>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
