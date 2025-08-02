@@ -78,12 +78,13 @@ export class PancakeSwapApiService {
       // For now, generate some sample data points
       const now = Date.now();
       const points = this.getTimeframePoints(timeframe);
-      const basePrice = 0.0045;
+      // Use USDT price (~$1.00) as base for consistency with overview
+      const basePrice = 0.998;
       
       return Array.from({ length: points }, (_, i) => {
         const timestamp = now - (points - 1 - i) * this.getIntervalMs(timeframe);
-        const variation = (Math.random() - 0.5) * 0.0008;
-        const price = Math.max(0.001, basePrice + variation);
+        const variation = (Math.random() - 0.5) * 0.008;
+        const price = Math.max(0.99, basePrice + variation);
         
         return {
           timestamp: Math.floor(timestamp / 1000),
