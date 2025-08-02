@@ -11,6 +11,7 @@ import Analytics from "@/pages/analytics";
 import Swap from "@/pages/swap";
 import Staking from "@/pages/staking";
 import Governance from "@/pages/governance";
+import Learn from "@/pages/learn";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/swap" component={Swap} />
       <Route path="/staking" component={Staking} />
       <Route path="/governance" component={Governance} />
+      <Route path="/learn" component={Learn} />
       <Route component={NotFound} />
     </Switch>
   );

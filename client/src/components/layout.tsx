@@ -21,7 +21,8 @@ import {
   Vote,
   MessageCircle,
   ExternalLink,
-  Globe
+  Globe,
+  BookOpen
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -56,6 +57,10 @@ const pageInfo = {
   '/governance': {
     title: 'Governance',
     description: 'Participate in decentralized decision-making and protocol governance'
+  },
+  '/learn': {
+    title: 'Learn',
+    description: 'Educational resources about Oeconomia ecosystem and blockchain technology'
   }
 } as const;
 
@@ -163,6 +168,7 @@ export function Layout({ children }: LayoutProps) {
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
     { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
+    { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
   ];
 
   return (
