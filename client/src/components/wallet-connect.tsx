@@ -139,6 +139,14 @@ export function WalletConnect() {
                   <div className="text-xs text-gray-400">
                     {connector.name === 'MetaMask' && 'Browser extension wallet'}
                     {connector.name === 'Coinbase Wallet' && 'Coinbase wallet app'}
+                    {connector.name === 'WalletConnect' && 'Scan with mobile wallet'}
+                    {connector.name === 'Trust Wallet' && 'Mobile & browser wallet'}
+                    {connector.name === 'Rabby Wallet' && 'Multi-chain browser wallet'}
+                    {connector.name === 'OKX Wallet' && 'OKX exchange wallet'}
+                    {connector.name === 'Binance Wallet' && 'Binance Chain wallet'}
+                    {connector.name === 'Phantom Wallet' && 'Multi-chain wallet'}
+                    {connector.name === 'Safe Wallet' && 'Multi-sig smart wallet'}
+                    {connector.name === 'Injected' && 'Browser wallet extension'}
                   </div>
                 </div>
               </div>
@@ -148,7 +156,7 @@ export function WalletConnect() {
         
         <div className="mt-4 p-3 bg-[var(--crypto-dark)] rounded-lg">
           <p className="text-xs text-gray-400">
-            By connecting a wallet, you agree to the Terms of Service and Privacy Policy.
+            Supports MetaMask, Trust Wallet, Rabby, WalletConnect, Coinbase, OKX, Binance, Phantom, Safe, and other EVM wallets.
             Only connect wallets you trust with this application.
           </p>
         </div>
