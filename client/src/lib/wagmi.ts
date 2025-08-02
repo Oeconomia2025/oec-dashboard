@@ -3,7 +3,7 @@ import { bsc, bscTestnet } from 'wagmi/chains'
 import { coinbaseWallet, metaMask, walletConnect, injected } from 'wagmi/connectors'
 
 // WalletConnect project ID - users can get this from https://cloud.walletconnect.com/
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'demo-project-id'
+const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'f0b928a2e4e4b0e9b5e8a2f5e3e4b0e9'
 
 export const config = createConfig({
   chains: [bsc, bscTestnet],
@@ -14,9 +14,10 @@ export const config = createConfig({
       metadata: {
         name: 'Oeconomia Dashboard',
         description: 'Comprehensive cryptocurrency dashboard for OEC token tracking',
-        url: 'https://oeconomia.app',
-        icons: ['https://oeconomia.app/icon.png']
-      }
+        url: typeof window !== 'undefined' ? window.location.origin : 'https://oeconomia.app',
+        icons: ['https://github.com/replit.png']
+      },
+      showQrModal: true
     }),
     coinbaseWallet({
       appName: 'Oeconomia Dashboard',

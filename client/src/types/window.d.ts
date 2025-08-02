@@ -9,6 +9,11 @@ declare global {
       ethereum?: any;
     };
     safe?: any;
+    // Additional wallet providers
+    okx?: any;
+    binance?: any;
+    brave?: any;
+    coinbaseWalletExtension?: any;
   }
 }
 
