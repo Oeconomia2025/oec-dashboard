@@ -79,62 +79,13 @@ export function WalletConnect() {
 
   if (isConnected && address) {
     return (
-      <Card className="bg-gradient-to-br from-[var(--crypto-card)] to-[var(--crypto-dark)] border-crypto-blue/20 shadow-lg">
-        <CardContent className="p-3 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Wallet className="w-4 h-4 text-crypto-blue" />
-              <span className="text-sm font-mono">{formatAddress(address)}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={copyAddress}
-                className="h-6 w-6 p-0"
-              >
-                <Copy className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={openInExplorer}
-                className="h-6 w-6 p-0"
-              >
-                <ExternalLink className="w-3 h-3" />
-              </Button>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between text-xs">
-            {balance && (
-              <div>
-                <span className="text-gray-400">Balance: </span>
-                <span className="font-medium">
-                  {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
-                </span>
-              </div>
-            )}
-            
-            {chain && (
-              <div>
-                <span className="text-gray-400">Network: </span>
-                <span className="font-medium">{chain.name}</span>
-              </div>
-            )}
-          </div>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => disconnect()}
-            className="w-full h-7 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-300 text-xs"
-          >
-            <LogOut className="w-3 h-3 mr-1" />
-            Disconnect
-          </Button>
-        </CardContent>
-      </Card>
+      <Button 
+        onClick={() => disconnect()}
+        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white hover:text-white border-green-500 hover:border-green-400 border-2 shadow-lg transition-all duration-200 font-medium"
+      >
+        <Wallet className="w-4 h-4 mr-2" />
+        {formatAddress(address)}
+      </Button>
     )
   }
 
