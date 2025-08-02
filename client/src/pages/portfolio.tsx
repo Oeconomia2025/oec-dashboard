@@ -316,7 +316,7 @@ export function Portfolio() {
 
           <div className="space-y-4">
             {poolsFarms.map((item) => (
-              <div key={item.id} className="p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
+              <Card key={item.id} className="crypto-card p-4 border bg-[var(--crypto-card)]">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-4">
                     <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue to-crypto-purple rounded-full flex items-center justify-center">
@@ -387,7 +387,7 @@ export function Portfolio() {
                     </Button>
                   </div>
                 </div>
-              </div>
+              </Card>
             ))}
 
             {poolsFarms.length === 0 && (
