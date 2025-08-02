@@ -613,7 +613,7 @@ export function Governance() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {mockDelegates.map((delegate) => (
                   <Card key={delegate.address} className="crypto-card border hover:border-gray-600 transition-all duration-300">
-                    <CardContent className="p-6">
+                    <CardContent className="p-6 flex flex-col h-full">
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <h4 className="font-semibold text-white text-lg">{delegate.name}</h4>
@@ -645,24 +645,29 @@ export function Governance() {
                         </div>
                       </div>
                       
-                      <div className="flex space-x-2 mb-4">
-                        {delegate.twitter && (
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <ExternalLink className="w-4 h-4 mr-1" />
-                            Twitter
-                          </Button>
-                        )}
-                        {delegate.website && (
-                          <Button variant="outline" size="sm" className="flex-1">
-                            <ExternalLink className="w-4 h-4 mr-1" />
-                            Website
-                          </Button>
-                        )}
-                      </div>
+                      {/* Flexible space to push buttons to bottom */}
+                      <div className="flex-grow"></div>
                       
-                      <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700">
-                        Delegate to {delegate.name}
-                      </Button>
+                      <div className="space-y-3">
+                        <div className="flex space-x-2 h-9">
+                          {delegate.twitter && (
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <ExternalLink className="w-4 h-4 mr-1" />
+                              Twitter
+                            </Button>
+                          )}
+                          {delegate.website && (
+                            <Button variant="outline" size="sm" className="flex-1">
+                              <ExternalLink className="w-4 h-4 mr-1" />
+                              Website
+                            </Button>
+                          )}
+                        </div>
+                        
+                        <Button className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700">
+                          Delegate to {delegate.name}
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
