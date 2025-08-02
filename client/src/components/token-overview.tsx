@@ -50,9 +50,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Price Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 border-green-500 hover:from-green-500 hover:via-emerald-500 hover:to-green-600 transition-all duration-300 shadow-lg shadow-green-500/20">
+      <Card className="p-6 border bg-gradient-to-br from-green-600 via-emerald-600 to-green-700 dark:from-green-600 dark:via-emerald-600 dark:to-green-700 border-green-500 hover:from-green-500 hover:via-emerald-500 hover:to-green-600 transition-all duration-300 shadow-lg shadow-green-500/20">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-white dark:text-white text-sm font-medium">Current Price</h3>
+          <h3 className="text-white text-sm font-medium">Current Price</h3>
           <span className={`px-2 py-1 rounded text-xs font-medium ${
             tokenData.priceChangePercent24h >= 0 
               ? 'bg-white/20 text-white border border-white/30' 
@@ -72,7 +72,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Market Cap Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 dark:from-blue-600 dark:via-cyan-600 dark:to-blue-700 light:from-blue-400 light:via-cyan-400 light:to-blue-500 border-blue-500 hover:from-blue-500 hover:via-cyan-500 hover:to-blue-600 transition-all duration-300 shadow-lg shadow-blue-500/20">
+      <Card className="p-6 border bg-gradient-to-br from-blue-600 via-cyan-600 to-blue-700 dark:from-blue-600 dark:via-cyan-600 dark:to-blue-700 border-blue-500 hover:from-blue-500 hover:via-cyan-500 hover:to-blue-600 transition-all duration-300 shadow-lg shadow-blue-500/20">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white text-sm font-medium">Market Cap</h3>
           <BarChart3 className="text-white w-5 h-5" />
@@ -84,7 +84,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Volume Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 dark:from-amber-600 dark:via-orange-600 dark:to-amber-700 light:from-amber-400 light:via-orange-400 light:to-amber-500 border-amber-500 hover:from-amber-500 hover:via-orange-500 hover:to-amber-600 transition-all duration-300 shadow-lg shadow-amber-500/20">
+      <Card className="p-6 border bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700 dark:from-amber-600 dark:via-orange-600 dark:to-amber-700 border-amber-500 hover:from-amber-500 hover:via-orange-500 hover:to-amber-600 transition-all duration-300 shadow-lg shadow-amber-500/20">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white text-sm font-medium">24h Volume</h3>
           <ArrowUpDown className="text-white w-5 h-5" />
@@ -96,7 +96,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Liquidity Card */}
-      <Card className="crypto-card crypto-hover p-6 border bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 dark:from-purple-600 dark:via-pink-600 dark:to-purple-700 light:from-purple-400 light:via-pink-400 light:to-purple-500 border-purple-500 hover:from-purple-500 hover:via-pink-500 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/20">
+      <Card className="p-6 border bg-gradient-to-br from-purple-600 via-pink-600 to-purple-700 dark:from-purple-600 dark:via-pink-600 dark:to-purple-700 border-purple-500 hover:from-purple-500 hover:via-pink-500 hover:to-purple-600 transition-all duration-300 shadow-lg shadow-purple-500/20">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-white text-sm font-medium">Liquidity Pool</h3>
           <Droplets className="text-white w-5 h-5" />
