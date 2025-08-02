@@ -320,7 +320,7 @@ function SwapContent() {
               )}
 
               {/* From Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+              <div className="bg-[var(--crypto-dark)] rounded-lg rounded-b-none p-4 border border-[var(--crypto-border)] border-b-0 relative">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">
                     {activeTab === "Buy" ? "Buy" : activeTab === "Sell" ? "Sell" : "From"}
@@ -374,22 +374,22 @@ function SwapContent() {
                     ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
                   </div>
                 )}
-              </div>
-
-              {/* Swap Arrow - Overlapping and cutting through borders */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSwapTokens}
-                  className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
-                >
-                  <ArrowUpDown className="w-5 h-5 text-gray-400" />
-                </Button>
+                
+                {/* Swap Button positioned to break the border */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-1/2 z-30">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSwapTokens}
+                    className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                  >
+                    <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                  </Button>
+                </div>
               </div>
 
               {/* To Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+              <div className="bg-[var(--crypto-dark)] rounded-lg rounded-t-none p-4 border border-[var(--crypto-border)] border-t-0">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">
                     {activeTab === "Buy" ? "For" : activeTab === "Sell" ? "For" : "To"}
