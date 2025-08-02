@@ -70,7 +70,7 @@ export default function Analytics() {
       type: "Lending",
       status: 'active',
       icon: Coins,
-      gradient: "from-teal-600 to-blue-700",
+      gradient: "from-green-600 to-emerald-700",
       description: "Decentralized lending protocol for cross-chain assets",
       metrics: {
         health: "215%",
