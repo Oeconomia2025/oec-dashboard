@@ -55,8 +55,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
-        <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
+        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
               <img 
@@ -92,7 +92,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <nav className="p-4 sticky top-20 overflow-y-auto max-h-[calc(100vh-5rem)]">
+        <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-2">
             {sidebarItems.map((item, index) => (
               <li key={index}>
