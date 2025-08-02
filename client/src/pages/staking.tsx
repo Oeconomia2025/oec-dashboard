@@ -22,7 +22,15 @@ import {
   Info,
   Plus,
   Minus,
-  RefreshCw
+  RefreshCw,
+  Award,
+  Star,
+  Crown,
+  Zap,
+  Target,
+  Trophy,
+  Medal,
+  Flame
 } from "lucide-react";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useAccount } from "wagmi";
@@ -90,6 +98,116 @@ const mockUserStats = {
   activePositions: 3
 };
 
+// Achievement badges system
+const achievementBadges = [
+  {
+    id: 'first-stake',
+    name: 'First Stake',
+    description: 'Stake tokens for the first time',
+    icon: Star,
+    color: 'text-yellow-400',
+    bgColor: 'bg-yellow-400/20',
+    borderColor: 'border-yellow-400/50',
+    requirement: 'Stake any amount',
+    earned: true
+  },
+  {
+    id: 'diamond-hands',
+    name: 'Diamond Hands',
+    description: 'Stake for 30+ days continuously',
+    icon: Crown,
+    color: 'text-blue-400',
+    bgColor: 'bg-blue-400/20',
+    borderColor: 'border-blue-400/50',
+    requirement: '30 days staking',
+    earned: true
+  },
+  {
+    id: 'whale-staker',
+    name: 'Whale Staker',
+    description: 'Stake 10,000+ OEC tokens',
+    icon: Trophy,
+    color: 'text-purple-400',
+    bgColor: 'bg-purple-400/20',
+    borderColor: 'border-purple-400/50',
+    requirement: '10,000+ OEC staked',
+    earned: false
+  },
+  {
+    id: 'yield-farmer',
+    name: 'Yield Farmer',
+    description: 'Participate in all available pools',
+    icon: Target,
+    color: 'text-green-400',
+    bgColor: 'bg-green-400/20',
+    borderColor: 'border-green-400/50',
+    requirement: 'Stake in all 4 pools',
+    earned: false
+  },
+  {
+    id: 'reward-collector',
+    name: 'Reward Collector',
+    description: 'Claim 100+ OEC in rewards',
+    icon: Medal,
+    color: 'text-amber-400',
+    bgColor: 'bg-amber-400/20',
+    borderColor: 'border-amber-400/50',
+    requirement: '100+ OEC claimed',
+    earned: true
+  },
+  {
+    id: 'long-term-holder',
+    name: 'Long Term Holder',
+    description: 'Stake for 180+ days',
+    icon: Flame,
+    color: 'text-red-400',
+    bgColor: 'bg-red-400/20',
+    borderColor: 'border-red-400/50',
+    requirement: '180 days staking',
+    earned: false
+  }
+];
+
+// Pool-specific achievements
+const getPoolAchievements = (poolId: number, userStaked: number, stakingDays: number = 0) => {
+  const achievements = [];
+  
+  if (userStaked > 0) {
+    achievements.push({
+      id: `pool-${poolId}-participant`,
+      name: 'Pool Participant',
+      description: 'Active staker in this pool',
+      icon: CheckCircle,
+      color: 'text-green-400',
+      earned: true
+    });
+  }
+  
+  if (userStaked >= 1000) {
+    achievements.push({
+      id: `pool-${poolId}-high-staker`,
+      name: 'High Staker',
+      description: '1,000+ OEC staked',
+      icon: Award,
+      color: 'text-blue-400',
+      earned: true
+    });
+  }
+  
+  if (stakingDays >= 30) {
+    achievements.push({
+      id: `pool-${poolId}-veteran`,
+      name: 'Pool Veteran',
+      description: '30+ days in pool',
+      icon: Crown,
+      color: 'text-purple-400',
+      earned: true
+    });
+  }
+  
+  return achievements;
+};
+
 export function Staking() {
   const { isConnected } = useAccount();
   const [selectedPool, setSelectedPool] = useState<number | null>(null);
@@ -115,8 +233,26 @@ export function Staking() {
     setTimeout(() => {
       setIsStaking(false);
       setStakeAmount("");
+      // Check for new achievements
+      checkForNewAchievements(poolId, parseFloat(stakeAmount));
       // Show success message
     }, 2000);
+  };
+
+  const checkForNewAchievements = (poolId: number, amount: number) => {
+    // This would integrate with smart contract to update achievement status
+    // For now, just log potential achievements
+    console.log(`Checking achievements for pool ${poolId} with stake amount ${amount}`);
+    
+    // Example: Check if user earned "First Stake" badge
+    if (amount > 0) {
+      console.log('Achievement unlocked: First Stake!');
+    }
+    
+    // Example: Check if user earned "High Staker" badge
+    if (amount >= 1000) {
+      console.log('Achievement unlocked: High Staker!');
+    }
   };
 
   const handleUnstake = async (poolId: number) => {
@@ -224,6 +360,60 @@ export function Staking() {
             </Card>
           </div>
 
+          {/* Achievement Badges Section */}
+          <Card className="crypto-card p-6 border mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-2">
+                <Award className="w-6 h-6 text-crypto-gold" />
+                <h2 className="text-xl font-semibold">Achievement Badges</h2>
+              </div>
+              <Badge className="bg-crypto-blue/20 text-crypto-blue border-0">
+                {achievementBadges.filter(badge => badge.earned).length}/{achievementBadges.length} Earned
+              </Badge>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {achievementBadges.map((badge) => {
+                const IconComponent = badge.icon;
+                return (
+                  <div 
+                    key={badge.id}
+                    className={`relative p-4 rounded-lg border transition-all duration-200 ${
+                      badge.earned 
+                        ? `${badge.bgColor} ${badge.borderColor} hover:scale-105` 
+                        : 'bg-gray-800/50 border-gray-600/50 opacity-60'
+                    }`}
+                  >
+                    <div className="text-center">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 ${
+                        badge.earned ? badge.bgColor : 'bg-gray-700/50'
+                      }`}>
+                        <IconComponent className={`w-6 h-6 ${badge.earned ? badge.color : 'text-gray-500'}`} />
+                      </div>
+                      <h3 className={`text-sm font-medium mb-1 ${badge.earned ? 'text-white' : 'text-gray-500'}`}>
+                        {badge.name}
+                      </h3>
+                      <p className={`text-xs ${badge.earned ? 'text-gray-300' : 'text-gray-600'}`}>
+                        {badge.description}
+                      </p>
+                      <p className={`text-xs mt-1 ${badge.earned ? 'text-crypto-green' : 'text-gray-500'}`}>
+                        {badge.earned ? '✓ Earned' : badge.requirement}
+                      </p>
+                    </div>
+                    
+                    {badge.earned && (
+                      <div className="absolute -top-2 -right-2">
+                        <div className="w-6 h-6 bg-crypto-green rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
           {/* Development Notice */}
           <Card className="crypto-card p-4 border border-amber-500/40 bg-amber-500/5 mb-8">
             <div className="flex items-start space-x-3">
@@ -287,6 +477,7 @@ export function Staking() {
                   }
                 ];
                 const scheme = colorSchemes[index % colorSchemes.length];
+                const poolAchievements = getPoolAchievements(pool.id, pool.userStaked, 45); // Mock 45 days staking
                 
                 return (
                 <Card key={pool.id} className={`p-6 border ${scheme.border} bg-gradient-to-r ${scheme.gradient} ${scheme.hoverGradient} transition-all duration-300 backdrop-blur-sm`}>
@@ -323,6 +514,34 @@ export function Staking() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Pool Achievements */}
+                  {poolAchievements.length > 0 && (
+                    <div className="mb-4">
+                      <div className="flex items-center space-x-2 mb-3">
+                        <Award className="w-4 h-4 text-crypto-gold" />
+                        <span className="text-sm font-medium text-crypto-gold">Pool Achievements</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {poolAchievements.map((achievement) => {
+                          const AchievementIcon = achievement.icon;
+                          return (
+                            <div 
+                              key={achievement.id}
+                              className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs border ${
+                                achievement.earned
+                                  ? 'bg-green-500/20 border-green-500/50 text-green-300'
+                                  : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
+                              }`}
+                            >
+                              <AchievementIcon className="w-3 h-3" />
+                              <span>{achievement.name}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
 
                   <Separator className="my-4 bg-white/20" />
 
