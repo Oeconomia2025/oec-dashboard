@@ -12,7 +12,8 @@ import {
   FileText,
   Zap,
   ArrowUpRight,
-  Construction
+  Construction,
+  Vote
 } from "lucide-react";
 import { Layout } from "@/components/layout";
 import { useQuery } from "@tanstack/react-query";
@@ -35,6 +36,12 @@ interface ProtocolData {
       ALUD: string;
       ALUR: string;
     };
+    stakers?: number;
+    delegates?: number;
+    proposals?: number;
+    activeVotes?: number;
+    totalStaked?: string;
+    votingPower?: string;
   };
   icon: any;
   gradient: string;
@@ -116,6 +123,23 @@ export default function Analytics() {
       icon: FileText,
       gradient: "from-orange-600 to-red-700",
       description: "No-code smart contract deployment and management platform"
+    },
+    {
+      name: "Oeconomia",
+      type: "Governance",
+      status: 'active',
+      icon: Vote,
+      gradient: "from-indigo-600 to-purple-700",
+      description: "Decentralized governance protocol for ecosystem decisions and proposals",
+      metrics: {
+        activeUsers: 1247,
+        stakers: 892,
+        delegates: 156,
+        proposals: 23,
+        activeVotes: 4,
+        totalStaked: "$12,450,890",
+        votingPower: "85.2%"
+      }
     }
   ];
 
@@ -123,8 +147,8 @@ export default function Analytics() {
     queryKey: ['/api/ecosystem-stats'],
     queryFn: () => ({
       totalValueLocked: "$156,789,123",
-      totalUsers: 3247,
-      activeProtocols: 2,
+      totalUsers: 4139,
+      activeProtocols: 3,
       totalTransactions: 45672
     })
   });
@@ -198,7 +222,7 @@ export default function Analytics() {
           </div>
 
           {/* Protocol Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
             {protocolsData.map((protocol, index) => {
               const IconComponent = protocol.icon;
               return (
@@ -251,6 +275,48 @@ export default function Analytics() {
                           <div className="flex justify-between items-center">
                             <span className="text-blue-100">Borrowed</span>
                             <span className="font-bold">{formatCurrency(protocol.metrics.borrowed)}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.stakers && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Stakers</span>
+                            <span className="font-bold">{formatNumber(protocol.metrics.stakers)}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.delegates && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Delegates</span>
+                            <span className="font-bold">{formatNumber(protocol.metrics.delegates)}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.proposals && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Total Proposals</span>
+                            <span className="font-bold">{protocol.metrics.proposals}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.activeVotes && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Active Votes</span>
+                            <span className="font-bold">{protocol.metrics.activeVotes}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.totalStaked && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Total Staked</span>
+                            <span className="font-bold">{formatCurrency(protocol.metrics.totalStaked)}</span>
+                          </div>
+                        )}
+                        
+                        {protocol.metrics.votingPower && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-blue-100">Voting Power</span>
+                            <span className="font-bold">{protocol.metrics.votingPower}</span>
                           </div>
                         )}
 
