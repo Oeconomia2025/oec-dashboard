@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "npm install --include=dev && npm run build && cp -r dist/public/* . && cp dist/index.js api/index.js",
+  "buildCommand": "./build.sh",
   "functions": {
     "api/index.js": {
       "runtime": "@vercel/node"
