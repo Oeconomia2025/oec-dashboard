@@ -337,7 +337,7 @@ function SwapContent() {
                     value={fromAmount}
                     onChange={(e) => setFromAmount(e.target.value)}
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none text-3xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
+                    className="flex-1 bg-transparent border-none text-4xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
                     style={{ padding: 0, margin: 0 }}
                   />
                   <Select value={fromToken?.symbol || ""} onValueChange={(value) => {
@@ -403,7 +403,7 @@ function SwapContent() {
                     value={quote?.outputAmount || ""}
                     readOnly
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none text-3xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
+                    className="flex-1 bg-transparent border-none text-4xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
                     style={{ padding: 0, margin: 0 }}
                   />
                   <Select value={toToken?.symbol || ""} onValueChange={(value) => {
