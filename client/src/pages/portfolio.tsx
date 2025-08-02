@@ -67,7 +67,7 @@ export function Portfolio() {
     return (
       <Layout>
         <div className="p-8">
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="text-center py-16">
               <Wallet className="w-16 h-16 text-crypto-blue mx-auto mb-6" />
               <h1 className="text-3xl font-bold mb-4">Portfolio</h1>
@@ -85,7 +85,7 @@ export function Portfolio() {
   return (
     <Layout>
       <div className="p-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Portfolio</h1>

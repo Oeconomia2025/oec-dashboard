@@ -278,12 +278,13 @@ function SwapContent() {
 
   return (
     <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">Token Swap</h1>
-        <p className="text-gray-400">Trade tokens instantly on the Oeconomia ecosystem</p>
-      </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-2">Token Swap</h1>
+          <p className="text-gray-400">Trade tokens instantly on the Oeconomia ecosystem</p>
+        </div>
 
-      <div className={`grid gap-6 ${showChart ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
+        <div className={`grid gap-6 ${showChart ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
         {/* Main Swap Interface */}
         <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
           <Card className="crypto-card border h-full">
@@ -836,6 +837,7 @@ function SwapContent() {
           </div>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
