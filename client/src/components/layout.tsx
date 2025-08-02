@@ -28,32 +28,39 @@ export function Layout({ children }: LayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
+  const lockedCollapsedStateRef = useRef<boolean | null>(null);
 
   // Monitor collapsed state changes and prevent unwanted expansion during navigation
   useEffect(() => {
-    if (isNavigatingRef.current && !sidebarCollapsed) {
-      // If we're navigating and sidebar got expanded, force it back to collapsed
-      console.log('useEffect detected expansion during navigation, forcing collapse');
-      setSidebarCollapsed(true);
+    // If we have a locked state during navigation, enforce it
+    if (lockedCollapsedStateRef.current !== null && sidebarCollapsed !== lockedCollapsedStateRef.current) {
+      console.log('Enforcing locked collapsed state:', lockedCollapsedStateRef.current);
+      setSidebarCollapsed(lockedCollapsedStateRef.current);
     }
   }, [sidebarCollapsed]);
 
-  // Clear navigation flag when location changes
+  // Clear navigation flag and unlock state when location changes
   useEffect(() => {
     if (isNavigatingRef.current) {
       setTimeout(() => {
         isNavigatingRef.current = false;
+        lockedCollapsedStateRef.current = null; // Unlock the state
+        console.log('Navigation completed, unlocking state');
       }, 100);
     }
   }, [location]);
 
   const handleNavigation = (path: string) => {
-    // Mark that we're navigating
-    isNavigatingRef.current = true;
+    // Store and lock the current collapsed state BEFORE any navigation
+    const wasCollapsed = sidebarCollapsed;
+    console.log('Navigation clicked, current collapsed state:', wasCollapsed);
     
-    // Store the current collapsed state
-    const currentCollapsed = sidebarCollapsed;
-    console.log('Navigation clicked, current collapsed state:', currentCollapsed);
+    // Lock the collapsed state during navigation
+    if (window.innerWidth >= 1024) {
+      lockedCollapsedStateRef.current = wasCollapsed;
+      isNavigatingRef.current = true;
+      console.log('Locking collapsed state to:', wasCollapsed);
+    }
     
     // Navigate to the path
     navigate(path);
@@ -61,13 +68,6 @@ export function Layout({ children }: LayoutProps) {
     // On mobile, close the sidebar
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
-    } else if (currentCollapsed) {
-      // On desktop, if it was collapsed, ensure it stays collapsed
-      setTimeout(() => {
-        console.log('Ensuring sidebar stays collapsed after navigation');
-        setSidebarCollapsed(true);
-        isNavigatingRef.current = false;
-      }, 50);
     }
   };
 
