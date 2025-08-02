@@ -437,26 +437,6 @@ function SwapContent() {
                 )}
               </div>
 
-              {/* Quote and Trade Information */}
-              {quote && (
-                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Exchange Rate</span>
-                    <span className="text-white">
-                      1 {fromToken?.symbol} = {formatNumber(quote.exchangeRate, 6)} {toToken?.symbol}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Price Impact</span>
-                    <span className="text-green-400">&lt; 0.01%</span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Network Fee</span>
-                    <span className="text-white">~$2.50</span>
-                  </div>
-                </div>
-              )}
-
               {/* Swap Button */}
               <Button
                 onClick={handleSwapExecution}
@@ -476,6 +456,26 @@ function SwapContent() {
                   `${activeTab} ${fromToken.symbol}`
                 )}
               </Button>
+
+              {/* Quote and Trade Information */}
+              {quote && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Exchange Rate</span>
+                    <span className="text-white">
+                      1 {fromToken?.symbol} = {formatNumber(quote.exchangeRate, 6)} {toToken?.symbol}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Price Impact</span>
+                    <span className="text-green-400">&lt; 0.01%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Network Fee</span>
+                    <span className="text-white">~$2.50</span>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
