@@ -337,7 +337,7 @@ function SwapContent() {
                     value={fromAmount}
                     onChange={(e) => setFromAmount(e.target.value)}
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                     style={{ 
                       padding: 0, 
                       margin: 0, 
@@ -412,7 +412,7 @@ function SwapContent() {
                     value={quote?.outputAmount || ""}
                     readOnly
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                     style={{ 
                       padding: 0, 
                       margin: 0, 
