@@ -92,38 +92,10 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto">
-          <div className="sticky top-0 bg-[var(--crypto-card)] z-10 p-4">
-            <nav>
-              <ul className="space-y-2">
-                {sidebarItems.map((item, index) => (
-                  <li key={index}>
-                    <button 
-                      className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
-                        item.active 
-                          ? 'bg-crypto-blue text-black font-medium' 
-                          : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                      }`}
-                      title={sidebarCollapsed ? item.label : undefined}
-                    >
-                      <item.icon className="w-5 h-5 flex-shrink-0" />
-                      {!sidebarCollapsed && <span>{item.label}</span>}
-                      {sidebarCollapsed && (
-                        <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                          {item.label}
-                        </div>
-                      )}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          {/* Add some content below to demonstrate scrolling */}
-          <div className="p-4 space-y-4">
-            {Array.from({ length: 20 }, (_, i) => (
-              <div key={i} className="h-12 bg-[var(--crypto-dark)] rounded opacity-20"></div>
-            ))}
+        <div className="flex-1 p-4">
+          <div className="text-center text-gray-500 text-sm">
+            <p>Navigation menu is now floating</p>
+            <p className="mt-2">Fixed position for easy access</p>
           </div>
         </div>
       </aside>
@@ -135,6 +107,31 @@ export default function Dashboard() {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
+      {/* Floating Navigation Menu - Always visible and sticky */}
+      <div className="fixed top-20 left-4 z-50 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg p-2 shadow-xl">
+        <nav>
+          <ul className="space-y-1">
+            {sidebarItems.map((item, index) => (
+              <li key={index}>
+                <button 
+                  className={`p-2 rounded-md transition-colors group relative ${
+                    item.active 
+                      ? 'bg-crypto-blue text-black' 
+                      : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                  }`}
+                  title={item.label}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {item.label}
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
