@@ -92,30 +92,32 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <ul className="space-y-2">
-            {sidebarItems.map((item, index) => (
-              <li key={index}>
-                <button 
-                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
-                    item.active 
-                      ? 'bg-crypto-blue text-black font-medium' 
-                      : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                  }`}
-                  title={sidebarCollapsed ? item.label : undefined}
-                >
-                  <item.icon className="w-5 h-5 flex-shrink-0" />
-                  {!sidebarCollapsed && <span>{item.label}</span>}
-                  {sidebarCollapsed && (
-                    <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                      {item.label}
-                    </div>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <div className="flex-1 overflow-y-auto">
+          <nav className="sticky top-0 p-4">
+            <ul className="space-y-2">
+              {sidebarItems.map((item, index) => (
+                <li key={index}>
+                  <button 
+                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
+                      item.active 
+                        ? 'bg-crypto-blue text-black font-medium' 
+                        : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                    }`}
+                    title={sidebarCollapsed ? item.label : undefined}
+                  >
+                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                    {sidebarCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        {item.label}
+                      </div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </aside>
 
       {/* Overlay for mobile */}
