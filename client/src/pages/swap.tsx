@@ -163,8 +163,8 @@ function SwapContent() {
   }, []);
 
   return (
-    <div className="container mx-auto px-6 py-8 max-w-4xl">
-      <div className="mb-8">
+    <div className="p-6">
+      <div className="mb-6">
         <h1 className="text-3xl font-bold text-white mb-2">Token Swap</h1>
         <p className="text-gray-400">Trade tokens instantly on the Oeconomia ecosystem</p>
       </div>
@@ -298,7 +298,7 @@ function SwapContent() {
               </div>
 
               {/* Swap Button */}
-              <div className="flex justify-center -my-2 relative z-10">
+              <div className="flex justify-center -my-4 relative z-10">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -310,7 +310,7 @@ function SwapContent() {
               </div>
 
               {/* To Token */}
-              <div className="mt-1">
+              <div className="-mt-2">
                 <label className="text-sm text-gray-400">To</label>
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
                   <CardContent className="p-4">
