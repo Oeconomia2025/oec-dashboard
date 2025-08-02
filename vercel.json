@@ -1,6 +1,3 @@
 {
-  "version": 2,
-  "buildCommand": "npm install --include=dev && npm run build && cp -r dist/public/. .",
-  "outputDirectory": ".",
-  "installCommand": "npm ci"
+  "version": 2
 }
