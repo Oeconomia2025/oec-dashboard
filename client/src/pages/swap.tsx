@@ -761,13 +761,15 @@ function SwapContent() {
                 onClick={() => selectToken(token)}
                 className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
               >
-                <div className="flex items-center space-x-3">
-                  <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full" />
-                  <div className="text-left">
-                    <div className="font-medium">{token.symbol}</div>
-                    <div className="text-sm text-gray-400">{token.name}</div>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center space-x-3">
+                    <img src={token.logo} alt={token.symbol} className="w-8 h-8 rounded-full" />
+                    <div className="text-left">
+                      <div className="font-medium">{token.symbol}</div>
+                      <div className="text-sm text-gray-400">{token.name}</div>
+                    </div>
                   </div>
-                  <div className="ml-auto text-right">
+                  <div className="text-right">
                     <div className="text-sm text-white">${formatNumber(token.price, 6)}</div>
                     <div className="text-xs text-gray-400">
                       Balance: {formatNumber(token.balance || 0, 2)}
