@@ -161,51 +161,60 @@ export function Portfolio() {
 
         {/* Portfolio Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="crypto-card p-6 border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-400 text-sm">Total Portfolio Value</h3>
-              <DollarSign className="text-crypto-green w-5 h-5" />
-            </div>
-            <div className="text-2xl font-bold">
-              {formatPrice(totalValue + bnbValue + poolsFarmsValue)}
-            </div>
-            <div className="text-sm text-gray-400 mt-2">
-              Including {poolsFarms.length} DeFi positions
+          <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-200 text-sm font-medium">Total Portfolio Value</h3>
+                <DollarSign className="text-gray-300 w-5 h-5" />
+              </div>
+              <div className="text-2xl font-bold text-white drop-shadow-sm">
+                {formatPrice(totalValue + bnbValue + poolsFarmsValue)}
+              </div>
+              <div className="text-sm text-gray-400 mt-2">
+                Including {poolsFarms.length} DeFi positions
+              </div>
             </div>
           </Card>
 
-          <Card className="crypto-card p-6 border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-400 text-sm">Wallet Address</h3>
-              <Wallet className="text-crypto-blue w-5 h-5" />
+          <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-200 text-sm font-medium">Wallet Address</h3>
+                <Wallet className="text-gray-300 w-5 h-5" />
+              </div>
+              <div className="text-lg font-mono text-white drop-shadow-sm">
+                {address ? formatAddress(address) : '---'}
+              </div>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="mt-2 text-crypto-blue hover:text-crypto-blue/80 p-0"
+                onClick={() => {
+                  if (address) {
+                    window.open(`https://bscscan.com/address/${address}`, '_blank')
+                  }
+                }}
+              >
+                View on BSCScan <ExternalLink className="w-3 h-3 ml-1" />
+              </Button>
             </div>
-            <div className="text-lg font-mono">
-              {address ? formatAddress(address) : '---'}
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="mt-2 text-crypto-blue hover:text-crypto-blue/80 p-0"
-              onClick={() => {
-                if (address) {
-                  window.open(`https://bscscan.com/address/${address}`, '_blank')
-                }
-              }}
-            >
-              View on BSCScan <ExternalLink className="w-3 h-3 ml-1" />
-            </Button>
           </Card>
 
-          <Card className="crypto-card p-6 border">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-gray-400 text-sm">Assets Tracked</h3>
-              <PieChart className="text-crypto-gold w-5 h-5" />
-            </div>
-            <div className="text-2xl font-bold">
-              {(tokenBalances?.length || 0) + 1}
-            </div>
-            <div className="text-sm text-gray-400 mt-2">
-              Including BNB
+          <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-200 text-sm font-medium">Assets Tracked</h3>
+                <PieChart className="text-gray-300 w-5 h-5" />
+              </div>
+              <div className="text-2xl font-bold text-white drop-shadow-sm">
+                {(tokenBalances?.length || 0) + 1}
+              </div>
+              <div className="text-sm text-gray-400 mt-2">
+                Including BNB
+              </div>
             </div>
           </Card>
         </div>

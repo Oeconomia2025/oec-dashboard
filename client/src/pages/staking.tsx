@@ -346,55 +346,67 @@ export function Staking() {
 
           {/* Staking Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="crypto-card p-6 border">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Total Staked</h3>
-                <Lock className="text-crypto-blue w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold">
-                {formatNumber(mockUserStats.totalStaked)} OEC
-              </div>
-              <div className="text-sm text-gray-400 mt-2">
-                {formatPrice(mockUserStats.totalStaked * 1.00)} value
-              </div>
-            </Card>
-
-            <Card className="crypto-card p-6 border">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Pending Rewards</h3>
-                <Gift className="text-crypto-green w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold">
-                {formatNumber(mockUserStats.totalRewards)} OEC
-              </div>
-              <div className="text-sm text-gray-400 mt-2">
-                {formatPrice(mockUserStats.totalRewards * 1.00)} value
+            <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Total Staked</h3>
+                  <Lock className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {formatNumber(mockUserStats.totalStaked)} OEC
+                </div>
+                <div className="text-sm text-gray-400 mt-2">
+                  {formatPrice(mockUserStats.totalStaked * 1.00)} value
+                </div>
               </div>
             </Card>
 
-            <Card className="crypto-card p-6 border">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Total Value</h3>
-                <DollarSign className="text-crypto-gold w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold">
-                {formatPrice(mockUserStats.totalValue)}
-              </div>
-              <div className="text-sm text-gray-400 mt-2">
-                Staked + Rewards
+            <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Pending Rewards</h3>
+                  <Gift className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {formatNumber(mockUserStats.totalRewards)} OEC
+                </div>
+                <div className="text-sm text-gray-400 mt-2">
+                  {formatPrice(mockUserStats.totalRewards * 1.00)} value
+                </div>
               </div>
             </Card>
 
-            <Card className="crypto-card p-6 border">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-400 text-sm">Active Positions</h3>
-                <Activity className="text-crypto-purple w-5 h-5" />
+            <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Total Value</h3>
+                  <DollarSign className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {formatPrice(mockUserStats.totalValue)}
+                </div>
+                <div className="text-sm text-gray-400 mt-2">
+                  Staked + Rewards
+                </div>
               </div>
-              <div className="text-2xl font-bold">
-                {mockUserStats.activePositions}
-              </div>
-              <div className="text-sm text-gray-400 mt-2">
-                Across {mockStakingPools.length} pools
+            </Card>
+
+            <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Active Positions</h3>
+                  <Activity className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {mockUserStats.activePositions}
+                </div>
+                <div className="text-sm text-gray-400 mt-2">
+                  Across {mockStakingPools.length} pools
+                </div>
               </div>
             </Card>
           </div>
