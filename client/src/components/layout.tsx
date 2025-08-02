@@ -85,7 +85,14 @@ export function Layout({ children }: LayoutProps) {
               {sidebarItems.map((item, index) => (
                 <li key={index}>
                   <button 
-                    onClick={() => navigate(item.path)}
+                    onClick={() => {
+                      navigate(item.path);
+                      // On mobile, close the sidebar after navigation
+                      if (window.innerWidth < 1024) {
+                        setSidebarOpen(false);
+                      }
+                      // On desktop, keep the collapsed state unchanged
+                    }}
                     className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
                       item.active 
                         ? 'bg-crypto-blue text-black font-medium' 
