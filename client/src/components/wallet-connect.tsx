@@ -110,8 +110,7 @@ export function WalletConnect() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          variant="outline" 
-          className="w-full bg-gradient-to-r from-crypto-blue/20 to-purple-500/20 border-crypto-blue/30 hover:from-crypto-blue/30 hover:to-purple-500/30 text-white hover:text-white transition-all duration-200"
+          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:text-white border-blue-500 hover:border-blue-400 border-2 shadow-lg transition-all duration-200 font-medium"
         >
           <Wallet className="w-4 h-4 mr-2" />
           Connect Wallet
