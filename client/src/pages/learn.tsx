@@ -252,7 +252,7 @@ export default function Learn() {
                 </p>
                 <Button 
                   className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700"
-                  onClick={() => window.open('https://oeconomia.tech/support', '_blank')}
+                  onClick={() => window.open('mailto:admin@oeconomia.io', '_blank')}
                 >
                   Contact Support
                 </Button>
