@@ -402,18 +402,22 @@ export function Staking() {
           {/* ROI Calculator Section */}
           <Card className="crypto-card p-6 border mb-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30">
             <div 
-              className="flex items-center justify-between cursor-pointer mb-6"
+              className="flex items-center justify-between cursor-pointer mb-6 hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200"
               onClick={() => setIsROIExpanded(!isROIExpanded)}
             >
               <div className="flex items-center space-x-2">
                 <Calculator className="w-6 h-6 text-crypto-blue" />
                 <h2 className="text-xl font-semibold">Interactive ROI Calculator</h2>
               </div>
-              <Button variant="ghost" size="sm" className="p-1 h-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="p-2 h-auto border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/40 transition-all duration-200"
+              >
                 {isROIExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                  <ChevronUp className="w-6 h-6 text-white" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                  <ChevronDown className="w-6 h-6 text-white" />
                 )}
               </Button>
             </div>
@@ -568,7 +572,7 @@ export function Staking() {
           {/* Achievement Badges Section */}
           <Card className="crypto-card p-6 border mb-8">
             <div 
-              className="flex items-center justify-between cursor-pointer mb-6"
+              className="flex items-center justify-between cursor-pointer mb-6 hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200"
               onClick={() => setIsAchievementsExpanded(!isAchievementsExpanded)}
             >
               <div className="flex items-center space-x-2">
@@ -578,11 +582,15 @@ export function Staking() {
                   {achievementBadges.filter(badge => badge.earned).length}/{achievementBadges.length} Earned
                 </Badge>
               </div>
-              <Button variant="ghost" size="sm" className="p-1 h-auto">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="p-2 h-auto border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/40 transition-all duration-200"
+              >
                 {isAchievementsExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                  <ChevronUp className="w-6 h-6 text-white" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                  <ChevronDown className="w-6 h-6 text-white" />
                 )}
               </Button>
             </div>
