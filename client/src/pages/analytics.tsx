@@ -165,58 +165,70 @@ export default function Analytics() {
 
           {/* Ecosystem Overview Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white text-sm">Total Value Locked</h3>
-                <DollarSign className="text-white w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold text-white">
-                {ecosystemStats?.totalValueLocked || "$156.8M"}
-              </div>
-              <div className="text-sm text-green-300 mt-2 flex items-center">
-                <ArrowUpRight className="w-4 h-4 mr-1" />
-                +12.4% this week
-              </div>
-            </Card>
-
-            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white text-sm">Total Users</h3>
-                <Users className="text-white w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold text-white">
-                {ecosystemStats?.totalUsers ? formatNumber(ecosystemStats.totalUsers) : "3,247"}
-              </div>
-              <div className="text-sm text-blue-300 mt-2 flex items-center">
-                <ArrowUpRight className="w-4 h-4 mr-1" />
-                +8.2% this month
+            <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-500 hover:border-gray-400 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Total Value Locked</h3>
+                  <DollarSign className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {ecosystemStats?.totalValueLocked || "$156.8M"}
+                </div>
+                <div className="text-sm text-green-300 mt-2 flex items-center">
+                  <ArrowUpRight className="w-4 h-4 mr-1" />
+                  +12.4% this week
+                </div>
               </div>
             </Card>
 
-            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white text-sm">Active Protocols</h3>
-                <Activity className="text-white w-5 h-5" />
-              </div>
-              <div className="text-2xl font-bold text-white">
-                {ecosystemStats?.activeProtocols || "2"}
-              </div>
-              <div className="text-sm text-gray-400 mt-2">
-                2 in development
+            <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-500 hover:border-gray-400 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Total Users</h3>
+                  <Users className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {ecosystemStats?.totalUsers ? formatNumber(ecosystemStats.totalUsers) : "3,247"}
+                </div>
+                <div className="text-sm text-blue-300 mt-2 flex items-center">
+                  <ArrowUpRight className="w-4 h-4 mr-1" />
+                  +8.2% this month
+                </div>
               </div>
             </Card>
 
-            <Card className="p-6 border bg-black border-gray-600 hover:border-gray-500 transition-all duration-300 shadow-lg shadow-black/50">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-white text-sm">Total Transactions</h3>
-                <TrendingUp className="text-white w-5 h-5" />
+            <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-500 hover:border-gray-400 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Active Protocols</h3>
+                  <Activity className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {ecosystemStats?.activeProtocols || "2"}
+                </div>
+                <div className="text-sm text-gray-400 mt-2">
+                  2 in development
+                </div>
               </div>
-              <div className="text-2xl font-bold text-white">
-                {ecosystemStats?.totalTransactions ? formatNumber(ecosystemStats.totalTransactions) : "45.7K"}
-              </div>
-              <div className="text-sm text-green-300 mt-2 flex items-center">
-                <ArrowUpRight className="w-4 h-4 mr-1" />
-                +23.1% today
+            </Card>
+
+            <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-500 hover:border-gray-400 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-gray-200 text-sm font-medium">Total Transactions</h3>
+                  <TrendingUp className="text-gray-300 w-5 h-5" />
+                </div>
+                <div className="text-2xl font-bold text-white drop-shadow-sm">
+                  {ecosystemStats?.totalTransactions ? formatNumber(ecosystemStats.totalTransactions) : "45.7K"}
+                </div>
+                <div className="text-sm text-green-300 mt-2 flex items-center">
+                  <ArrowUpRight className="w-4 h-4 mr-1" />
+                  +23.1% today
+                </div>
               </div>
             </Card>
           </div>
