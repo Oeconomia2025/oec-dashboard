@@ -6,6 +6,7 @@ import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink } from 'lu
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { WalletConnect } from "@/components/wallet-connect"
+import { Layout } from "@/components/layout"
 
 interface TokenBalance {
   address: string
@@ -64,29 +65,32 @@ export function Portfolio() {
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen bg-[var(--crypto-dark)] text-white p-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center py-16">
-            <Wallet className="w-16 h-16 text-crypto-blue mx-auto mb-6" />
-            <h1 className="text-3xl font-bold mb-4">Portfolio</h1>
-            <p className="text-gray-400 mb-8">Connect your wallet to view your token portfolio</p>
-            <div className="max-w-xs mx-auto">
-              <WalletConnect />
+      <Layout>
+        <div className="p-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center py-16">
+              <Wallet className="w-16 h-16 text-crypto-blue mx-auto mb-6" />
+              <h1 className="text-3xl font-bold mb-4">Portfolio</h1>
+              <p className="text-gray-400 mb-8">Connect your wallet to view your token portfolio</p>
+              <div className="max-w-xs mx-auto">
+                <WalletConnect />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Layout>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[var(--crypto-dark)] text-white p-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Portfolio</h1>
-          <p className="text-gray-400">Track your crypto assets and performance</p>
-        </div>
+    <Layout>
+      <div className="p-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Portfolio</h1>
+            <p className="text-gray-400">Track your crypto assets and performance</p>
+          </div>
 
         {/* Portfolio Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -228,7 +232,8 @@ export function Portfolio() {
             </div>
           )}
         </Card>
+        </div>
       </div>
-    </div>
+    </Layout>
   )
 }
