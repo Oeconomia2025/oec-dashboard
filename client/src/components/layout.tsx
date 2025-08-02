@@ -273,9 +273,9 @@ export function Layout({ children }: LayoutProps) {
               onClick={() => window.open('https://medium.com/@oeconomia2025', '_blank')}
             >
               <svg className="w-5 h-5 text-white group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="12" cy="12" r="2"/>
-                <circle cx="20" cy="12" r="1.5"/>
-                <circle cx="4" cy="12" r="2.5"/>
+                <circle cx="6" cy="12" r="4"/>
+                <ellipse cx="15" cy="12" rx="2.5" ry="4"/>
+                <ellipse cx="21" cy="12" rx="1.5" ry="3"/>
               </svg>
             </button>
             
