@@ -17,7 +17,10 @@ export const config = createConfig({
         url: typeof window !== 'undefined' ? window.location.origin : 'https://oeconomia.app',
         icons: ['https://github.com/replit.png']
       },
-      showQrModal: true
+      showQrModal: true,
+      qrModalOptions: {
+        themeMode: 'dark'
+      }
     }),
     coinbaseWallet({
       appName: 'Oeconomia Dashboard',

@@ -168,8 +168,23 @@ export function WalletConnect() {
               key={connector.uid}
               variant="outline"
               onClick={() => {
-                connect({ connector })
-                setIsOpen(false)
+                try {
+                  connect({ connector })
+                  setIsOpen(false)
+                  toast({
+                    title: "Connecting wallet",
+                    description: "Please check your wallet for connection request",
+                  })
+                } catch (error: any) {
+                  console.log("Wallet connection error:", error?.message)
+                  if (!error?.message?.includes("Proposal expired") && !error?.message?.includes("User rejected")) {
+                    toast({
+                      title: "Connection failed",
+                      description: error?.message || "Failed to connect wallet",
+                      variant: "destructive",
+                    })
+                  }
+                }
               }}
               disabled={isPending}
               className="flex-col justify-center items-center h-14 w-full border-gray-700 hover:border-crypto-blue/50 hover:bg-crypto-blue/5 transition-all duration-200 group p-1 bg-white/95 hover:bg-white"
