@@ -249,8 +249,8 @@ export function Layout({ children }: LayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
         {/* Sticky Header Navigation */}
-        <header className="sticky top-0 z-30 bg-gray-950 border-b border-gray-700 px-6 py-6 shadow-xl shadow-black/70">
-          <div className="flex items-center justify-between">
+        <header className="sticky top-0 z-30 bg-gray-950 border-b border-gray-700 px-6 h-20 flex items-center shadow-xl shadow-black/70">
+          <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
