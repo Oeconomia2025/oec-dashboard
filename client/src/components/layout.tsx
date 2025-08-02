@@ -228,10 +228,7 @@ export function Layout({ children }: LayoutProps) {
                 <Menu className="w-5 h-5" />
               </Button>
               
-              <div className="flex items-center space-x-2">
-                <Activity className="w-5 h-5 text-crypto-green" />
-                <span className="font-medium">Live</span>
-              </div>
+
             </div>
             
             <div className="flex items-center space-x-4">
