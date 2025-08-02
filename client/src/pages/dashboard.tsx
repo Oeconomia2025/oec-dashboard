@@ -92,42 +92,31 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="flex-1 relative">
-          <div className="h-full overflow-y-auto">
-            <div className="sticky top-0 bg-[var(--crypto-card)] z-10 p-4">
-              <nav>
-                <ul className="space-y-2">
-                  {sidebarItems.map((item, index) => (
-                    <li key={index}>
-                      <button 
-                        className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
-                          item.active 
-                            ? 'bg-crypto-blue text-black font-medium' 
-                            : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                        }`}
-                        title={sidebarCollapsed ? item.label : undefined}
-                      >
-                        <item.icon className="w-5 h-5 flex-shrink-0" />
-                        {!sidebarCollapsed && <span>{item.label}</span>}
-                        {sidebarCollapsed && (
-                          <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                            {item.label}
-                          </div>
-                        )}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </div>
-            
-            {/* Future expandable sections can go here */}
-            <div className="p-4 space-y-4">
-              <div className="text-gray-500 text-sm">
-                <p>Additional menu sections will expand here when selected</p>
-              </div>
-            </div>
-          </div>
+        <div className="flex-1 p-4">
+          <nav>
+            <ul className="space-y-2">
+              {sidebarItems.map((item, index) => (
+                <li key={index}>
+                  <button 
+                    className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
+                      item.active 
+                        ? 'bg-crypto-blue text-black font-medium' 
+                        : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                    }`}
+                    title={sidebarCollapsed ? item.label : undefined}
+                  >
+                    <item.icon className="w-5 h-5 flex-shrink-0" />
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                    {sidebarCollapsed && (
+                      <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                        {item.label}
+                      </div>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </aside>
 
@@ -140,6 +129,31 @@ export default function Dashboard() {
       )}
 
 
+
+      {/* Sticky Navigation Menu - Fixed to viewport */}
+      <div className="fixed top-20 left-4 z-40 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg p-2 shadow-lg">
+        <nav>
+          <ul className="space-y-1">
+            {sidebarItems.map((item, index) => (
+              <li key={index}>
+                <button 
+                  className={`p-2 rounded-md transition-colors group relative ${
+                    item.active 
+                      ? 'bg-crypto-blue text-black' 
+                      : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                  }`}
+                  title={item.label}
+                >
+                  <item.icon className="w-5 h-5" />
+                  <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                    {item.label}
+                  </div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
