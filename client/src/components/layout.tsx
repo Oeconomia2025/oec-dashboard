@@ -134,7 +134,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background text-foreground flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-card border-r border-border transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-card border-r border-border transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col shadow-xl shadow-black/70`}>
         <div className="sticky top-0 z-10 bg-card flex items-center justify-between h-16 px-4 border-b border-border">
           <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
@@ -215,7 +215,7 @@ export function Layout({ children }: LayoutProps) {
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
         {/* Sticky Header Navigation */}
-        <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-4">
+        <header className="sticky top-0 z-30 bg-card border-b border-border px-6 py-4 shadow-xl shadow-black/70">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button
