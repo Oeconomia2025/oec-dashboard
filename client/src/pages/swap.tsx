@@ -343,7 +343,10 @@ function SwapContent() {
                       margin: 0, 
                       fontSize: '2.25rem',
                       lineHeight: '1',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      outline: 'none',
+                      border: 'none',
+                      boxShadow: 'none'
                     }}
                   />
                   <Select value={fromToken?.symbol || ""} onValueChange={(value) => {
@@ -415,7 +418,10 @@ function SwapContent() {
                       margin: 0, 
                       fontSize: '2.25rem',
                       lineHeight: '1',
-                      fontWeight: 'bold'
+                      fontWeight: 'bold',
+                      outline: 'none',
+                      border: 'none',
+                      boxShadow: 'none'
                     }}
                   />
                   <Select value={toToken?.symbol || ""} onValueChange={(value) => {
