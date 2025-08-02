@@ -80,13 +80,7 @@ export function WalletConnect() {
   if (isConnected && address) {
     return (
       <Card className="bg-gradient-to-br from-[var(--crypto-card)] to-[var(--crypto-dark)] border-crypto-blue/20 shadow-lg">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium text-crypto-blue flex items-center">
-            <Wallet className="w-4 h-4 mr-2" />
-            Connected Wallet
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="p-3 space-y-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <Wallet className="w-4 h-4 text-crypto-blue" />
@@ -97,7 +91,7 @@ export function WalletConnect() {
                 variant="ghost"
                 size="sm"
                 onClick={copyAddress}
-                className="h-8 w-8 p-0"
+                className="h-6 w-6 p-0"
               >
                 <Copy className="w-3 h-3" />
               </Button>
@@ -105,36 +99,38 @@ export function WalletConnect() {
                 variant="ghost"
                 size="sm"
                 onClick={openInExplorer}
-                className="h-8 w-8 p-0"
+                className="h-6 w-6 p-0"
               >
                 <ExternalLink className="w-3 h-3" />
               </Button>
             </div>
           </div>
           
-          {balance && (
-            <div className="text-sm">
-              <span className="text-gray-400">Balance: </span>
-              <span className="font-medium">
-                {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
-              </span>
-            </div>
-          )}
-          
-          {chain && (
-            <div className="text-sm">
-              <span className="text-gray-400">Network: </span>
-              <span className="font-medium">{chain.name}</span>
-            </div>
-          )}
+          <div className="flex items-center justify-between text-xs">
+            {balance && (
+              <div>
+                <span className="text-gray-400">Balance: </span>
+                <span className="font-medium">
+                  {parseFloat(balance.formatted).toFixed(4)} {balance.symbol}
+                </span>
+              </div>
+            )}
+            
+            {chain && (
+              <div>
+                <span className="text-gray-400">Network: </span>
+                <span className="font-medium">{chain.name}</span>
+              </div>
+            )}
+          </div>
           
           <Button
             variant="outline"
             size="sm"
             onClick={() => disconnect()}
-            className="w-full mt-3 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-300"
+            className="w-full h-7 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50 hover:text-red-300 text-xs"
           >
-            <LogOut className="w-4 h-4 mr-2" />
+            <LogOut className="w-3 h-3 mr-1" />
             Disconnect
           </Button>
         </CardContent>
