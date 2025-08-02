@@ -4,6 +4,18 @@
 
 This is a cryptocurrency token dashboard application built for the "Oeconomia" (OEC) token on the BSC (Binance Smart Chain) network. The application provides comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap.
 
+## Recent Changes (August 2025)
+
+### Navigation System Enhancement
+- **Issue Resolved**: Sidebar navigation was expanding unexpectedly when clicking navigation icons while in collapsed state
+- **Solution Implemented**: Multi-layered state protection system with localStorage persistence and navigation state locking
+- **Technical Details**: 
+  - Added state locking mechanism during navigation using React refs
+  - Implemented localStorage synchronization to prevent state resets
+  - Enhanced useEffect monitoring to enforce locked states
+  - Added immediate post-navigation state restoration callbacks
+- **Result**: Sidebar now maintains collapsed state consistently across all page navigation
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
