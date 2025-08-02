@@ -50,9 +50,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {/* Price Card */}
-      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black/60 via-black/30 to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
@@ -76,9 +75,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Market Cap Card */}
-      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black/60 via-black/30 to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Market Cap</h3>
@@ -92,9 +90,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Volume Card */}
-      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black/60 via-black/30 to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">24h Volume</h3>
@@ -108,9 +105,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
       </Card>
 
       {/* Liquidity Card */}
-      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-black to-gray-800 border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+      <Card className="p-6 border bg-gradient-to-br from-gray-900 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
-        <div className="absolute bottom-0 right-0 w-16 h-16 bg-gradient-to-tl from-black/60 via-black/30 to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Liquidity Pool</h3>
