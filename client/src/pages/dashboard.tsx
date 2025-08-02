@@ -171,7 +171,7 @@ export default function Dashboard() {
 
 
 
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="w-full px-6 py-8">
         {/* Token Overview Cards */}
         <TokenOverview tokenData={tokenData} isLoading={isLoading} />
 
