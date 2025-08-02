@@ -25,17 +25,38 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    // Initialize from localStorage to persist state across navigation
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebar-collapsed');
+      return saved === 'true';
+    }
+    return false;
+  });
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
 
+  // Persist collapsed state to localStorage
+  useEffect(() => {
+    localStorage.setItem('sidebar-collapsed', sidebarCollapsed.toString());
+  }, [sidebarCollapsed]);
+
   // Monitor collapsed state changes and prevent unwanted expansion during navigation
   useEffect(() => {
-    // If we have a locked state during navigation, enforce it
+    // If we have a locked state during navigation, enforce it immediately
     if (lockedCollapsedStateRef.current !== null && sidebarCollapsed !== lockedCollapsedStateRef.current) {
       console.log('Enforcing locked collapsed state:', lockedCollapsedStateRef.current);
+      // Use multiple approaches to ensure the state sticks
       setSidebarCollapsed(lockedCollapsedStateRef.current);
+      // Also update localStorage immediately
+      localStorage.setItem('sidebar-collapsed', lockedCollapsedStateRef.current.toString());
+      // Force a re-render in the next tick
+      setTimeout(() => {
+        if (lockedCollapsedStateRef.current !== null) {
+          setSidebarCollapsed(lockedCollapsedStateRef.current);
+        }
+      }, 0);
     }
   }, [sidebarCollapsed]);
 
@@ -55,26 +76,39 @@ export function Layout({ children }: LayoutProps) {
     const wasCollapsed = sidebarCollapsed;
     console.log('Navigation clicked, current collapsed state:', wasCollapsed);
     
-    // Lock the collapsed state during navigation
-    if (window.innerWidth >= 1024) {
-      lockedCollapsedStateRef.current = wasCollapsed;
-      isNavigatingRef.current = true;
-      console.log('Locking collapsed state to:', wasCollapsed);
+    // On mobile, just navigate and close sidebar
+    if (window.innerWidth < 1024) {
+      navigate(path);
+      setSidebarOpen(false);
+      return;
     }
+    
+    // On desktop, prevent any state changes during navigation
+    lockedCollapsedStateRef.current = wasCollapsed;
+    isNavigatingRef.current = true;
+    console.log('Locking collapsed state to:', wasCollapsed);
+    
+    // Force the current state to localStorage before navigation
+    localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
     
     // Navigate to the path
     navigate(path);
     
-    // On mobile, close the sidebar
-    if (window.innerWidth < 1024) {
-      setSidebarOpen(false);
-    }
+    // Immediately after navigation, force the state back
+    setTimeout(() => {
+      console.log('Post-navigation: forcing state back to', wasCollapsed);
+      setSidebarCollapsed(wasCollapsed);
+      localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
+    }, 1);
   };
 
   const toggleCollapsed = () => {
     isNavigatingRef.current = false; // Clear navigation flag
-    console.log('Toggle clicked, changing from', sidebarCollapsed, 'to', !sidebarCollapsed);
-    setSidebarCollapsed(!sidebarCollapsed);
+    const newState = !sidebarCollapsed;
+    console.log('Toggle clicked, changing from', sidebarCollapsed, 'to', newState);
+    setSidebarCollapsed(newState);
+    // Immediately save to localStorage to prevent reset
+    localStorage.setItem('sidebar-collapsed', newState.toString());
   };
 
   // Debug: Monitor all state changes
