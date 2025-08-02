@@ -288,9 +288,9 @@ function SwapContent() {
         {/* Main Swap Interface */}
         <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
           <Card className="crypto-card border h-full">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-0">
               {/* Tab Navigation */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-0">
                 <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
                   {["Swap", "Limit", "Buy", "Sell"].map((tab) => (
                     <Button
