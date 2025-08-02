@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { usePriceHistory, useTokenData } from "@/hooks/use-token-data";
 
 import { 
   ArrowUpDown, 
@@ -50,6 +52,7 @@ function SwapContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showChart, setShowChart] = useState(false);
+  const [chartTimeframe, setChartTimeframe] = useState("1D");
 
   // Mock token list - in real implementation, this would come from API
   const tokens: Token[] = [
@@ -158,11 +161,47 @@ function SwapContent() {
     }
   }, [fromToken, toToken, fromAmount, slippage]);
 
+  // Get price history for the selected token pair
+  const chartContractAddress = fromToken?.address || "0x55d398326f99059fF775485246999027B3197955"; // Default to USDT
+  const { data: priceHistory, isLoading: chartLoading } = usePriceHistory(chartContractAddress, chartTimeframe);
+  const { data: tokenData } = useTokenData(chartContractAddress);
+
   // Set initial tokens
   useEffect(() => {
     setFromToken(tokens[1]); // USDT
     setToToken(tokens[0]); // OEC
   }, []);
+
+  // Chart formatting functions
+  const formatXAxis = (tickItem: number) => {
+    const date = new Date(tickItem * 1000);
+    switch (chartTimeframe) {
+      case "1H":
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      case "1D":
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      case "7D":
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      case "30D":
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      default:
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  };
+
+  const formatTooltip = (value: any, name: string) => {
+    if (name === 'price') {
+      return [`$${Number(value).toFixed(6)}`, 'Price'];
+    }
+    return [value, name];
+  };
+
+  const chartTimeframes = [
+    { key: "1H", label: "1H" },
+    { key: "1D", label: "24H" },
+    { key: "7D", label: "7D" },
+    { key: "30D", label: "30D" },
+  ];
 
   return (
     <div className="p-6">
@@ -439,46 +478,87 @@ function SwapContent() {
                   <div className="flex items-center space-x-2">
                     <BarChart3 className="w-5 h-5" />
                     <span>Price Chart</span>
+                    {fromToken && (
+                      <div className="text-sm text-gray-400">
+                        {fromToken.symbol}/USD
+                      </div>
+                    )}
                   </div>
-                  {fromToken && toToken && (
-                    <div className="text-sm text-gray-400">
-                      {fromToken.symbol}/{toToken.symbol}
-                    </div>
-                  )}
+                  <div className="flex space-x-2">
+                    {chartTimeframes.map((tf) => (
+                      <Button
+                        key={tf.key}
+                        variant={chartTimeframe === tf.key ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setChartTimeframe(tf.key)}
+                        className={chartTimeframe === tf.key ? "bg-crypto-blue hover:bg-crypto-blue/80 text-xs" : "text-gray-400 hover:text-white text-xs"}
+                      >
+                        {tf.label}
+                      </Button>
+                    ))}
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-80">
-                <div className="w-full h-full bg-[var(--crypto-dark)] rounded-lg border border-[var(--crypto-border)] flex items-center justify-center">
-                  <div className="text-center">
-                    <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-                    <p className="text-gray-400 text-lg font-medium mb-2">Price Chart</p>
-                    <p className="text-gray-500 text-sm">
-                      {fromToken && toToken 
-                        ? `${fromToken.symbol}/${toToken.symbol} trading pair`
-                        : 'Select tokens to view chart'
-                      }
-                    </p>
-                    <div className="mt-4 space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">24h Change:</span>
-                        <span className="text-green-400">+2.34%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">24h Volume:</span>
-                        <span className="text-white">$1.24M</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-400">Current Rate:</span>
-                        <span className="text-white">
-                          {fromToken && toToken 
-                            ? `1 ${fromToken.symbol} = ${formatNumber(toToken.price / fromToken.price, 6)} ${toToken.symbol}`
-                            : '---'
-                          }
-                        </span>
-                      </div>
+                {chartLoading ? (
+                  <div className="w-full h-full bg-[var(--crypto-dark)] rounded-lg border border-[var(--crypto-border)] flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-8 h-8 border-2 border-crypto-blue border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                      <p className="text-gray-400">Loading price data...</p>
                     </div>
                   </div>
-                </div>
+                ) : !priceHistory || priceHistory.length === 0 ? (
+                  <div className="w-full h-full bg-[var(--crypto-dark)] rounded-lg border border-[var(--crypto-border)] flex items-center justify-center">
+                    <div className="text-center">
+                      <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                      <p className="text-gray-400 text-lg font-medium mb-2">No Price Data</p>
+                      <p className="text-gray-500 text-sm">
+                        {fromToken 
+                          ? `Price data for ${fromToken.symbol} not available`
+                          : 'Select a token to view chart'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={priceHistory}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
+                        <XAxis 
+                          dataKey="timestamp" 
+                          tickFormatter={formatXAxis}
+                          stroke="#9CA3AF"
+                          fontSize={12}
+                        />
+                        <YAxis 
+                          domain={['dataMin * 0.99', 'dataMax * 1.01']}
+                          tickFormatter={(value) => `$${value.toFixed(6)}`}
+                          stroke="#9CA3AF"
+                          fontSize={12}
+                        />
+                        <Tooltip 
+                          formatter={formatTooltip}
+                          labelFormatter={(value) => new Date(value * 1000).toLocaleString()}
+                          contentStyle={{
+                            backgroundColor: 'var(--crypto-card)',
+                            border: '1px solid var(--crypto-border)',
+                            borderRadius: '8px',
+                            color: 'white'
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="price" 
+                          stroke="#00D2FF" 
+                          strokeWidth={2}
+                          dot={false}
+                          activeDot={{ r: 4, stroke: '#00D2FF', strokeWidth: 2 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
