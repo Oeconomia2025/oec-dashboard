@@ -46,7 +46,6 @@ export function Layout({ children }: LayoutProps) {
   useEffect(() => {
     // If we have a locked state during navigation, enforce it immediately
     if (lockedCollapsedStateRef.current !== null && sidebarCollapsed !== lockedCollapsedStateRef.current) {
-      console.log('Enforcing locked collapsed state:', lockedCollapsedStateRef.current);
       // Use multiple approaches to ensure the state sticks
       setSidebarCollapsed(lockedCollapsedStateRef.current);
       // Also update localStorage immediately
@@ -66,7 +65,6 @@ export function Layout({ children }: LayoutProps) {
       setTimeout(() => {
         isNavigatingRef.current = false;
         lockedCollapsedStateRef.current = null; // Unlock the state
-        console.log('Navigation completed, unlocking state');
       }, 100);
     }
   }, [location]);
@@ -74,7 +72,6 @@ export function Layout({ children }: LayoutProps) {
   const handleNavigation = (path: string) => {
     // Store and lock the current collapsed state BEFORE any navigation
     const wasCollapsed = sidebarCollapsed;
-    console.log('Navigation clicked, current collapsed state:', wasCollapsed);
     
     // On mobile, just navigate and close sidebar
     if (window.innerWidth < 1024) {
@@ -86,7 +83,6 @@ export function Layout({ children }: LayoutProps) {
     // On desktop, prevent any state changes during navigation
     lockedCollapsedStateRef.current = wasCollapsed;
     isNavigatingRef.current = true;
-    console.log('Locking collapsed state to:', wasCollapsed);
     
     // Force the current state to localStorage before navigation
     localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
@@ -96,7 +92,6 @@ export function Layout({ children }: LayoutProps) {
     
     // Immediately after navigation, force the state back
     setTimeout(() => {
-      console.log('Post-navigation: forcing state back to', wasCollapsed);
       setSidebarCollapsed(wasCollapsed);
       localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
     }, 1);
@@ -105,16 +100,10 @@ export function Layout({ children }: LayoutProps) {
   const toggleCollapsed = () => {
     isNavigatingRef.current = false; // Clear navigation flag
     const newState = !sidebarCollapsed;
-    console.log('Toggle clicked, changing from', sidebarCollapsed, 'to', newState);
     setSidebarCollapsed(newState);
     // Immediately save to localStorage to prevent reset
     localStorage.setItem('sidebar-collapsed', newState.toString());
   };
-
-  // Debug: Monitor all state changes
-  useEffect(() => {
-    console.log('sidebarCollapsed state changed to:', sidebarCollapsed);
-  }, [sidebarCollapsed]);
 
   const sidebarItems = [
     { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
@@ -152,9 +141,14 @@ export function Layout({ children }: LayoutProps) {
               variant="ghost" 
               size="sm" 
               onClick={toggleCollapsed}
-              className="hidden lg:flex"
+              className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              {sidebarCollapsed ? (
+                <ChevronRight className="w-4 h-4 text-gray-400 hover:text-black" />
+              ) : (
+                <ChevronLeft className="w-4 h-4 text-gray-400 hover:text-black" />
+              )}
             </Button>
             <Button 
               variant="ghost" 
@@ -206,6 +200,19 @@ export function Layout({ children }: LayoutProps) {
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
           onClick={() => setSidebarOpen(false)}
         />
+      )}
+
+      {/* Floating Expand Button (visible when collapsed) */}
+      {sidebarCollapsed && (
+        <div className="fixed left-2 top-1/2 transform -translate-y-1/2 z-40 hidden lg:block">
+          <Button
+            onClick={toggleCollapsed}
+            className="bg-crypto-blue hover:bg-crypto-blue/80 text-black border-2 border-crypto-blue/50 hover:border-crypto-blue shadow-lg hover:shadow-xl transition-all duration-300 rounded-full p-3 group"
+            title="Expand sidebar"
+          >
+            <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+          </Button>
+        </div>
       )}
 
       {/* Main Content */}
