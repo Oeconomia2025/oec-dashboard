@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import { Portfolio } from "@/pages/portfolio";
 import Analytics from "@/pages/analytics";
 import Swap from "@/pages/swap";
+import Staking from "@/pages/staking";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/portfolio" component={Portfolio} />
       <Route path="/swap" component={Swap} />
+      <Route path="/staking" component={Staking} />
       <Route component={NotFound} />
     </Switch>
   );
