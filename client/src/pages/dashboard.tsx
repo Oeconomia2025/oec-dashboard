@@ -36,17 +36,19 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
-          <PriceChart contractAddress={contractAddress} />
+          <div className="lg:col-span-2">
+            <PriceChart contractAddress={contractAddress} />
+            
+            {/* Volume and Liquidity Analytics */}
+            <VolumeLiquidityAnalytics contractAddress={contractAddress} />
+
+            {/* Historical Performance Charts */}
+            <HistoricalPerformance contractAddress={contractAddress} />
+          </div>
 
           {/* Token Information Panel */}
           <TokenInfoPanel tokenData={tokenData} isLoading={isLoading} />
         </div>
-
-        {/* Volume and Liquidity Analytics */}
-        <VolumeLiquidityAnalytics contractAddress={contractAddress} />
-
-        {/* Historical Performance Charts */}
-        <HistoricalPerformance contractAddress={contractAddress} />
 
         {/* Recent Transactions Table */}
         <TransactionsTable contractAddress={contractAddress} />

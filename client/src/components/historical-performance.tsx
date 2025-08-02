@@ -143,7 +143,7 @@ export function HistoricalPerformance({ contractAddress }: HistoricalPerformance
   };
 
   return (
-    <Card className="crypto-card p-6 mb-8">
+    <Card className="crypto-card p-6 mb-0">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
           <Calendar className="w-5 h-5 text-crypto-purple" />
