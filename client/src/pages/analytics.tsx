@@ -157,12 +157,6 @@ export default function Analytics() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Oeconomia Analytics</h1>
-            <p className="text-gray-400">Comprehensive overview of all Oeconomia ecosystem protocols</p>
-          </div>
-
           {/* Ecosystem Overview Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">

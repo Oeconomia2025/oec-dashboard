@@ -322,7 +322,6 @@ export function Staking() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center py-16">
               <Lock className="w-16 h-16 text-crypto-blue mx-auto mb-6" />
-              <h1 className="text-3xl font-bold mb-4">Staking</h1>
               <p className="text-gray-400 mb-8">Connect your wallet to start earning rewards through staking</p>
               <div className="max-w-xs mx-auto">
                 <WalletConnect />
@@ -338,12 +337,6 @@ export function Staking() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Staking</h1>
-            <p className="text-gray-400">Earn rewards by staking your OEC tokens</p>
-          </div>
-
           {/* Staking Overview */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
