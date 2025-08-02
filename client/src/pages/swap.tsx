@@ -46,6 +46,8 @@ function SwapContent() {
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
   const [fromAmount, setFromAmount] = useState("");
+  const [toAmount, setToAmount] = useState("");
+  const [lastEditedField, setLastEditedField] = useState<'from' | 'to'>('from');
   const [slippage, setSlippage] = useState(0.5);
   const [customSlippage, setCustomSlippage] = useState("");
   const [isSlippageCustom, setIsSlippageCustom] = useState(false);
@@ -141,26 +143,46 @@ function SwapContent() {
     });
   };
 
-  // Simulate getting swap quote
-  const getSwapQuote = async (from: Token, to: Token, amount: string) => {
+  // Simulate getting swap quote (from amount to output)
+  const getSwapQuote = async (from: Token, to: Token, amount: string, direction: 'from' | 'to' = 'from') => {
     if (!amount || parseFloat(amount) === 0) return null;
     
     setIsLoading(true);
     
     // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 800));
     
     const inputAmount = parseFloat(amount);
-    const exchangeRate = to.price / from.price;
-    const outputAmount = inputAmount * exchangeRate;
+    let exchangeRate, outputAmount, fee, minimumReceived;
+    
+    if (direction === 'from') {
+      // Standard: User specifies input amount, calculate output
+      exchangeRate = to.price / from.price;
+      outputAmount = inputAmount * exchangeRate;
+      fee = inputAmount * 0.003; // 0.3% fee on input
+      minimumReceived = outputAmount * (1 - slippage / 100);
+      
+      // Update toAmount based on calculation
+      setToAmount(outputAmount.toFixed(6));
+    } else {
+      // Reverse: User specifies desired output, calculate required input
+      exchangeRate = from.price / to.price;
+      const requiredInput = inputAmount * exchangeRate;
+      fee = requiredInput * 0.003; // 0.3% fee on input
+      const totalRequired = requiredInput + fee;
+      minimumReceived = inputAmount * (1 - slippage / 100);
+      
+      // Update fromAmount based on calculation
+      setFromAmount(totalRequired.toFixed(6));
+      outputAmount = inputAmount;
+    }
+    
     const priceImpact = Math.random() * 2; // 0-2% random impact
-    const fee = inputAmount * 0.003; // 0.3% fee
-    const minimumReceived = outputAmount * (1 - slippage / 100);
     
     const mockQuote: SwapQuote = {
-      inputAmount: amount,
-      outputAmount: outputAmount.toString(),
-      exchangeRate,
+      inputAmount: direction === 'from' ? amount : fromAmount,
+      outputAmount: direction === 'from' ? outputAmount.toString() : amount,
+      exchangeRate: direction === 'from' ? (to.price / from.price) : (from.price / to.price),
       priceImpact,
       minimumReceived: minimumReceived.toString(),
       fee,
@@ -176,32 +198,41 @@ function SwapContent() {
     const temp = fromToken;
     setFromToken(toToken);
     setToToken(temp);
-    setFromAmount("");
+    const tempAmount = fromAmount;
+    setFromAmount(toAmount);
+    setToAmount(tempAmount);
     setQuote(null);
   };
 
   const handleSwapExecution = async () => {
-    if (!fromToken || !toToken || !fromAmount) return;
+    if (!fromToken || !toToken || (!fromAmount && !toAmount)) return;
     
     setIsLoading(true);
     
     // Simulate swap execution
     setTimeout(() => {
       setFromAmount("");
+      setToAmount("");
       setQuote(null);
       setIsLoading(false);
       // Here you would integrate with actual swap contract
     }, 2000);
   };
 
-  // Handle amount change
+  // Handle amount changes for both fields
   useEffect(() => {
-    if (fromToken && toToken && fromAmount) {
-      getSwapQuote(fromToken, toToken, fromAmount);
+    if (fromToken && toToken) {
+      if (lastEditedField === 'from' && fromAmount) {
+        getSwapQuote(fromToken, toToken, fromAmount, 'from');
+      } else if (lastEditedField === 'to' && toAmount) {
+        getSwapQuote(fromToken, toToken, toAmount, 'to');
+      } else {
+        setQuote(null);
+      }
     } else {
       setQuote(null);
     }
-  }, [fromToken, toToken, fromAmount, slippage]);
+  }, [fromToken, toToken, fromAmount, toAmount, lastEditedField, slippage]);
 
   // Get price history for the selected token pair
   const chartContractAddress = fromToken?.address || "0x55d398326f99059fF775485246999027B3197955"; // Default to USDT
@@ -425,8 +456,11 @@ function SwapContent() {
                 <div className="flex items-center space-x-3">
                   <Input
                     type="number"
-                    value={quote?.outputAmount || ""}
-                    readOnly
+                    value={toAmount}
+                    onChange={(e) => {
+                      setToAmount(e.target.value);
+                      setLastEditedField('to');
+                    }}
                     placeholder="0.0"
                     className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                     style={{ 
@@ -455,9 +489,9 @@ function SwapContent() {
                     )}
                   </Button>
                 </div>
-                {toToken && quote && (
+                {toToken && (
                   <div className="text-right text-gray-400 text-sm mt-2">
-                    ≈ ${formatNumber(parseFloat(quote.outputAmount) * toToken.price, 2)}
+                    ≈ ${formatNumber((parseFloat(toAmount) || 0) * toToken.price, 2)}
                   </div>
                 )}
               </div>
@@ -465,7 +499,7 @@ function SwapContent() {
               {/* Swap Button */}
               <Button
                 onClick={handleSwapExecution}
-                disabled={!fromToken || !toToken || !fromAmount || isLoading}
+                disabled={!fromToken || !toToken || (!fromAmount && !toAmount) || isLoading}
                 className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
               >
                 {isLoading ? (
@@ -475,7 +509,7 @@ function SwapContent() {
                   </div>
                 ) : !fromToken || !toToken ? (
                   "Select Tokens"
-                ) : !fromAmount ? (
+                ) : (!fromAmount && !toAmount) ? (
                   "Enter Amount"
                 ) : (
                   `${activeTab} ${fromToken.symbol}`
