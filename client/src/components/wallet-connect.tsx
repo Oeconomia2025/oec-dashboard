@@ -80,7 +80,13 @@ export function WalletConnect() {
   if (isConnected && address) {
     return (
       <Button 
-        onClick={() => disconnect()}
+        onClick={() => {
+          disconnect()
+          // Refresh the page after disconnecting
+          setTimeout(() => {
+            window.location.reload()
+          }, 100)
+        }}
         className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
       >
         <Wallet className="w-4 h-4 mr-2" />

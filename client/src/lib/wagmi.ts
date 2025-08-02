@@ -1,12 +1,30 @@
-import { http, createConfig } from 'wagmi'
+import { http, createConfig, createStorage } from 'wagmi'
 import { bsc, bscTestnet } from 'wagmi/chains'
 import { coinbaseWallet, metaMask, walletConnect, injected } from 'wagmi/connectors'
+
+// Extend Window interface for wallet types
+declare global {
+  interface Window {
+    trustWallet?: any
+    rabby?: any
+    okxwallet?: any
+    BinanceChain?: any
+    safe?: any
+    phantom?: {
+      ethereum?: any
+    }
+  }
+}
 
 // WalletConnect project ID - users can get this from https://cloud.walletconnect.com/
 const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || 'f0b928a2e4e4b0e9b5e8a2f5e3e4b0e9'
 
 export const config = createConfig({
   chains: [bsc, bscTestnet],
+  storage: createStorage({
+    storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+  }),
+  ssr: false,
   connectors: [
     metaMask(),
     walletConnect({ 
@@ -20,7 +38,8 @@ export const config = createConfig({
       showQrModal: true,
       qrModalOptions: {
         themeMode: 'dark'
-      }
+      },
+      disableProviderPing: false
     }),
     coinbaseWallet({
       appName: 'Oeconomia Dashboard',
