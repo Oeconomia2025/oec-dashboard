@@ -337,8 +337,14 @@ function SwapContent() {
                     value={fromAmount}
                     onChange={(e) => setFromAmount(e.target.value)}
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none text-5xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
-                    style={{ padding: 0, margin: 0 }}
+                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
+                    style={{ 
+                      padding: 0, 
+                      margin: 0, 
+                      fontSize: '3rem',
+                      lineHeight: '1',
+                      fontWeight: 'bold'
+                    }}
                   />
                   <Select value={fromToken?.symbol || ""} onValueChange={(value) => {
                     const token = tokens.find(t => t.symbol === value);
@@ -403,8 +409,14 @@ function SwapContent() {
                     value={quote?.outputAmount || ""}
                     readOnly
                     placeholder="0.0"
-                    className="flex-1 bg-transparent border-none text-5xl font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
-                    style={{ padding: 0, margin: 0 }}
+                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-16 focus-visible:ring-0"
+                    style={{ 
+                      padding: 0, 
+                      margin: 0, 
+                      fontSize: '3rem',
+                      lineHeight: '1',
+                      fontWeight: 'bold'
+                    }}
                   />
                   <Select value={toToken?.symbol || ""} onValueChange={(value) => {
                     const token = tokens.find(t => t.symbol === value);
