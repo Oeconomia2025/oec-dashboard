@@ -3,7 +3,19 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Activity } from "lucide-react";
+import { 
+  Settings, 
+  Activity, 
+  BarChart3, 
+  Wallet, 
+  TrendingUp, 
+  Users, 
+  Bell,
+  Menu,
+  X,
+  Lock,
+  Zap
+} from "lucide-react";
 import { TokenOverview } from "@/components/token-overview";
 import { PriceChart } from "@/components/price-chart";
 import { TokenInfoPanel } from "@/components/token-info-panel";
@@ -16,6 +28,7 @@ import { TONE_TOKEN_CONFIG } from "@shared/schema";
 export default function Dashboard() {
   const [contractAddress, setContractAddress] = useState(TONE_TOKEN_CONFIG.contractAddress);
   const [inputAddress, setInputAddress] = useState(contractAddress);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
 
@@ -25,13 +38,24 @@ export default function Dashboard() {
     }
   };
 
+  const sidebarItems = [
+    { icon: BarChart3, label: 'Dashboard', active: true },
+    { icon: TrendingUp, label: 'Analytics', active: false },
+    { icon: Wallet, label: 'Portfolio', active: false },
+    { icon: Users, label: 'Holders', active: false },
+    { icon: Lock, label: 'Staking', active: false },
+    { icon: Zap, label: 'DeFi', active: false },
+    { icon: Bell, label: 'Alerts', active: false },
+    { icon: Settings, label: 'Settings', active: false },
+  ];
+
   return (
-    <div className="min-h-screen bg-[var(--crypto-dark)] text-white">
-      {/* Header Navigation */}
-      <header className="bg-[var(--crypto-card)] border-b border-[var(--crypto-border)] px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
+    <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
+      {/* Sidebar Navigation */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full overflow-hidden">
               <img 
                 src="/oec-logo.png" 
                 alt="Oeconomia Logo" 
@@ -39,24 +63,78 @@ export default function Dashboard() {
               />
             </div>
             <div>
-              <h1 className="text-xl font-bold">Oeconomia Token</h1>
-              <p className="text-gray-400 text-sm">OEC Dashboard</p>
+              <h2 className="text-lg font-bold">Oeconomia</h2>
+              <p className="text-xs text-gray-400">OEC Dashboard</p>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <Badge className="bg-crypto-green/20 text-crypto-green border-crypto-green/30">
-              <Activity className="w-3 h-3 mr-1" />
-              BSC Mainnet
-            </Badge>
-            <Button variant="outline" size="sm" className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-          </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden"
+          >
+            <X className="w-4 h-4" />
+          </Button>
         </div>
-      </header>
+        
+        <nav className="p-4">
+          <ul className="space-y-2">
+            {sidebarItems.map((item, index) => (
+              <li key={index}>
+                <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
+                  item.active 
+                    ? 'bg-crypto-blue text-black font-medium' 
+                    : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                }`}>
+                  <item.icon className="w-5 h-5" />
+                  <span>{item.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" 
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 lg:ml-0">
+        {/* Sticky Header Navigation */}
+        <header className="sticky top-0 z-30 bg-[var(--crypto-card)] border-b border-[var(--crypto-border)] px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden"
+              >
+                <Menu className="w-4 h-4" />
+              </Button>
+              <div>
+                <h1 className="text-xl font-bold">Token Dashboard</h1>
+                <p className="text-gray-400 text-sm">Real-time OEC analytics</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Badge className="bg-crypto-green/20 text-crypto-green border-crypto-green/30">
+                <Activity className="w-3 h-3 mr-1" />
+                Live
+              </Badge>
+              <Button variant="ghost" size="sm">
+                <Settings className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Token Overview Cards */}
         <TokenOverview tokenData={tokenData} isLoading={isLoading} />
 
@@ -78,25 +156,28 @@ export default function Dashboard() {
         <QuickActions contractAddress={contractAddress} />
 
         {/* Contract Address Input - Admin Section */}
-        <Card className="crypto-card p-4 mt-8 border border-dashed border-gray-600">
-          <div className="flex items-center space-x-4">
-            <div className="flex-1">
-              <label className="text-gray-400 text-sm mb-2 block">Admin: Update Token Contract Address</label>
-              <Input
-                value={inputAddress}
-                onChange={(e) => setInputAddress(e.target.value)}
-                placeholder="0x..."
-                className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white"
-              />
+        <div className="sticky bottom-0 z-30 bg-[var(--crypto-card)] border-t border-[var(--crypto-border)] p-4">
+          <Card className="crypto-card p-4 border border-dashed border-gray-600">
+            <div className="flex items-center space-x-4">
+              <div className="flex-1">
+                <label className="text-gray-400 text-sm mb-2 block">Admin: Update Token Contract Address</label>
+                <Input
+                  value={inputAddress}
+                  onChange={(e) => setInputAddress(e.target.value)}
+                  placeholder="0x..."
+                  className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white"
+                />
+              </div>
+              <Button 
+                onClick={handleAddressUpdate}
+                className="mt-6 bg-crypto-blue hover:bg-crypto-blue/80"
+              >
+                Update
+              </Button>
             </div>
-            <Button 
-              onClick={handleAddressUpdate}
-              className="mt-6 bg-crypto-blue hover:bg-crypto-blue/80"
-            >
-              Update
-            </Button>
-          </div>
-        </Card>
+          </Card>
+        </div>
+        </div>
       </div>
     </div>
   );
