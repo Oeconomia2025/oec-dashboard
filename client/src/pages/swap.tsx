@@ -376,8 +376,8 @@ function SwapContent() {
                 )}
               </div>
 
-              {/* Swap Arrow - Overlapping between boxes */}
-              <div className="relative flex justify-center -my-6 z-20">
+              {/* Swap Arrow - Overlapping and cutting through borders */}
+              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
                 <Button
                   variant="ghost"
                   size="sm"
