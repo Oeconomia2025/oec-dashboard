@@ -269,7 +269,7 @@ function SwapContent() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 relative">
+            <CardContent className="space-y-0 relative">
               {/* Settings Panel */}
               {showSettings && (
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
@@ -320,7 +320,7 @@ function SwapContent() {
               )}
 
               {/* From Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-4">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-gray-400 text-sm">
                     {activeTab === "Buy" ? "Buy" : activeTab === "Sell" ? "Sell" : "From"}
