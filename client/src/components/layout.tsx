@@ -43,6 +43,10 @@ const pageInfo = {
   '/portfolio': {
     title: 'Portfolio',
     description: 'Track your DeFi positions and asset performance'
+  },
+  '/swap': {
+    title: 'Token Swap',
+    description: 'Trade tokens instantly on the Oeconomia ecosystem'
   }
 } as const;
 
