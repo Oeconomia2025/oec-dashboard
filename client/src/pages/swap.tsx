@@ -376,15 +376,15 @@ function SwapContent() {
                 )}
               </div>
 
-              {/* Swap Arrow - Overlapping the borders */}
-              <div className="relative flex justify-center -my-6 z-10">
+              {/* Swap Arrow - Hovering above */}
+              <div className="relative flex justify-center -my-2 z-10">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleSwapTokens}
-                  className="bg-[var(--crypto-card)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-lg"
+                  className="bg-[var(--crypto-card)] border-2 border-[var(--crypto-border)] rounded-full w-10 h-10 p-0 hover:bg-[var(--crypto-card)]/80 shadow-lg"
                 >
-                  <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                  <ArrowUpDown className="w-4 h-4 text-gray-400" />
                 </Button>
               </div>
 
