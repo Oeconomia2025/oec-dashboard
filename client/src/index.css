@@ -121,7 +121,7 @@ body {
   }
 
   body {
-    @apply font-sans antialiased bg-[var(--crypto-dark)] text-foreground;
+    @apply font-sans antialiased bg-background text-foreground;
   }
 }
 
@@ -131,7 +131,7 @@ body {
   }
   
   .crypto-card {
-    @apply bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white;
+    @apply bg-card border-border text-card-foreground;
   }
   
   .crypto-hover {
