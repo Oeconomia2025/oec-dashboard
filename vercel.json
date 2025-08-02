@@ -1,27 +1,19 @@
 {
   "version": 2,
-  "installCommand": "npm install --include=dev",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist/public",
+  "buildCommand": "npm install --include=dev && npm run build && cp -r dist/public/* . && cp dist/index.js api/index.js",
   "functions": {
-    "dist/index.js": {
+    "api/index.js": {
       "runtime": "@vercel/node"
     }
   },
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/dist/index.js"
-    },
-    {
-      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000"
-      }
+      "dest": "/api/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/$1"
     }
   ]
 }
