@@ -26,6 +26,26 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+// Page information for each route
+const pageInfo = {
+  '/': {
+    title: 'Dashboard',
+    description: 'Real-time overview of OEC token metrics and performance'
+  },
+  '/analytics': {
+    title: 'Analytics',
+    description: 'Advanced market analysis and trading insights'
+  },
+  '/staking': {
+    title: 'Staking',
+    description: 'Earn rewards by staking your OEC tokens'
+  },
+  '/portfolio': {
+    title: 'Portfolio',
+    description: 'Track your DeFi positions and asset performance'
+  }
+} as const;
+
 export function Layout({ children }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -40,6 +60,9 @@ export function Layout({ children }: LayoutProps) {
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
+  
+  // Get current page info
+  const currentPageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
 
   // Persist collapsed state to localStorage
   useEffect(() => {
@@ -228,7 +251,10 @@ export function Layout({ children }: LayoutProps) {
                 <Menu className="w-5 h-5" />
               </Button>
               
-
+              <div className="flex flex-col">
+                <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
+                <p className="text-sm text-muted-foreground">{currentPageInfo.description}</p>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">
