@@ -72,19 +72,20 @@ export class PancakeSwapApiService {
     }
   }
 
-  async getPriceHistory(contractAddress: string, timeframe: string): Promise<PriceHistory[]> {
+  async getPriceHistory(contractAddress: string, timeframe: string, currentPrice?: number): Promise<PriceHistory[]> {
     try {
       // This would typically use The Graph Protocol or similar
-      // For now, generate some sample data points
+      // For now, generate some sample data points based on current price
       const now = Date.now();
       const points = this.getTimeframePoints(timeframe);
-      // Use USDT price (~$1.00) as base for consistency with overview
-      const basePrice = 0.998;
+      // Use the actual current price or fallback to USDT-like price
+      const basePrice = currentPrice || 0.998;
       
       return Array.from({ length: points }, (_, i) => {
         const timestamp = now - (points - 1 - i) * this.getIntervalMs(timeframe);
-        const variation = (Math.random() - 0.5) * 0.008;
-        const price = Math.max(0.99, basePrice + variation);
+        // Vary by 0.8% of base price for realistic fluctuations
+        const variation = (Math.random() - 0.5) * (basePrice * 0.008);
+        const price = Math.max(basePrice * 0.99, basePrice + variation);
         
         return {
           timestamp: Math.floor(timestamp / 1000),

@@ -141,7 +141,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { contractAddress, timeframe } = req.params;
       
-      const priceHistory = await pancakeSwapApiService.getPriceHistory(contractAddress, timeframe);
+      // Get current price first to base history on it
+      const coinGeckoData = await coinGeckoApiService.getTokenDataByContract(contractAddress);
+      const currentPrice = coinGeckoData?.price || 0.998;
+      
+      const priceHistory = await pancakeSwapApiService.getPriceHistory(contractAddress, timeframe, currentPrice);
       res.json(priceHistory);
     } catch (error) {
       console.error("Error fetching price history:", error);
