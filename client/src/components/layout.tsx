@@ -1,4 +1,4 @@
-import { useState, ReactNode } from "react";
+import { useState, ReactNode, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,10 +27,24 @@ export function Layout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [location, navigate] = useLocation();
+  const isNavigatingRef = useRef(false);
+
+  // Monitor collapsed state changes and prevent unwanted expansion during navigation
+  useEffect(() => {
+    if (isNavigatingRef.current && !sidebarCollapsed) {
+      // If we're navigating and sidebar got expanded, force it back to collapsed
+      setSidebarCollapsed(true);
+      isNavigatingRef.current = false;
+    }
+  }, [sidebarCollapsed]);
 
   const handleNavigation = (path: string) => {
-    // Store current collapsed state
-    const wasCollapsed = sidebarCollapsed;
+    // Mark that we're navigating
+    isNavigatingRef.current = true;
+    
+    // Store the current collapsed state
+    const currentCollapsed = sidebarCollapsed;
+    console.log('Navigation clicked, current collapsed state:', currentCollapsed);
     
     // Navigate to the path
     navigate(path);
@@ -38,15 +52,19 @@ export function Layout({ children }: LayoutProps) {
     // On mobile, close the sidebar
     if (window.innerWidth < 1024) {
       setSidebarOpen(false);
-    }
-    
-    // Explicitly restore collapsed state on desktop to prevent expansion
-    if (window.innerWidth >= 1024 && wasCollapsed) {
-      // Use setTimeout to ensure the state is set after navigation
+    } else if (currentCollapsed) {
+      // On desktop, if it was collapsed, ensure it stays collapsed
       setTimeout(() => {
+        console.log('Ensuring sidebar stays collapsed after navigation');
         setSidebarCollapsed(true);
-      }, 0);
+        isNavigatingRef.current = false;
+      }, 50);
     }
+  };
+
+  const toggleCollapsed = () => {
+    isNavigatingRef.current = false; // Clear navigation flag
+    setSidebarCollapsed(!sidebarCollapsed);
   };
 
   const sidebarItems = [
@@ -84,7 +102,7 @@ export function Layout({ children }: LayoutProps) {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              onClick={toggleCollapsed}
               className="hidden lg:flex"
             >
               {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
