@@ -57,10 +57,12 @@ function SwapContent() {
   const [activeTab, setActiveTab] = useState("Swap");
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to'>('from');
+  const [tokenSearchQuery, setTokenSearchQuery] = useState("");
 
   // Helper functions for token selection
   const openTokenModal = (type: 'from' | 'to') => {
     setTokenSelectionFor(type);
+    setTokenSearchQuery(""); // Clear search when opening modal
     setIsTokenModalOpen(true);
   };
 
@@ -121,6 +123,13 @@ function SwapContent() {
       balance: 0.0015
     }
   ];
+
+  // Filter tokens based on search query
+  const filteredTokens = tokens.filter(token => 
+    token.symbol.toLowerCase().includes(tokenSearchQuery.toLowerCase()) ||
+    token.name.toLowerCase().includes(tokenSearchQuery.toLowerCase()) ||
+    token.address.toLowerCase().includes(tokenSearchQuery.toLowerCase())
+  );
 
   // Format number with commas and smart decimals
   const formatNumber = (num: number, decimals = 2): string => {
@@ -753,8 +762,20 @@ function SwapContent() {
               Select {tokenSelectionFor === 'from' ? 'From' : 'To'} Token
             </DialogTitle>
           </DialogHeader>
+          
+          {/* Search Box */}
+          <div className="mb-4">
+            <Input
+              type="text"
+              placeholder="Search tokens or paste contract address..."
+              value={tokenSearchQuery}
+              onChange={(e) => setTokenSearchQuery(e.target.value)}
+              className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white placeholder-gray-400 focus:border-crypto-blue"
+            />
+          </div>
+
           <div className="space-y-2 max-h-80 overflow-y-auto">
-            {tokens.map((token) => (
+            {filteredTokens.map((token) => (
               <Button
                 key={token.symbol}
                 variant="ghost"
