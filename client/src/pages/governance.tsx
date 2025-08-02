@@ -296,7 +296,7 @@ export function Governance() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
           {/* Governance Stats Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-8">
             <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
               <div className="relative z-10">
