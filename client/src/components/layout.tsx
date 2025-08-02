@@ -120,45 +120,64 @@ export function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
       <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-48'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
-        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
-          <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-              <img 
-                src="/oec-logo.png" 
-                alt="Oeconomia Logo" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            {!sidebarCollapsed && (
-              <div>
-                <h2 className="text-lg font-bold">Oeconomia</h2>
-                <p className="text-xs text-gray-400">OEC Dashboard</p>
+        <div className="sticky top-0 z-10 bg-[var(--crypto-card)] h-16 px-4 border-b border-[var(--crypto-border)]">
+          {sidebarCollapsed ? (
+            /* Collapsed state: Logo and toggle button centered */
+            <div className="flex items-center justify-center h-full space-x-2">
+              <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                <img 
+                  src="/oec-logo.png" 
+                  alt="Oeconomia Logo" 
+                  className="w-full h-full object-cover"
+                />
               </div>
-            )}
-          </div>
-          <div className="flex items-center space-x-1">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={toggleCollapsed}
-              className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {sidebarCollapsed ? (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={toggleCollapsed}
+                className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
+                title="Expand sidebar"
+              >
                 <ChevronRight className="w-4 h-4 text-gray-400 hover:text-black" />
-              ) : (
-                <ChevronLeft className="w-4 h-4 text-gray-400 hover:text-black" />
-              )}
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden"
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+              </Button>
+            </div>
+          ) : (
+            /* Expanded state: Logo + title on left, toggle on right */
+            <div className="flex items-center justify-between h-full">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                  <img 
+                    src="/oec-logo.png" 
+                    alt="Oeconomia Logo" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">Oeconomia</h2>
+                  <p className="text-xs text-gray-400">OEC Dashboard</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={toggleCollapsed}
+                  className="hidden lg:flex bg-[var(--crypto-border)] hover:bg-crypto-blue hover:text-black border border-[var(--crypto-border)] hover:border-crypto-blue transition-all duration-200 rounded-lg p-2 shadow-sm hover:shadow-md"
+                  title="Collapse sidebar"
+                >
+                  <ChevronLeft className="w-4 h-4 text-gray-400 hover:text-black" />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setSidebarOpen(false)}
+                  className="lg:hidden"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="sticky top-16 bg-[var(--crypto-card)] z-10 border-b border-[var(--crypto-border)]">
@@ -202,18 +221,7 @@ export function Layout({ children }: LayoutProps) {
         />
       )}
 
-      {/* Floating Expand Button (visible when collapsed) - positioned at header level */}
-      {sidebarCollapsed && (
-        <div className="fixed left-20 top-4 z-40 hidden lg:block">
-          <Button
-            onClick={toggleCollapsed}
-            className="bg-crypto-blue hover:bg-crypto-blue/80 text-black border-2 border-crypto-blue/50 hover:border-crypto-blue shadow-lg hover:shadow-xl transition-all duration-300 rounded-full p-3 group"
-            title="Expand sidebar"
-          >
-            <ChevronRight className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
-          </Button>
-        </div>
-      )}
+
 
       {/* Main Content */}
       <div className="flex-1 lg:ml-0 relative">
