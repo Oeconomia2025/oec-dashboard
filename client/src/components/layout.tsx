@@ -180,9 +180,10 @@ export function Layout({ children }: LayoutProps) {
                     onClick={() => handleNavigation(item.path)}
                     className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
                       item.active 
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium shadow-lg transition-all duration-200' 
+                        ? 'text-white font-medium shadow-lg transition-all duration-200' 
                         : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                     }`}
+                    style={item.active ? { background: 'linear-gradient(45deg, #00d4ff, #ff00ff)' } : {}}
                     title={sidebarCollapsed ? item.label : undefined}
                   >
                     <item.icon className="w-5 h-5 flex-shrink-0" />
