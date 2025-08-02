@@ -162,9 +162,6 @@ export function Layout({ children }: LayoutProps) {
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
     { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
-    { icon: Zap, label: 'DeFi', path: '/defi', active: location === '/defi' },
-    { icon: Bell, label: 'Alerts', path: '/alerts', active: location === '/alerts' },
-    { icon: Settings, label: 'Settings', path: '/settings', active: location === '/settings' },
   ];
 
   return (
@@ -330,18 +327,18 @@ export function Layout({ children }: LayoutProps) {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className="p-2"
-                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-              >
-                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-              </Button>
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleNavigation('/settings')}
+                className="p-2"
+                title="Settings"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
             </div>
           </div>
         </header>
