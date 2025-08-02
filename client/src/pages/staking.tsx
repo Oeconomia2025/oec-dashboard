@@ -400,9 +400,9 @@ export function Staking() {
           </div>
 
           {/* ROI Calculator Section */}
-          <Card className="crypto-card p-6 border mb-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30">
+          <Card className={`crypto-card p-6 border mb-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30 ${!isROIExpanded ? 'pb-4' : ''}`}>
             <div 
-              className="flex items-center justify-between cursor-pointer mb-6 hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200"
+              className={`flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200 ${isROIExpanded ? 'mb-6' : 'mb-0'}`}
               onClick={() => setIsROIExpanded(!isROIExpanded)}
             >
               <div className="flex items-center space-x-2">
@@ -570,9 +570,9 @@ export function Staking() {
           </Card>
 
           {/* Achievement Badges Section */}
-          <Card className="crypto-card p-6 border mb-8">
+          <Card className={`crypto-card p-6 border mb-8 ${!isAchievementsExpanded ? 'pb-4' : ''}`}>
             <div 
-              className="flex items-center justify-between cursor-pointer mb-6 hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200"
+              className={`flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200 ${isAchievementsExpanded ? 'mb-6' : 'mb-0'}`}
               onClick={() => setIsAchievementsExpanded(!isAchievementsExpanded)}
             >
               <div className="flex items-center space-x-2">
