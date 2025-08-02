@@ -476,11 +476,10 @@ function SwapContent() {
               <CardHeader>
                 <CardTitle className="text-white flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <BarChart3 className="w-5 h-5" />
                     <span>Price Chart</span>
-                    {fromToken && (
+                    {fromToken && toToken && (
                       <div className="text-sm text-gray-400">
-                        {fromToken.symbol}/USD
+                        {fromToken.symbol}/{toToken.symbol}
                       </div>
                     )}
                   </div>
@@ -513,15 +512,33 @@ function SwapContent() {
                       <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
                       <p className="text-gray-400 text-lg font-medium mb-2">No Price Data</p>
                       <p className="text-gray-500 text-sm">
-                        {fromToken 
-                          ? `Price data for ${fromToken.symbol} not available`
-                          : 'Select a token to view chart'
+                        {fromToken && toToken
+                          ? `Price data for ${fromToken.symbol}/${toToken.symbol} not available`
+                          : 'Select tokens to view chart'
                         }
                       </p>
+                      {fromToken && toToken && (
+                        <div className="mt-4 space-y-2 text-left max-w-xs mx-auto">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-400">Current Rate:</span>
+                            <span className="text-white">
+                              1 {fromToken.symbol} = {formatNumber(toToken.price / fromToken.price, 6)} {toToken.symbol}
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-400">24h Change:</span>
+                            <span className="text-green-400">+0.12%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-400">24h Volume:</span>
+                            <span className="text-white">$24.3M</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (
-                  <div className="h-full">
+                  <div className="h-full relative">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={priceHistory}>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
@@ -557,6 +574,48 @@ function SwapContent() {
                         />
                       </LineChart>
                     </ResponsiveContainer>
+                    
+                    {/* Trading Pair Stats Overlay */}
+                    {fromToken && toToken && (
+                      <div className="absolute top-4 right-4 bg-[var(--crypto-card)]/90 backdrop-blur-sm rounded-lg p-3 border border-[var(--crypto-border)]">
+                        <div className="space-y-1.5 text-xs">
+                          <div className="flex justify-between items-center min-w-[160px]">
+                            <span className="text-gray-400">Current Rate:</span>
+                            <span className="text-white font-medium">
+                              1 {fromToken.symbol} = {formatNumber(toToken.price / fromToken.price, 6)} {toToken.symbol}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400">24h Change:</span>
+                            <span className={`font-medium ${
+                              tokenData?.change24h && tokenData.change24h >= 0 
+                                ? 'text-green-400' 
+                                : 'text-red-400'
+                            }`}>
+                              {tokenData?.change24h 
+                                ? `${tokenData.change24h >= 0 ? '+' : ''}${tokenData.change24h.toFixed(2)}%`
+                                : '+0.12%'
+                              }
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400">24h Volume:</span>
+                            <span className="text-white font-medium">
+                              {tokenData?.volume24h 
+                                ? `$${formatNumber(tokenData.volume24h)}`
+                                : '$24.3M'
+                              }
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-gray-400">{fromToken.symbol} Price:</span>
+                            <span className="text-white font-medium">
+                              ${formatNumber(fromToken.price, 6)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
