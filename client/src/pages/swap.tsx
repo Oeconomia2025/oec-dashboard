@@ -15,7 +15,8 @@ import {
   TrendingDown,
   Zap,
   Shield,
-  AlertTriangle
+  AlertTriangle,
+  BarChart3
 } from "lucide-react";
 
 interface Token {
@@ -48,6 +49,7 @@ function SwapContent() {
   const [quote, setQuote] = useState<SwapQuote | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showChart, setShowChart] = useState(false);
 
   // Mock token list - in real implementation, this would come from API
   const tokens: Token[] = [
@@ -169,20 +171,30 @@ function SwapContent() {
         <p className="text-gray-400">Trade tokens instantly on the Oeconomia ecosystem</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className={`grid gap-6 ${showChart ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
         {/* Main Swap Interface */}
-        <div className="lg:col-span-2">
+        <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
           <Card className="crypto-card border">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-white">Swap Tokens</CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowSettings(!showSettings)}
-                className="text-gray-400 hover:text-white"
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowChart(!showChart)}
+                  className={`text-gray-400 hover:text-white ${showChart ? 'text-crypto-blue' : ''}`}
+                >
+                  <BarChart3 className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <Settings className="w-4 h-4" />
+                </Button>
+              </div>
             </CardHeader>
             <CardContent className="space-y-0">
               {/* Settings Panel */}
@@ -417,6 +429,60 @@ function SwapContent() {
             </CardContent>
           </Card>
         </div>
+
+        {/* Price Chart */}
+        {showChart && (
+          <div className="xl:col-span-2">
+            <Card className="crypto-card border h-full">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <BarChart3 className="w-5 h-5" />
+                    <span>Price Chart</span>
+                  </div>
+                  {fromToken && toToken && (
+                    <div className="text-sm text-gray-400">
+                      {fromToken.symbol}/{toToken.symbol}
+                    </div>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-80">
+                <div className="w-full h-full bg-[var(--crypto-dark)] rounded-lg border border-[var(--crypto-border)] flex items-center justify-center">
+                  <div className="text-center">
+                    <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+                    <p className="text-gray-400 text-lg font-medium mb-2">Price Chart</p>
+                    <p className="text-gray-500 text-sm">
+                      {fromToken && toToken 
+                        ? `${fromToken.symbol}/${toToken.symbol} trading pair`
+                        : 'Select tokens to view chart'
+                      }
+                    </p>
+                    <div className="mt-4 space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">24h Change:</span>
+                        <span className="text-green-400">+2.34%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">24h Volume:</span>
+                        <span className="text-white">$1.24M</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-400">Current Rate:</span>
+                        <span className="text-white">
+                          {fromToken && toToken 
+                            ? `1 ${fromToken.symbol} = ${formatNumber(toToken.price / fromToken.price, 6)} ${toToken.symbol}`
+                            : '---'
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Sidebar Info */}
         <div className="space-y-6">
