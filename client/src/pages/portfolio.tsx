@@ -316,10 +316,18 @@ export function Portfolio() {
 
           <div className="space-y-4">
             {poolsFarms.map((item) => (
-              <Card key={item.id} className="p-4 border border-crypto-border/40 bg-gradient-to-r from-crypto-blue/5 to-crypto-purple/5 hover:from-crypto-blue/10 hover:to-crypto-purple/10 transition-all duration-200">
+              <Card key={item.id} className={`p-4 border transition-all duration-200 ${
+                item.type === 'pool' 
+                  ? 'border-teal-500/40 bg-gradient-to-r from-teal-500/5 to-cyan-500/5 hover:from-teal-500/10 hover:to-cyan-500/10' 
+                  : 'border-emerald-500/40 bg-gradient-to-r from-emerald-500/5 to-green-500/5 hover:from-emerald-500/10 hover:to-green-500/10'
+              }`}>
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue to-crypto-purple rounded-full flex items-center justify-center">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      item.type === 'pool' 
+                        ? 'bg-gradient-to-r from-teal-500 to-cyan-500' 
+                        : 'bg-gradient-to-r from-emerald-500 to-green-500'
+                    }`}>
                       {item.type === 'pool' ? (
                         <Droplets className="w-5 h-5 text-white" />
                       ) : (
@@ -329,7 +337,11 @@ export function Portfolio() {
                     <div>
                       <div className="flex items-center space-x-2">
                         <span className="font-medium">{item.pair}</span>
-                        <span className="text-xs bg-crypto-blue/20 text-crypto-blue px-2 py-1 rounded">
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          item.type === 'pool' 
+                            ? 'bg-teal-500/20 text-teal-400' 
+                            : 'bg-emerald-500/20 text-emerald-400'
+                        }`}>
                           {item.type === 'pool' ? 'Pool' : 'Farm'}
                         </span>
                       </div>
@@ -374,14 +386,22 @@ export function Portfolio() {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      className="border-crypto-green/30 text-crypto-green hover:bg-crypto-green/10 text-xs"
+                      className={`text-xs ${
+                        item.type === 'pool'
+                          ? 'border-teal-500/30 text-teal-400 hover:bg-teal-500/10'
+                          : 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10'
+                      }`}
                     >
                       Claim
                     </Button>
                     <Button 
                       size="sm" 
                       variant="outline"
-                      className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10 text-xs"
+                      className={`text-xs ${
+                        item.type === 'pool'
+                          ? 'border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10'
+                          : 'border-green-500/30 text-green-400 hover:bg-green-500/10'
+                      }`}
                     >
                       Manage
                     </Button>
