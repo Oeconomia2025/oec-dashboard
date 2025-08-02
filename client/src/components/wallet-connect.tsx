@@ -44,19 +44,38 @@ export function WalletConnect() {
 
   // Define preferred wallet order and limit
   const preferredWallets = ['MetaMask', 'WalletConnect', 'Coinbase Wallet', 'Trust Wallet']
+  
+  // Helper function to get unique, valid connectors
+  const getUniqueValidConnectors = () => {
+    const validConnectors = connectors.filter(c => 
+      c.name && 
+      c.name.trim() !== '' && 
+      c.name !== 'undefined'
+    )
+    
+    // Remove duplicates by name (keep first occurrence)
+    return validConnectors.filter((connector, index, arr) => 
+      arr.findIndex(c => c.name === connector.name) === index
+    )
+  }
+  
   const getDisplayedConnectors = () => {
+    const uniqueConnectors = getUniqueValidConnectors()
+    
     if (showAllWallets) {
-      return connectors
+      return uniqueConnectors
     }
     
-    const preferred = connectors.filter(c => preferredWallets.includes(c.name))
-    const others = connectors.filter(c => !preferredWallets.includes(c.name))
+    const preferred = uniqueConnectors.filter(c => preferredWallets.includes(c.name))
+    const others = uniqueConnectors.filter(c => !preferredWallets.includes(c.name))
     
     // Show first 6 preferred wallets, fill remaining with others if needed
     return [...preferred, ...others].slice(0, 6)
   }
 
-  const hasMoreWallets = connectors.length > 6
+  const allUniqueConnectors = getUniqueValidConnectors()
+  const displayedConnectors = getDisplayedConnectors()
+  const hasMoreWallets = displayedConnectors.length < allUniqueConnectors.length
 
   if (isConnected && address) {
     return (
@@ -144,7 +163,7 @@ export function WalletConnect() {
         </DialogHeader>
         
         <div className="grid grid-cols-3 gap-2 mt-4">
-          {getDisplayedConnectors().map((connector) => (
+          {displayedConnectors.map((connector) => (
             <Button
               key={connector.uid}
               variant="outline"
@@ -179,7 +198,7 @@ export function WalletConnect() {
               onClick={() => setShowAllWallets(true)}
               className="col-span-3 w-full text-xs text-gray-400 hover:text-gray-300"
             >
-              Other Wallets ({connectors.length - 6})
+              Other Wallets ({allUniqueConnectors.length - displayedConnectors.length})
             </Button>
           )}
         </div>
