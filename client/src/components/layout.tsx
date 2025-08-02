@@ -20,7 +20,8 @@ import {
   Moon,
   Vote,
   MessageCircle,
-  ExternalLink
+  ExternalLink,
+  Globe
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -330,6 +331,15 @@ export function Layout({ children }: LayoutProps) {
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.open('https://oeconomia.tech/', '_blank')}
+                className="p-2"
+                title="Visit Oeconomia Website"
+              >
+                <Globe className="w-4 h-4" />
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"
