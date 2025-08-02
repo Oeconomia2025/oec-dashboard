@@ -53,6 +53,7 @@ function SwapContent() {
   const [showSettings, setShowSettings] = useState(false);
   const [showChart, setShowChart] = useState(false);
   const [chartTimeframe, setChartTimeframe] = useState("1D");
+  const [activeTab, setActiveTab] = useState("Swap");
 
   // Mock token list - in real implementation, this would come from API
   const tokens: Token[] = [
@@ -144,12 +145,26 @@ function SwapContent() {
   };
 
   // Handle token swap
-  const handleSwap = () => {
+  const handleSwapTokens = () => {
     const temp = fromToken;
     setFromToken(toToken);
     setToToken(temp);
     setFromAmount("");
     setQuote(null);
+  };
+
+  const handleSwapExecution = async () => {
+    if (!fromToken || !toToken || !fromAmount) return;
+    
+    setIsLoading(true);
+    
+    // Simulate swap execution
+    setTimeout(() => {
+      setFromAmount("");
+      setQuote(null);
+      setIsLoading(false);
+      // Here you would integrate with actual swap contract
+    }, 2000);
   };
 
   // Handle amount change
@@ -214,28 +229,47 @@ function SwapContent() {
         {/* Main Swap Interface */}
         <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
           <Card className="crypto-card border h-full">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-white">Swap Tokens</CardTitle>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowChart(!showChart)}
-                  className={`text-gray-400 hover:text-white ${showChart ? 'text-crypto-blue' : ''}`}
-                >
-                  <BarChart3 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSettings(!showSettings)}
-                  className="text-gray-400 hover:text-white"
-                >
-                  <Settings className="w-4 h-4" />
-                </Button>
+            <CardHeader className="pb-3">
+              {/* Tab Navigation */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
+                  {["Swap", "Limit", "Buy", "Sell"].map((tab) => (
+                    <Button
+                      key={tab}
+                      variant={activeTab === tab ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setActiveTab(tab)}
+                      className={
+                        activeTab === tab
+                          ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
+                          : "text-gray-400 hover:text-white px-4 py-2"
+                      }
+                    >
+                      {tab}
+                    </Button>
+                  ))}
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowChart(!showChart)}
+                    className={`text-gray-400 hover:text-white ${showChart ? 'text-crypto-blue' : ''}`}
+                  >
+                    <BarChart3 className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowSettings(!showSettings)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    <Settings className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-0">
+            <CardContent className="space-y-4">
               {/* Settings Panel */}
               {showSettings && (
                 <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
@@ -286,183 +320,168 @@ function SwapContent() {
               )}
 
               {/* From Token */}
-              <div className="mb-1">
-                <label className="text-sm text-gray-400">From</label>
-                <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Select
-                        value={fromToken?.symbol || ""}
-                        onValueChange={(value) => {
-                          const token = tokens.find(t => t.symbol === value);
-                          setFromToken(token || null);
-                        }}
-                      >
-                        <SelectTrigger className="w-40 bg-transparent border-none p-0 h-auto">
-                          <SelectValue>
-                            {fromToken && (
-                              <div className="flex items-center space-x-2">
-                                <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
-                                <span className="font-medium">{fromToken.symbol}</span>
-                              </div>
-                            )}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {tokens.map((token) => (
-                            <SelectItem key={token.symbol} value={token.symbol}>
-                              <div className="flex items-center space-x-2">
-                                <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
-                                <span>{token.symbol}</span>
-                                <span className="text-gray-400 text-sm">{token.name}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        type="number"
-                        placeholder="0.0"
-                        value={fromAmount}
-                        onChange={(e) => setFromAmount(e.target.value)}
-                        className="text-right text-xl font-medium bg-transparent border-none p-0 h-auto"
-                      />
-                    </div>
-                    {fromToken && (
-                      <div className="flex justify-between text-sm text-gray-400">
-                        <span>${formatNumber(fromToken.price)}</span>
-                        <div className="flex items-center space-x-2">
-                          <span>Balance: {formatNumber(fromToken.balance || 0)}</span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setFromAmount((fromToken.balance || 0).toString())}
-                            className="text-xs text-crypto-blue hover:text-crypto-blue-light p-1 h-auto"
-                          >
-                            MAX
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-gray-400 text-sm">
+                    {activeTab === "Buy" ? "Buy" : activeTab === "Sell" ? "Sell" : "From"}
+                  </span>
+                  {fromToken && (
+                    <span className="text-gray-400 text-sm">
+                      Balance: {formatNumber(10000, 2)} {fromToken.symbol}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Input
+                    type="number"
+                    value={fromAmount}
+                    onChange={(e) => setFromAmount(e.target.value)}
+                    placeholder="0.0"
+                    className="flex-1 bg-transparent border-none text-2xl font-bold text-white placeholder-gray-500 p-0 h-auto focus-visible:ring-0"
+                  />
+                  <Select value={fromToken?.symbol || ""} onValueChange={(value) => {
+                    const token = tokens.find(t => t.symbol === value);
+                    if (token) setFromToken(token);
+                  }}>
+                    <SelectTrigger className="w-auto bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
+                      <SelectValue placeholder="Select token">
+                        {fromToken && (
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
+                              {fromToken.symbol.charAt(0)}
+                            </div>
+                            <span>{fromToken.symbol}</span>
+                          </div>
+                        )}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tokens.map((token) => (
+                        <SelectItem key={token.symbol} value={token.symbol}>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
+                              {token.symbol.charAt(0)}
+                            </div>
+                            <span>{token.symbol}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {fromToken && (
+                  <div className="text-right text-gray-400 text-sm mt-2">
+                    ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+                  </div>
+                )}
               </div>
 
-              {/* Swap Button */}
-              <div className="flex justify-center -my-4 relative z-10">
+              {/* Swap Arrow */}
+              <div className="flex justify-center py-3">
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={handleSwap}
-                  className="rounded-full bg-[var(--crypto-card)] hover:bg-[var(--crypto-dark)] border border-[var(--crypto-border)]"
+                  onClick={handleSwapTokens}
+                  className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80"
                 >
-                  <ArrowUpDown className="w-4 h-4" />
+                  <ArrowUpDown className="w-5 h-5 text-gray-400" />
                 </Button>
               </div>
 
               {/* To Token */}
-              <div className="-mt-2">
-                <label className="text-sm text-gray-400">To</label>
-                <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Select
-                        value={toToken?.symbol || ""}
-                        onValueChange={(value) => {
-                          const token = tokens.find(t => t.symbol === value);
-                          setToToken(token || null);
-                        }}
-                      >
-                        <SelectTrigger className="w-40 bg-transparent border-none p-0 h-auto">
-                          <SelectValue>
-                            {toToken && (
-                              <div className="flex items-center space-x-2">
-                                <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
-                                <span className="font-medium">{toToken.symbol}</span>
-                              </div>
-                            )}
-                          </SelectValue>
-                        </SelectTrigger>
-                        <SelectContent>
-                          {tokens.map((token) => (
-                            <SelectItem key={token.symbol} value={token.symbol}>
-                              <div className="flex items-center space-x-2">
-                                <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
-                                <span>{token.symbol}</span>
-                                <span className="text-gray-400 text-sm">{token.name}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <div className="text-right">
-                        {isLoading ? (
-                          <div className="text-xl font-medium text-gray-400">...</div>
-                        ) : quote ? (
-                          <div className="text-xl font-medium">
-                            {formatNumber(parseFloat(quote.outputAmount))}
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-gray-400 text-sm">
+                    {activeTab === "Buy" ? "For" : activeTab === "Sell" ? "For" : "To"}
+                  </span>
+                  {toToken && (
+                    <span className="text-gray-400 text-sm">
+                      Balance: {formatNumber(5000, 2)} {toToken.symbol}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Input
+                    type="number"
+                    value={quote?.outputAmount || ""}
+                    readOnly
+                    placeholder="0.0"
+                    className="flex-1 bg-transparent border-none text-2xl font-bold text-white placeholder-gray-500 p-0 h-auto focus-visible:ring-0"
+                  />
+                  <Select value={toToken?.symbol || ""} onValueChange={(value) => {
+                    const token = tokens.find(t => t.symbol === value);
+                    if (token) setToToken(token);
+                  }}>
+                    <SelectTrigger className="w-auto bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
+                      <SelectValue placeholder="Select token">
+                        {toToken && (
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
+                              {toToken.symbol.charAt(0)}
+                            </div>
+                            <span>{toToken.symbol}</span>
                           </div>
-                        ) : (
-                          <div className="text-xl font-medium text-gray-400">0.0</div>
                         )}
-                      </div>
-                    </div>
-                    {toToken && (
-                      <div className="flex justify-between text-sm text-gray-400">
-                        <span>${formatNumber(toToken.price)}</span>
-                        <span>Balance: {formatNumber(toToken.balance || 0)}</span>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {tokens.map((token) => (
+                        <SelectItem key={token.symbol} value={token.symbol}>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-5 h-5 rounded-full bg-gradient-to-r from-crypto-blue to-crypto-green flex items-center justify-center text-xs font-bold">
+                              {token.symbol.charAt(0)}
+                            </div>
+                            <span>{token.symbol}</span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                {toToken && quote && (
+                  <div className="text-right text-gray-400 text-sm mt-2">
+                    ≈ ${formatNumber(parseFloat(quote.outputAmount) * toToken.price, 2)}
+                  </div>
+                )}
               </div>
 
-              {/* Swap Quote Details */}
-              {quote && !isLoading && (
-                <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Exchange Rate</span>
-                      <span className="text-white">
-                        1 {fromToken?.symbol} = {formatNumber(quote.exchangeRate, 6)} {toToken?.symbol}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Price Impact</span>
-                      <span className={`${quote.priceImpact > 3 ? 'text-red-400' : quote.priceImpact > 1 ? 'text-yellow-400' : 'text-green-400'}`}>
-                        {quote.priceImpact > 0.01 ? '+' : ''}{formatNumber(quote.priceImpact, 2)}%
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Trading Fee</span>
-                      <span className="text-white">{formatNumber(quote.fee, 4)} {fromToken?.symbol}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-400">Minimum Received</span>
-                      <span className="text-white">
-                        {formatNumber(parseFloat(quote.minimumReceived))} {toToken?.symbol}
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* Quote and Trade Information */}
+              {quote && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Exchange Rate</span>
+                    <span className="text-white">
+                      1 {fromToken?.symbol} = {formatNumber(quote.exchangeRate, 6)} {toToken?.symbol}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Price Impact</span>
+                    <span className="text-green-400">&lt; 0.01%</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Network Fee</span>
+                    <span className="text-white">~$2.50</span>
+                  </div>
+                </div>
               )}
 
               {/* Swap Button */}
-              <Button 
-                className="w-full bg-gradient-to-r from-crypto-blue to-purple-600 hover:from-crypto-blue-light hover:to-purple-700 text-white font-medium py-3"
-                disabled={!fromToken || !toToken || !fromAmount || isLoading || parseFloat(fromAmount) === 0}
+              <Button
+                onClick={handleSwapExecution}
+                disabled={!fromToken || !toToken || !fromAmount || isLoading}
+                className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Getting Quote...</span>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Processing...</span>
                   </div>
                 ) : !fromToken || !toToken ? (
                   "Select Tokens"
-                ) : !fromAmount || parseFloat(fromAmount) === 0 ? (
+                ) : !fromAmount ? (
                   "Enter Amount"
                 ) : (
-                  `Swap ${fromToken.symbol} for ${toToken.symbol}`
+                  `${activeTab} ${fromToken.symbol}`
                 )}
               </Button>
             </CardContent>
@@ -588,12 +607,12 @@ function SwapContent() {
                           <div className="flex justify-between items-center">
                             <span className="text-gray-400">24h Change:</span>
                             <span className={`font-medium ${
-                              tokenData?.change24h && tokenData.change24h >= 0 
+                              tokenData?.priceChangePercent24h && tokenData.priceChangePercent24h >= 0 
                                 ? 'text-green-400' 
                                 : 'text-red-400'
                             }`}>
-                              {tokenData?.change24h 
-                                ? `${tokenData.change24h >= 0 ? '+' : ''}${tokenData.change24h.toFixed(2)}%`
+                              {tokenData?.priceChangePercent24h 
+                                ? `${tokenData.priceChangePercent24h >= 0 ? '+' : ''}${tokenData.priceChangePercent24h.toFixed(2)}%`
                                 : '+0.12%'
                               }
                             </span>
