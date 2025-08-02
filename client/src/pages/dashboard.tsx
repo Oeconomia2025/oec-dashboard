@@ -130,8 +130,12 @@ export default function Dashboard() {
 
 
 
-      {/* Sticky Navigation Menu - Fixed to viewport */}
-      <div className="fixed top-20 left-4 z-40 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg p-2 shadow-lg">
+      {/* Sticky Navigation Menu - Fixed to viewport with responsive positioning */}
+      <div className={`fixed z-40 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg p-2 shadow-lg ${
+        sidebarCollapsed 
+          ? 'top-20 left-20' 
+          : 'top-20 left-4 lg:left-72'
+      } transition-all duration-300`}>
         <nav>
           <ul className="space-y-1">
             {sidebarItems.map((item, index) => (
