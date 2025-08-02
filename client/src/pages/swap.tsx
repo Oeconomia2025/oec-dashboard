@@ -373,7 +373,7 @@ function SwapContent() {
               </div>
 
               {/* Swap Button - positioned between boxes */}
-              <div className="relative flex justify-center -my-6 z-30">
+              <div className="relative flex justify-center -my-4 z-30">
                 <Button
                   variant="ghost"
                   size="sm"
