@@ -35,7 +35,9 @@ import {
   Calculator,
   BarChart3,
   PieChart,
-  Percent
+  Percent,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useAccount } from "wagmi";
@@ -226,6 +228,10 @@ export function Staking() {
   const [calcAmount, setCalcAmount] = useState("1000");
   const [calcDays, setCalcDays] = useState("30");
   const [selectedPool, setSelectedPool] = useState(mockStakingPools[0]);
+  
+  // Collapsible sections state
+  const [isROIExpanded, setIsROIExpanded] = useState(true);
+  const [isAchievementsExpanded, setIsAchievementsExpanded] = useState(true);
 
   const formatNumber = (num: number) => {
     return num.toLocaleString('en-US', { 
@@ -395,12 +401,25 @@ export function Staking() {
 
           {/* ROI Calculator Section */}
           <Card className="crypto-card p-6 border mb-8 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30">
-            <div className="flex items-center space-x-2 mb-6">
-              <Calculator className="w-6 h-6 text-crypto-blue" />
-              <h2 className="text-xl font-semibold">Interactive ROI Calculator</h2>
+            <div 
+              className="flex items-center justify-between cursor-pointer mb-6"
+              onClick={() => setIsROIExpanded(!isROIExpanded)}
+            >
+              <div className="flex items-center space-x-2">
+                <Calculator className="w-6 h-6 text-crypto-blue" />
+                <h2 className="text-xl font-semibold">Interactive ROI Calculator</h2>
+              </div>
+              <Button variant="ghost" size="sm" className="p-1 h-auto">
+                {isROIExpanded ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </Button>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {isROIExpanded && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Calculator Controls */}
               <div className="space-y-6">
                 <div>
@@ -542,22 +561,34 @@ export function Staking() {
                   Calculations based on current APY rates. Actual returns may vary based on market conditions and smart contract performance.
                 </div>
               </div>
-            </div>
+              </div>
+            )}
           </Card>
 
           {/* Achievement Badges Section */}
           <Card className="crypto-card p-6 border mb-8">
-            <div className="flex items-center justify-between mb-6">
+            <div 
+              className="flex items-center justify-between cursor-pointer mb-6"
+              onClick={() => setIsAchievementsExpanded(!isAchievementsExpanded)}
+            >
               <div className="flex items-center space-x-2">
                 <Award className="w-6 h-6 text-crypto-gold" />
                 <h2 className="text-xl font-semibold">Achievement Badges</h2>
+                <Badge className="bg-crypto-blue/20 text-crypto-blue border-0">
+                  {achievementBadges.filter(badge => badge.earned).length}/{achievementBadges.length} Earned
+                </Badge>
               </div>
-              <Badge className="bg-crypto-blue/20 text-crypto-blue border-0">
-                {achievementBadges.filter(badge => badge.earned).length}/{achievementBadges.length} Earned
-              </Badge>
+              <Button variant="ghost" size="sm" className="p-1 h-auto">
+                {isAchievementsExpanded ? (
+                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                )}
+              </Button>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {isAchievementsExpanded && (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
               {achievementBadges.map((badge) => {
                 const IconComponent = badge.icon;
                 return (
@@ -596,7 +627,8 @@ export function Staking() {
                   </div>
                 );
               })}
-            </div>
+              </div>
+            )}
           </Card>
 
           {/* Development Notice */}
