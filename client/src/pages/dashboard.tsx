@@ -121,7 +121,7 @@ export default function Dashboard() {
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          <WalletConnect />
+          {/* Wallet moved to sticky header */}
         </div>
       </aside>
 
@@ -161,6 +161,7 @@ export default function Dashboard() {
                 <Activity className="w-3 h-3 mr-1" />
                 Live
               </Badge>
+              <WalletConnect />
               <Button variant="ghost" size="sm">
                 <Settings className="w-4 h-4" />
               </Button>
