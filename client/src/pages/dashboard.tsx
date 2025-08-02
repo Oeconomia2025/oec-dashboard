@@ -14,7 +14,9 @@ import {
   Menu,
   X,
   Lock,
-  Zap
+  Zap,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { TokenOverview } from "@/components/token-overview";
 import { PriceChart } from "@/components/price-chart";
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const [contractAddress, setContractAddress] = useState(TONE_TOKEN_CONFIG.contractAddress);
   const [inputAddress, setInputAddress] = useState(contractAddress);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
 
@@ -52,42 +55,62 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[var(--crypto-dark)] text-white flex">
       {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 ${sidebarCollapsed ? 'w-16' : 'w-64'} bg-[var(--crypto-card)] border-r border-[var(--crypto-border)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
         <div className="flex items-center justify-between h-16 px-4 border-b border-[var(--crypto-border)]">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full overflow-hidden">
+          <div className={`flex items-center ${sidebarCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
+            <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
               <img 
                 src="/oec-logo.png" 
                 alt="Oeconomia Logo" 
                 className="w-full h-full object-cover"
               />
             </div>
-            <div>
-              <h2 className="text-lg font-bold">Oeconomia</h2>
-              <p className="text-xs text-gray-400">OEC Dashboard</p>
-            </div>
+            {!sidebarCollapsed && (
+              <div>
+                <h2 className="text-lg font-bold">Oeconomia</h2>
+                <p className="text-xs text-gray-400">OEC Dashboard</p>
+              </div>
+            )}
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setSidebarOpen(false)}
-            className="lg:hidden"
-          >
-            <X className="w-4 h-4" />
-          </Button>
+          <div className="flex items-center space-x-1">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="hidden lg:flex"
+            >
+              {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
         
-        <nav className="p-4">
+        <nav className="p-4 sticky top-20 overflow-y-auto max-h-[calc(100vh-5rem)]">
           <ul className="space-y-2">
             {sidebarItems.map((item, index) => (
               <li key={index}>
-                <button className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                  item.active 
-                    ? 'bg-crypto-blue text-black font-medium' 
-                    : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
-                }`}>
-                  <item.icon className="w-5 h-5" />
-                  <span>{item.label}</span>
+                <button 
+                  className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center px-2' : 'space-x-3 px-3'} py-2 rounded-lg text-left transition-colors group relative ${
+                    item.active 
+                      ? 'bg-crypto-blue text-black font-medium' 
+                      : 'text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]'
+                  }`}
+                  title={sidebarCollapsed ? item.label : undefined}
+                >
+                  <item.icon className="w-5 h-5 flex-shrink-0" />
+                  {!sidebarCollapsed && <span>{item.label}</span>}
+                  {sidebarCollapsed && (
+                    <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                      {item.label}
+                    </div>
+                  )}
                 </button>
               </li>
             ))}
