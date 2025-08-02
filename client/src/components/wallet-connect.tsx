@@ -87,7 +87,8 @@ export function WalletConnect() {
             window.location.reload()
           }, 100)
         }}
-        className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
+        className="w-full text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
+        style={{ background: 'linear-gradient(45deg, #00d4ff, #ff00ff)' }}
       >
         <Wallet className="w-4 h-4 mr-2" />
         {formatAddress(address)}
@@ -99,7 +100,8 @@ export function WalletConnect() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
+          className="w-full text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
+          style={{ background: 'linear-gradient(45deg, #00d4ff, #ff00ff)' }}
         >
           <Wallet className="w-4 h-4 mr-2" />
           Connect Wallet
