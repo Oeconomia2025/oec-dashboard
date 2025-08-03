@@ -260,7 +260,7 @@ function SwapContent() {
     
     if (direction === 'from') {
       // Standard: User specifies input amount, calculate output
-      exchangeRate = to.price / from.price;
+      exchangeRate = from.price / to.price;
       outputAmount = inputAmount * exchangeRate;
       fee = inputAmount * 0.003; // 0.3% fee on input
       minimumReceived = outputAmount * (1 - slippage / 100);
@@ -269,7 +269,7 @@ function SwapContent() {
       setToAmount(outputAmount.toFixed(6));
     } else {
       // Reverse: User specifies desired output, calculate required input
-      exchangeRate = from.price / to.price;
+      exchangeRate = to.price / from.price;
       const requiredInput = inputAmount * exchangeRate;
       fee = requiredInput * 0.003; // 0.3% fee on input
       const totalRequired = requiredInput + fee;
@@ -285,7 +285,7 @@ function SwapContent() {
     const mockQuote: SwapQuote = {
       inputAmount: direction === 'from' ? amount : fromAmount,
       outputAmount: direction === 'from' ? outputAmount.toString() : amount,
-      exchangeRate: direction === 'from' ? (to.price / from.price) : (from.price / to.price),
+      exchangeRate: direction === 'from' ? (from.price / to.price) : (to.price / from.price),
       priceImpact,
       minimumReceived: minimumReceived.toString(),
       fee,
