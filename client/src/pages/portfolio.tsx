@@ -118,21 +118,23 @@ export function Portfolio() {
     return `$${formatNumber(price)}`
   }
 
-  // Token logo mapping
+  // Token logo mapping - matches swap page logos
   const getTokenLogo = (symbol: string, address?: string) => {
     const logoMap: Record<string, string> = {
-      'BNB': '🟡',
-      'USDT': '🔵', 
-      'BUSD': '🟡',
-      'USDC': '🔵',
-      'ETH': '🔷',
-      'BTCB': '🟠',
-      'BTC': '🟠',
-      'CAKE': '🟤',
-      'XVS': '🔴'
+      'OEC': '/oec-logo.png',
+      'BNB': 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+      'USDT': 'https://assets.coingecko.com/coins/images/325/small/Tether.png',
+      'BUSD': 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
+      'USDC': 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+      'ETH': 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
+      'WETH': 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
+      'BTCB': 'https://assets.coingecko.com/coins/images/14108/small/Binance-bitcoin.png',
+      'BTC': 'https://assets.coingecko.com/coins/images/14108/small/Binance-bitcoin.png',
+      'CAKE': 'https://assets.coingecko.com/coins/images/12632/small/pancakeswap-cake-logo_.png',
+      'XVS': 'https://assets.coingecko.com/coins/images/12677/small/venus.png'
     }
     
-    return logoMap[symbol.toUpperCase()] || '💎'
+    return logoMap[symbol.toUpperCase()] || 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'
   }
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
@@ -272,9 +274,16 @@ export function Portfolio() {
               {bnbBalance && parseFloat(bnbBalance.formatted) > 0 && (
                 <div className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center text-2xl">
-                      {getTokenLogo('BNB')}
-                    </div>
+                    <img 
+                      src={getTokenLogo('BNB')} 
+                      alt="BNB" 
+                      className="w-10 h-10 rounded-full"
+                      onError={(e) => {
+                        // Fallback if image fails to load
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement!.innerHTML = '<div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-sm">BNB</div>';
+                      }}
+                    />
                     <div>
                       <div className="font-medium">Binance Coin</div>
                       <div className="text-sm text-gray-400">BNB</div>
@@ -294,9 +303,16 @@ export function Portfolio() {
                 return (
                   <div key={token.address} className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-2xl">
-                        {getTokenLogo(token.symbol, token.address)}
-                      </div>
+                      <img 
+                        src={getTokenLogo(token.symbol, token.address)} 
+                        alt={token.symbol} 
+                        className="w-10 h-10 rounded-full"
+                        onError={(e) => {
+                          // Fallback if image fails to load
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement!.innerHTML = `<div class="w-10 h-10 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-white font-bold text-xs">${token.symbol.slice(0, 3)}</div>`;
+                        }}
+                      />
                       <div>
                         <div className="font-medium">{token.name}</div>
                         <div className="text-sm text-gray-400">{token.symbol}</div>
