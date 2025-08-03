@@ -48,28 +48,28 @@ export const config = createConfig({
       target: {
         id: 'trust',
         name: 'Trust Wallet',
-        provider: (window) => window?.trustWallet,
+        provider: (window) => (window as any)?.trustWallet,
       },
     }),
     injected({
       target: {
         id: 'rabby',
         name: 'Rabby Wallet',
-        provider: (window) => window?.rabby,
+        provider: (window) => (window as any)?.rabby,
       },
     }),
     injected({
       target: {
         id: 'okx',
         name: 'OKX Wallet', 
-        provider: (window) => window?.okxwallet,
+        provider: (window) => (window as any)?.okxwallet,
       },
     }),
     injected({
       target: {
         id: 'binance',
         name: 'Binance Wallet',
-        provider: (window) => window?.BinanceChain,
+        provider: (window) => (window as any)?.BinanceChain,
       },
     }),
     injected({
@@ -83,7 +83,7 @@ export const config = createConfig({
       target: {
         id: 'safe',
         name: 'Safe Wallet',
-        provider: (window) => window?.safe,
+        provider: (window) => (window as any)?.safe,
       },
     }),
     // Generic injected for any other EVM wallets
