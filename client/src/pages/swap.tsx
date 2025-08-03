@@ -88,6 +88,7 @@ function SwapContent() {
   
   // Sell mode specific state
   const [sellPercentage, setSellPercentage] = useState<number | null>(null);
+  const [swapPercentage, setSwapPercentage] = useState<number | null>(null);
 
   // Helper functions for token selection
   const openTokenModal = (type?: 'from' | 'to' | 'priceCondition') => {
@@ -360,6 +361,16 @@ function SwapContent() {
     if (!fromToken) return;
     
     setSellPercentage(percentage);
+    const balance = fromToken.balance || 0;
+    const amount = (balance * percentage / 100).toString();
+    setFromAmount(amount);
+    setLastEditedField('from');
+  };
+
+  const handleSwapPercentage = (percentage: number) => {
+    if (!fromToken) return;
+    
+    setSwapPercentage(percentage);
     const balance = fromToken.balance || 0;
     const amount = (balance * percentage / 100).toString();
     setFromAmount(amount);
@@ -996,18 +1007,30 @@ function SwapContent() {
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">From</span>
-                      {fromToken && (
-                        <span className="text-gray-400 text-sm">
-                          Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
-                        </span>
-                      )}
                     </div>
+                    
+                    {/* Percentage Buttons */}
+                    <div className="flex space-x-2 mb-4">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant={swapPercentage === percentage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleSwapPercentage(percentage)}
+                          className={swapPercentage === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"}
+                        >
+                          {percentage === 100 ? "Max" : `${percentage}%`}
+                        </Button>
+                      ))}
+                    </div>
+                    
                     <div className="flex items-center space-x-3">
                       <Input
                         type="number"
                         value={fromAmount}
                         onChange={(e) => {
                           setFromAmount(e.target.value);
+                          setSwapPercentage(null);
                           setLastEditedField('from');
                         }}
                         placeholder="0.0"
@@ -1038,9 +1061,11 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
+                    
+                    {/* Balance below token selection */}
                     {fromToken && (
-                      <div className="text-right text-gray-400 text-sm mt-2">
-                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+                      <div className="text-center text-gray-400 text-sm mt-2">
+                        Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
                       </div>
                     )}
                   </div>
