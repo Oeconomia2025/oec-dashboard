@@ -343,6 +343,81 @@ function SwapContent() {
   const { data: priceHistory, isLoading: chartLoading } = usePriceHistory(chartContractAddress, chartTimeframe);
   const { data: tokenData } = useTokenData(chartContractAddress);
 
+  // Generate realistic OEC price progression for chart display
+  const generateOECPriceHistory = (timeframe: string) => {
+    const now = Date.now();
+    const startPrice = 0.73;
+    const endPrice = 7.37;
+    const totalGrowth = endPrice / startPrice; // ~10x growth
+    
+    const getPointsForTimeframe = (tf: string) => {
+      switch (tf) {
+        case "1H": return 60;
+        case "1D": return 48; // 30-min intervals
+        case "7D": return 84; // 2-hour intervals  
+        case "30D": return 120; // 6-hour intervals
+        default: return 48;
+      }
+    };
+    
+    const points = getPointsForTimeframe(timeframe);
+    const intervalMs = timeframe === "30D" ? 6 * 60 * 60 * 1000 : // 6 hours
+                     timeframe === "7D" ? 2 * 60 * 60 * 1000 : // 2 hours
+                     timeframe === "1D" ? 30 * 60 * 1000 : // 30 minutes
+                     60 * 1000; // 1 minute for 1H
+    
+    return Array.from({ length: points }, (_, i) => {
+      const progress = i / (points - 1);
+      const timestamp = Math.floor((now - (points - 1 - i) * intervalMs) / 1000);
+      
+      // Create realistic price progression with volatility
+      let basePrice = startPrice * Math.pow(totalGrowth, progress);
+      
+      // Add some realistic market movements
+      const volatilityPhases = [
+        { start: 0.0, end: 0.15, trend: 1.2 }, // Initial pump
+        { start: 0.15, end: 0.25, trend: 0.7 }, // Correction
+        { start: 0.25, end: 0.45, trend: 1.4 }, // Strong rally
+        { start: 0.45, end: 0.55, trend: 0.8 }, // Pullback
+        { start: 0.55, end: 0.75, trend: 1.3 }, // Recovery
+        { start: 0.75, end: 0.85, trend: 0.9 }, // Consolidation
+        { start: 0.85, end: 1.0, trend: 1.1 },  // Final push
+      ];
+      
+      // Apply phase-based volatility
+      for (const phase of volatilityPhases) {
+        if (progress >= phase.start && progress <= phase.end) {
+          const phaseProgress = (progress - phase.start) / (phase.end - phase.start);
+          const volatility = 0.08 * phase.trend; // 8% base volatility modified by trend
+          const randomWalk = (Math.random() - 0.5) * volatility;
+          const trendAdjustment = (phase.trend - 1) * 0.1 * phaseProgress;
+          basePrice *= (1 + randomWalk + trendAdjustment);
+          break;
+        }
+      }
+      
+      // Add some micro-fluctuations for realism
+      const microVol = (Math.random() - 0.5) * 0.03; // ±1.5%
+      basePrice *= (1 + microVol);
+      
+      // Ensure we end close to target price
+      if (i === points - 1) {
+        basePrice = endPrice + (Math.random() - 0.5) * 0.02; // Within 1% of target
+      }
+      
+      return {
+        timestamp,
+        price: Math.max(0.1, basePrice), // Floor at $0.10
+        volume: Math.random() * 2000000 + 500000, // 0.5M to 2.5M volume
+      };
+    });
+  };
+
+  // Use OEC mock data for chart, but keep real API data for other components
+  const chartPriceHistory = (fromToken?.symbol === 'OEC' && showChart) 
+    ? generateOECPriceHistory(chartTimeframe)
+    : priceHistory;
+
   // Set initial tokens based on active tab
   useEffect(() => {
     if (activeTab === "Buy") {
@@ -1334,7 +1409,7 @@ function SwapContent() {
                       <p className="text-gray-400">Loading price data...</p>
                     </div>
                   </div>
-                ) : !priceHistory || priceHistory.length === 0 ? (
+                ) : !chartPriceHistory || chartPriceHistory.length === 0 ? (
                   <div className="w-full h-full bg-[var(--crypto-dark)] rounded-lg border border-[var(--crypto-border)] flex items-center justify-center">
                     <div className="text-center">
                       <TrendingUp className="w-12 h-12 text-gray-600 mx-auto mb-4" />
@@ -1368,7 +1443,7 @@ function SwapContent() {
                 ) : (
                   <div className="h-full relative">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={priceHistory}>
+                      <AreaChart data={chartPriceHistory}>
                         <defs>
                           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor={getTokenColor(fromToken)} stopOpacity={1.0}/>
