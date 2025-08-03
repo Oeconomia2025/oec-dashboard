@@ -73,6 +73,7 @@ function SwapContent() {
     expiry: "1 day",
     priceAdjustment: 0
   });
+  const [limitOrderType, setLimitOrderType] = useState<'sell' | 'buy'>('sell');
   
   // Buy mode specific state
   const [fiatAmount, setFiatAmount] = useState("");
@@ -302,6 +303,27 @@ function SwapContent() {
     return adjustedRate.toFixed(6);
   };
 
+  // Get current market price for display
+  const getCurrentMarketPrice = () => {
+    if (!fromToken || !toToken) return "0";
+    return (toToken.price / fromToken.price).toFixed(6);
+  };
+
+  // Handle buy/sell toggle for limit orders
+  const handleLimitOrderToggle = () => {
+    const newType = limitOrderType === 'sell' ? 'buy' : 'sell';
+    setLimitOrderType(newType);
+    
+    // Swap tokens when toggling
+    const tempToken = fromToken;
+    setFromToken(toToken);
+    setToToken(tempToken);
+    
+    // Clear amounts
+    setFromAmount("");
+    setToAmount("");
+  };
+
   // Handle tab changes with state reset
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
@@ -315,6 +337,7 @@ function SwapContent() {
       expiry: "1 day",
       priceAdjustment: 0
     });
+    setLimitOrderType('sell');
   };
 
   // Chart formatting functions
@@ -447,18 +470,29 @@ function SwapContent() {
 
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
-                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-4">
-                  <div>
+                <>
+                  {/* Price Condition Section */}
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">When 1 {fromToken?.symbol || 'Token'} is worth</span>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-3">
                       <Input
                         type="number"
                         value={limitOrder.triggerPrice || calculateLimitPrice()}
                         onChange={(e) => setLimitOrder({...limitOrder, triggerPrice: e.target.value})}
                         placeholder="0.0"
-                        className="flex-1 bg-transparent border border-[var(--crypto-border)] rounded-lg p-3 text-white text-lg font-semibold"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <Button
                         variant="outline"
@@ -476,27 +510,54 @@ function SwapContent() {
                       </Button>
                     </div>
                     
-                    {/* Market Price Adjustments */}
+                    {/* Market Price and Adjustments */}
                     <div className="flex items-center space-x-2 mt-3">
-                      <span className="text-gray-400 text-sm">Market</span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setLimitOrder({...limitOrder, triggerPrice: getCurrentMarketPrice(), priceAdjustment: 0})}
+                        className="text-xs text-gray-400 border-gray-600 hover:text-white hover:border-gray-400"
+                      >
+                        Market {getCurrentMarketPrice()}
+                      </Button>
                       {[1, 5, 10].map((percentage) => (
                         <Button
                           key={percentage}
                           variant={limitOrder.priceAdjustment === percentage ? "default" : "outline"}
                           size="sm"
-                          onClick={() => setLimitOrder({...limitOrder, priceAdjustment: percentage})}
-                          className="text-xs"
+                          onClick={() => {
+                            const marketPrice = parseFloat(getCurrentMarketPrice());
+                            const adjustedPrice = marketPrice * (1 + percentage / 100);
+                            setLimitOrder({
+                              ...limitOrder, 
+                              priceAdjustment: percentage,
+                              triggerPrice: adjustedPrice.toFixed(6)
+                            });
+                          }}
+                          className={limitOrder.priceAdjustment === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80 text-xs" : "text-xs"}
                         >
                           +{percentage}%
                         </Button>
                       ))}
                     </div>
                   </div>
+
+                  {/* Buy/Sell Toggle Button */}
+                  <div className="flex justify-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLimitOrderToggle}
+                      className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                    >
+                      <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                    </Button>
+                  </div>
                   
                   {/* Sell Amount Section */}
-                  <div>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">Sell</span>
+                      <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'Sell' : 'Buy'}</span>
                       {fromToken && (
                         <span className="text-gray-400 text-sm">
                           Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
@@ -512,7 +573,17 @@ function SwapContent() {
                           setLastEditedField('from');
                         }}
                         placeholder="0.0"
-                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-8 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-lg"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <Button
                         variant="outline"
@@ -529,12 +600,22 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
+                    {fromToken && (
+                      <div className="text-right text-gray-400 text-sm mt-2">
+                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+                      </div>
+                    )}
                   </div>
 
                   {/* Buy Amount Section - Shows what you'll receive */}
-                  <div>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">Buy</span>
+                      <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'For' : 'For'}</span>
+                      {toToken && (
+                        <span className="text-gray-400 text-sm">
+                          Balance: {formatNumber(toToken.balance || 0, 2)} {toToken.symbol}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center space-x-3">
                       <Input
@@ -545,7 +626,17 @@ function SwapContent() {
                           setLastEditedField('to');
                         }}
                         placeholder="0.0"
-                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-8 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-lg"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <Button
                         variant="outline"
@@ -562,10 +653,15 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
+                    {toToken && (
+                      <div className="text-right text-gray-400 text-sm mt-2">
+                        ≈ ${formatNumber((parseFloat(toAmount) || 0) * toToken.price, 2)}
+                      </div>
+                    )}
                   </div>
                   
                   {/* Expiry Selection */}
-                  <div>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <span className="text-gray-400 text-sm mb-3 block">Expiry</span>
                     <div className="flex space-x-2">
                       {["1 day", "1 week", "1 month", "1 year"].map((period) => (
@@ -574,14 +670,14 @@ function SwapContent() {
                           variant={limitOrder.expiry === period ? "default" : "outline"}
                           size="sm"
                           onClick={() => setLimitOrder({...limitOrder, expiry: period})}
-                          className="text-xs"
+                          className={limitOrder.expiry === period ? "bg-crypto-blue hover:bg-crypto-blue/80 text-xs" : "text-xs"}
                         >
                           {period}
                         </Button>
                       ))}
                     </div>
                   </div>
-                </div>
+                </>
               )}
 
               {/* Buy Mode Interface */}
