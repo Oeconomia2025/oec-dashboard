@@ -290,8 +290,7 @@ export function Portfolio() {
               {/* Token Balances */}
               {tokenBalances?.map((token: TokenBalance) => {
                 const balance = parseFloat(token.balance) / Math.pow(10, token.decimals)
-                if (balance <= 0) return null
-
+                
                 return (
                   <div key={token.address} className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
                     <div className="flex items-center space-x-4">
@@ -306,7 +305,7 @@ export function Portfolio() {
                     <div className="text-right">
                       <div className="font-medium">{formatNumber(balance)} {token.symbol}</div>
                       <div className="text-sm text-gray-400">
-                        {token.value && token.value > 0 ? formatPrice(token.value) : '---'}
+                        {token.value && token.value > 0 && isFinite(token.value) ? formatPrice(token.value) : '---'}
                       </div>
                     </div>
                   </div>
