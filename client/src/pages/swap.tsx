@@ -618,7 +618,7 @@ function SwapContent() {
 
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
-                <div className="space-y-3">
+                <>
                   {/* Price Condition Section - Behavior depends on stablecoin involvement */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
@@ -814,7 +814,7 @@ function SwapContent() {
                       ))}
                     </div>
                   </div>
-                </div>
+                </>
               )}
 
               {/* Buy Mode Interface */}
