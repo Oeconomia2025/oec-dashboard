@@ -23,6 +23,7 @@ Preferred communication style: Simple, everyday language.
     - Interactive ROI Calculator and Achievement system with collapsible interfaces and enhanced toggle styling.
     - Clear visual distinction between different DeFi position types (pools vs. farms) using distinct color schemes.
     - One-time popup modal for new visitors warning about DApp development status.
+    - Advanced chart interface with responsive 50/50 layout, collapsible sidebar, token-specific color mapping, and area chart with dramatic gradient fade effects (August 2025).
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js server (converted to Netlify serverless functions for production)
