@@ -48,11 +48,8 @@ export const getQueryFn: <T>(options: {
       await throwIfResNotOk(res);
       return await res.json();
     } catch (error) {
-      // Gracefully handle network errors in production
-      if (process.env.NODE_ENV === 'production') {
-        console.warn(`API call failed: ${queryKey.join("/")}`, error);
-        return null;
-      }
+      // Log error but still throw for React Query to handle properly
+      console.warn(`API call failed: ${queryKey.join("/")}`, error);
       throw error;
     }
   };
@@ -63,8 +60,14 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
-      retry: false,
+      staleTime: 30000, // 30 seconds
+      retry: (failureCount, error) => {
+        // Retry up to 2 times for network errors, but not for 404s
+        if (failureCount < 2 && !error.message.includes('404')) {
+          return true;
+        }
+        return false;
+      },
     },
     mutations: {
       retry: false,
