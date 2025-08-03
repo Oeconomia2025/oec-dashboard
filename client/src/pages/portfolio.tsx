@@ -106,13 +106,34 @@ export function Portfolio() {
   })
 
   const formatNumber = (num: number) => {
+    if (isNaN(num) || !isFinite(num)) return '0'
     return num.toLocaleString('en-US', { 
       minimumFractionDigits: 0, 
       maximumFractionDigits: 5 
     })
   }
 
-  const formatPrice = (price: number) => `$${formatNumber(price)}`
+  const formatPrice = (price: number) => {
+    if (isNaN(price) || !isFinite(price)) return '$0'
+    return `$${formatNumber(price)}`
+  }
+
+  // Token logo mapping
+  const getTokenLogo = (symbol: string, address?: string) => {
+    const logoMap: Record<string, string> = {
+      'BNB': '🟡',
+      'USDT': '🔵', 
+      'BUSD': '🟡',
+      'USDC': '🔵',
+      'ETH': '🔷',
+      'BTCB': '🟠',
+      'BTC': '🟠',
+      'CAKE': '🟤',
+      'XVS': '🔴'
+    }
+    
+    return logoMap[symbol.toUpperCase()] || '💎'
+  }
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
   // Calculate total portfolio value
@@ -120,7 +141,8 @@ export function Portfolio() {
     return sum + (token.value || 0)
   }, 0) || 0
 
-  const bnbValue = bnbBalance && bnbBalance.value ? parseFloat(bnbBalance.formatted) * 300 : 0 // Approximate BNB price
+  const bnbValue = bnbBalance && bnbBalance.formatted ? 
+    (parseFloat(bnbBalance.formatted) || 0) * 300 : 0 // Approximate BNB price
   
   // Calculate pools/farms value
   const poolsFarmsValue = poolsFarms.reduce((sum, item) => sum + item.userValue, 0)
@@ -162,7 +184,7 @@ export function Portfolio() {
                 <DollarSign className="text-gray-300 w-5 h-5" />
               </div>
               <div className="text-2xl font-bold text-white drop-shadow-sm">
-                {formatPrice(totalValue + bnbValue + poolsFarmsValue)}
+                {formatPrice((totalValue || 0) + (bnbValue || 0) + (poolsFarmsValue || 0))}
               </div>
               <div className="text-sm text-gray-400 mt-2">
                 Including {poolsFarms.length} DeFi positions
@@ -250,8 +272,8 @@ export function Portfolio() {
               {bnbBalance && parseFloat(bnbBalance.formatted) > 0 && (
                 <div className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
-                      <span className="text-black font-bold text-sm">BNB</span>
+                    <div className="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center text-2xl">
+                      {getTokenLogo('BNB')}
                     </div>
                     <div>
                       <div className="font-medium">Binance Coin</div>
@@ -259,7 +281,7 @@ export function Portfolio() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">{formatNumber(parseFloat(bnbBalance.formatted))} BNB</div>
+                    <div className="font-medium">{formatNumber(parseFloat(bnbBalance.formatted || '0'))} BNB</div>
                     <div className="text-sm text-gray-400">≈ {formatPrice(bnbValue)}</div>
                   </div>
                 </div>
@@ -273,10 +295,8 @@ export function Portfolio() {
                 return (
                   <div key={token.address} className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
                     <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue to-crypto-green rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-xs">
-                          {token.symbol.slice(0, 3)}
-                        </span>
+                      <div className="w-10 h-10 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-2xl">
+                        {getTokenLogo(token.symbol, token.address)}
                       </div>
                       <div>
                         <div className="font-medium">{token.name}</div>
@@ -286,7 +306,7 @@ export function Portfolio() {
                     <div className="text-right">
                       <div className="font-medium">{formatNumber(balance)} {token.symbol}</div>
                       <div className="text-sm text-gray-400">
-                        {token.value ? formatPrice(token.value) : '---'}
+                        {token.value && token.value > 0 ? formatPrice(token.value) : '---'}
                       </div>
                     </div>
                   </div>
