@@ -618,9 +618,9 @@ function SwapContent() {
 
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
-                <>
+                <div className="space-y-3">
                   {/* Price Condition Section - Behavior depends on stablecoin involvement */}
-                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">
                         When 1 {getPriceConditionTokens().from?.symbol || fromToken?.symbol || 'Token'} is worth
@@ -699,14 +699,9 @@ function SwapContent() {
                   
                   {/* Sell Amount Section with relative positioning for toggle */}
                   <div className="relative">
-                    <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                      <div className="flex items-center justify-between mb-3">
+                    <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
+                      <div className="flex items-center justify-between mb-2">
                         <span className="text-gray-400 text-sm">Sell</span>
-                        {fromToken && (
-                          <span className="text-gray-400 text-sm">
-                            Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
-                          </span>
-                        )}
                       </div>
                       <div className="flex items-center space-x-3">
                         <Input
@@ -744,35 +739,25 @@ function SwapContent() {
                           )}
                         </Button>
                       </div>
-                      {fromToken && (
-                        <div className="text-right text-gray-400 text-sm mt-2">
-                          ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
-                        </div>
-                      )}
                     </div>
 
                     {/* Toggle Button - Overlapping between sections */}
-                    <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
+                    <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-5 z-30">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleLimitOrderToggle}
-                        className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                        className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-10 h-10 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
                       >
-                        <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                        <ArrowUpDown className="w-4 h-4 text-gray-400" />
                       </Button>
                     </div>
                   </div>
 
                   {/* For Amount Section - Shows what you'll receive */}
-                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                    <div className="flex items-center justify-between mb-3">
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-2">
                       <span className="text-gray-400 text-sm">For</span>
-                      {toToken && (
-                        <span className="text-gray-400 text-sm">
-                          Balance: {formatNumber(toToken.balance || 0, 2)} {toToken.symbol}
-                        </span>
-                      )}
                     </div>
                     <div className="flex items-center space-x-3">
                       <Input
@@ -810,16 +795,11 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-                    {toToken && (
-                      <div className="text-right text-gray-400 text-sm mt-2">
-                        ≈ ${formatNumber((parseFloat(toAmount) || 0) * toToken.price, 2)}
-                      </div>
-                    )}
                   </div>
                   
                   {/* Expiry Selection */}
-                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                    <span className="text-gray-400 text-sm mb-3 block">Expiry</span>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
+                    <span className="text-gray-400 text-sm mb-2 block">Expiry</span>
                     <div className="flex space-x-2">
                       {["1 day", "1 week", "1 month", "1 year"].map((period) => (
                         <Button
@@ -834,7 +814,7 @@ function SwapContent() {
                       ))}
                     </div>
                   </div>
-                </>
+                </div>
               )}
 
               {/* Buy Mode Interface */}
