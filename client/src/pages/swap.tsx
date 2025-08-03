@@ -188,7 +188,7 @@ function SwapContent() {
       address: "0x0000000000000000000000000000000000000000",
       decimals: 18,
       logo: "/oec-logo.png",
-      price: 0.15,
+      price: 7.37374,
       balance: 1250.50
     },
     {
