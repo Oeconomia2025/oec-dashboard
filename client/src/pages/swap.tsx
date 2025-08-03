@@ -476,31 +476,20 @@ function SwapContent() {
     return stablecoins.includes(token.symbol.toUpperCase());
   };
 
-  // Check if we should show inverted chart (for OEC paired with stablecoin)
-  const shouldShowInvertedChart = () => {
-    if (!fromToken || !toToken || !showChart) return false;
+  // Determine which chart data to show
+  const getChartData = () => {
+    if (!showChart) return priceHistory;
     
-    const isOECPair = fromToken.symbol === 'OEC' || toToken.symbol === 'OEC';
-    const hasStablecoinInPair = isStablecoin(fromToken) || isStablecoin(toToken);
+    // Show OEC mock data for any pair involving OEC
+    if (fromToken?.symbol === 'OEC' || toToken?.symbol === 'OEC') {
+      return generateOECPriceHistory(chartTimeframe);
+    }
     
-    return isOECPair && hasStablecoinInPair;
+    // For other pairs, use real API data
+    return priceHistory;
   };
 
-  // Generate inverted price history (showing how many OEC per stablecoin)
-  const generateInvertedOECHistory = (timeframe: string) => {
-    const oecHistory = generateOECPriceHistory(timeframe);
-    return oecHistory.map(point => ({
-      ...point,
-      price: 1 / point.price, // Invert the price (1 USDT = X OEC)
-    }));
-  };
-
-  // Use appropriate chart data based on token pair
-  const chartPriceHistory = shouldShowInvertedChart()
-    ? generateInvertedOECHistory(chartTimeframe)
-    : (fromToken?.symbol === 'OEC' && showChart)
-      ? generateOECPriceHistory(chartTimeframe)
-      : priceHistory;
+  const chartPriceHistory = getChartData();
 
   // Check if current pair involves a stablecoin
   const hasStablecoin = () => {
@@ -1405,10 +1394,7 @@ function SwapContent() {
                     <span>Price Chart</span>
                     {fromToken && toToken && (
                       <div className="text-sm text-gray-400">
-                        {shouldShowInvertedChart() 
-                          ? `${isStablecoin(fromToken) ? fromToken.symbol : toToken.symbol}/${fromToken.symbol === 'OEC' ? fromToken.symbol : toToken.symbol}`
-                          : `${fromToken.symbol}/${toToken.symbol}`
-                        }
+                        {fromToken.symbol}/{toToken.symbol}
                       </div>
                     )}
                   </div>
