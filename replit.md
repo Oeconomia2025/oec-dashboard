@@ -85,6 +85,21 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
 - **Result**: Build process now works reliably in Netlify's environment with proper path resolution
 - **Production Status**: Successfully deployed with professional error messaging replacing "Failed to load token data"
 
+### Express API to Netlify Functions Conversion (August 2025)
+- **Feature Added**: Complete conversion of Express.js API routes to Netlify serverless functions for live data on production
+- **Implementation**: 
+  - Created 7 separate Netlify Functions: token, transactions, holders, price-history, network-status, volume-analytics, portfolio
+  - Each function handles CORS and proper error handling for production deployment
+  - Functions use same service layer (BSCScan, CoinGecko, PancakeSwap APIs) as development environment
+  - Added automated build process using esbuild to compile TypeScript functions to CommonJS
+- **Technical Details**:
+  - Functions located in `netlify/functions/` with shared service library in `lib/` subfolder
+  - Configured Netlify redirects to route `/api/*` paths to appropriate functions
+  - Build process: TypeScript → CommonJS bundling with external package optimization
+  - Maintains same API contract as Express server for seamless frontend compatibility
+- **Production Readiness**: Functions tested and building successfully, ready for live data deployment
+- **Result**: Production site will now have access to real-time cryptocurrency data instead of static placeholder messages
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
