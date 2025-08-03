@@ -1187,12 +1187,18 @@ function SwapContent() {
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Price Impact</span>
-                    <span className="text-green-400">&lt; 0.01%</span>
+                    <span className="text-gray-400">Protocol Fee (0.25%)</span>
+                    <span className="text-white">
+                      ~${formatNumber((parseFloat(fromAmount) || 0) * (fromToken?.price || 0) * 0.0025, 2)}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Network Fee</span>
+                    <span className="text-gray-400">Network Cost</span>
                     <span className="text-white">~$2.50</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Price Impact</span>
+                    <span className="text-green-400">&lt; 0.01%</span>
                   </div>
                 </div>
               )}
