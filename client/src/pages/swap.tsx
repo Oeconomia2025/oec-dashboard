@@ -346,69 +346,106 @@ function SwapContent() {
   // Generate realistic OEC price progression for chart display
   const generateOECPriceHistory = (timeframe: string) => {
     const now = Date.now();
-    const startPrice = 0.73;
-    const endPrice = 7.37;
-    const totalGrowth = endPrice / startPrice; // ~10x growth
     
-    const getPointsForTimeframe = (tf: string) => {
+    const getTimeframeConfig = (tf: string) => {
       switch (tf) {
-        case "1H": return 60;
-        case "1D": return 48; // 30-min intervals
-        case "7D": return 84; // 2-hour intervals  
-        case "30D": return 120; // 6-hour intervals
-        default: return 48;
+        case "1H":
+          return {
+            points: 60,
+            intervalMs: 60 * 1000, // 1 minute
+            startPrice: 7.30, // Close to current
+            endPrice: 7.37,
+            daysCovered: 1/24 // 1 hour
+          };
+        case "1D":
+          return {
+            points: 48,
+            intervalMs: 30 * 60 * 1000, // 30 minutes
+            startPrice: 7.10, // Yesterday's close
+            endPrice: 7.37,
+            daysCovered: 1 // 1 day
+          };
+        case "7D":
+          return {
+            points: 84,
+            intervalMs: 2 * 60 * 60 * 1000, // 2 hours
+            startPrice: 5.80, // 7 days ago
+            endPrice: 7.37,
+            daysCovered: 7 // 7 days
+          };
+        case "30D":
+          return {
+            points: 120,
+            intervalMs: 6 * 60 * 60 * 1000, // 6 hours
+            startPrice: 0.73, // 30 days ago
+            endPrice: 7.37,
+            daysCovered: 30 // 30 days
+          };
+        default:
+          return {
+            points: 48,
+            intervalMs: 30 * 60 * 1000,
+            startPrice: 7.10,
+            endPrice: 7.37,
+            daysCovered: 1
+          };
       }
     };
     
-    const points = getPointsForTimeframe(timeframe);
-    const intervalMs = timeframe === "30D" ? 6 * 60 * 60 * 1000 : // 6 hours
-                     timeframe === "7D" ? 2 * 60 * 60 * 1000 : // 2 hours
-                     timeframe === "1D" ? 30 * 60 * 1000 : // 30 minutes
-                     60 * 1000; // 1 minute for 1H
+    const config = getTimeframeConfig(timeframe);
     
-    return Array.from({ length: points }, (_, i) => {
-      const progress = i / (points - 1);
-      const timestamp = Math.floor((now - (points - 1 - i) * intervalMs) / 1000);
+    return Array.from({ length: config.points }, (_, i) => {
+      const progress = i / (config.points - 1);
+      const timestamp = Math.floor((now - (config.points - 1 - i) * config.intervalMs) / 1000);
       
-      // Create realistic price progression with volatility
-      let basePrice = startPrice * Math.pow(totalGrowth, progress);
+      let basePrice;
       
-      // Add some realistic market movements
-      const volatilityPhases = [
-        { start: 0.0, end: 0.15, trend: 1.2 }, // Initial pump
-        { start: 0.15, end: 0.25, trend: 0.7 }, // Correction
-        { start: 0.25, end: 0.45, trend: 1.4 }, // Strong rally
-        { start: 0.45, end: 0.55, trend: 0.8 }, // Pullback
-        { start: 0.55, end: 0.75, trend: 1.3 }, // Recovery
-        { start: 0.75, end: 0.85, trend: 0.9 }, // Consolidation
-        { start: 0.85, end: 1.0, trend: 1.1 },  // Final push
-      ];
-      
-      // Apply phase-based volatility
-      for (const phase of volatilityPhases) {
-        if (progress >= phase.start && progress <= phase.end) {
-          const phaseProgress = (progress - phase.start) / (phase.end - phase.start);
-          const volatility = 0.08 * phase.trend; // 8% base volatility modified by trend
-          const randomWalk = (Math.random() - 0.5) * volatility;
-          const trendAdjustment = (phase.trend - 1) * 0.1 * phaseProgress;
-          basePrice *= (1 + randomWalk + trendAdjustment);
-          break;
+      if (timeframe === "30D") {
+        // Special 30-day journey: 0.73 → 4.749 (halfway) → 3.00 → 7.37
+        if (progress <= 0.5) {
+          // First half: 0.73 to 4.749 (peak)
+          const halfProgress = progress / 0.5;
+          basePrice = 0.73 + (4.749 - 0.73) * halfProgress;
+          // Add volatility for initial growth
+          const volatility = (Math.random() - 0.5) * 0.15 * halfProgress;
+          basePrice *= (1 + volatility);
+        } else if (progress <= 0.67) {
+          // Correction phase: 4.749 down to ~3.00 over 4-5 days
+          const correctionProgress = (progress - 0.5) / 0.17; // 0.5 to 0.67 range
+          basePrice = 4.749 - (4.749 - 3.00) * correctionProgress;
+          // Add selling pressure volatility
+          const volatility = (Math.random() - 0.5) * 0.12;
+          basePrice *= (1 + volatility);
+        } else {
+          // Recovery phase: 3.00 to 7.37
+          const recoveryProgress = (progress - 0.67) / 0.33; // 0.67 to 1.0 range
+          basePrice = 3.00 + (7.37 - 3.00) * Math.pow(recoveryProgress, 0.8); // Slight curve
+          // Add recovery volatility
+          const volatility = (Math.random() - 0.5) * 0.08;
+          basePrice *= (1 + volatility);
         }
+      } else {
+        // For shorter timeframes, use smoother progression
+        const totalGrowth = config.endPrice / config.startPrice;
+        basePrice = config.startPrice * Math.pow(totalGrowth, progress);
+        
+        // Add appropriate volatility based on timeframe
+        const volatilityScale = timeframe === "1H" ? 0.02 : 
+                               timeframe === "1D" ? 0.04 :
+                               timeframe === "7D" ? 0.06 : 0.08;
+        const volatility = (Math.random() - 0.5) * volatilityScale;
+        basePrice *= (1 + volatility);
       }
       
-      // Add some micro-fluctuations for realism
-      const microVol = (Math.random() - 0.5) * 0.03; // ±1.5%
-      basePrice *= (1 + microVol);
-      
-      // Ensure we end close to target price
-      if (i === points - 1) {
-        basePrice = endPrice + (Math.random() - 0.5) * 0.02; // Within 1% of target
+      // Ensure we end close to target price for all timeframes
+      if (i === config.points - 1) {
+        basePrice = config.endPrice + (Math.random() - 0.5) * 0.01;
       }
       
       return {
         timestamp,
-        price: Math.max(0.1, basePrice), // Floor at $0.10
-        volume: Math.random() * 2000000 + 500000, // 0.5M to 2.5M volume
+        price: Math.max(0.1, basePrice),
+        volume: Math.random() * 2000000 + 500000,
       };
     });
   };
