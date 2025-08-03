@@ -143,16 +143,18 @@ function SwapContent() {
         }));
       }
     } else if (tokenSelectionFor === 'priceCondition') {
+      // Get current price condition state first
+      const currentPriceCondition = getPriceConditionTokens();
+      const priceConditionFrom = currentPriceCondition.from || fromToken;
+      
       // Update price condition tokens and sync the "For" section
-      setPriceConditionTokens(prev => ({
-        from: prev.from || fromToken,
+      setPriceConditionTokens({
+        from: priceConditionFrom,
         to: token
-      }));
+      });
       setToToken(token);
       
       // Check if all three sections would have the same token
-      const priceConditionFrom = prev.from || fromToken;
-      
       if (token.symbol === fromToken?.symbol && token.symbol === priceConditionFrom?.symbol) {
         // All three would be the same, default the other two
         const defaultToken = token.symbol === 'OEC' ? 
