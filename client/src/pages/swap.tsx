@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { usePriceHistory, useTokenData } from "@/hooks/use-token-data";
 
 import { 
@@ -511,6 +511,33 @@ function SwapContent() {
       return [`$${Number(value).toFixed(6)}`, 'Price'];
     }
     return [value, name];
+  };
+
+  // Get dynamic color based on token
+  const getTokenColor = (token?: Token) => {
+    if (!token) return "#00D2FF"; // Default crypto blue
+    
+    const colorMap: { [key: string]: string } = {
+      'BTC': '#F7931A',
+      'ETH': '#627EEA', 
+      'BNB': '#F3BA2F',
+      'USDT': '#26A17B',
+      'USDC': '#2775CA',
+      'XRP': '#23292F',
+      'ADA': '#0033AD',
+      'SOL': '#9945FF',
+      'DOT': '#E6007A',
+      'MATIC': '#8247E5',
+      'AVAX': '#E84142',
+      'LINK': '#375BD2',
+      'UNI': '#FF007A',
+      'CAKE': '#D1884F',
+      'OEC': '#8B5CF6', // Purple for OEC token
+      'WBNB': '#F3BA2F',
+      'BUSD': '#F0B90B',
+    };
+    
+    return colorMap[token.symbol] || "#00D2FF";
   };
 
   const chartTimeframes = [
@@ -1341,7 +1368,13 @@ function SwapContent() {
                 ) : (
                   <div className="h-full relative">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={priceHistory}>
+                      <AreaChart data={priceHistory}>
+                        <defs>
+                          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor={getTokenColor(fromToken)} stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor={getTokenColor(fromToken)} stopOpacity={0.05}/>
+                          </linearGradient>
+                        </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
                         <XAxis 
                           dataKey="timestamp" 
@@ -1365,15 +1398,16 @@ function SwapContent() {
                             color: 'white'
                           }}
                         />
-                        <Line 
+                        <Area 
                           type="monotone" 
                           dataKey="price" 
-                          stroke="#00D2FF" 
+                          stroke={getTokenColor(fromToken)}
                           strokeWidth={2}
+                          fill="url(#areaGradient)"
                           dot={false}
-                          activeDot={{ r: 4, stroke: '#00D2FF', strokeWidth: 2 }}
+                          activeDot={{ r: 4, stroke: getTokenColor(fromToken), strokeWidth: 2 }}
                         />
-                      </LineChart>
+                      </AreaChart>
                     </ResponsiveContainer>
                     
                     {/* Trading Pair Stats Overlay */}
