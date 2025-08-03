@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { usePriceHistory } from "@/hooks/use-token-data";
@@ -80,7 +80,14 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
         ) : (
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={priceHistory}>
+              <AreaChart data={priceHistory}>
+                <defs>
+                  <linearGradient id="areaGradientDashboard" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="var(--crypto-green)" stopOpacity={1.0}/>
+                    <stop offset="25%" stopColor="var(--crypto-green)" stopOpacity={1.0}/>
+                    <stop offset="100%" stopColor="var(--crypto-green)" stopOpacity={0.0}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
                 <XAxis 
                   dataKey="timestamp" 
@@ -104,15 +111,16 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
                     color: 'white'
                   }}
                 />
-                <Line 
+                <Area 
                   type="monotone" 
                   dataKey="price" 
                   stroke="var(--crypto-green)" 
                   strokeWidth={2}
+                  fill="url(#areaGradientDashboard)"
                   dot={false}
                   activeDot={{ r: 4, fill: "var(--crypto-green)" }}
                 />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         )}
