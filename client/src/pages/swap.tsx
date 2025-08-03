@@ -901,8 +901,10 @@ function SwapContent() {
                     
                     {/* Estimated Token Amount */}
                     {toToken && fiatAmount && (
-                      <div className="text-center text-gray-400 text-sm mt-4 p-3 bg-[var(--crypto-card)] rounded-lg">
-                        ≈ {formatNumber(parseFloat(fiatAmount) / toToken.price, 6)} {toToken.symbol}
+                      <div className="text-center mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/30 rounded-lg backdrop-blur-sm">
+                        <div className="text-xl font-bold text-cyan-400">
+                          ≈ {formatNumber(parseFloat(fiatAmount) / toToken.price, 6)} {toToken.symbol}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -978,8 +980,10 @@ function SwapContent() {
                     
                     {/* Estimated USD Value */}
                     {fromToken && fromAmount && (
-                      <div className="text-center text-gray-400 text-sm mt-4 p-3 bg-[var(--crypto-card)] rounded-lg">
-                        ≈ ${formatNumber(parseFloat(fromAmount) * fromToken.price, 2)} USD
+                      <div className="text-center mt-4 p-4 bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg backdrop-blur-sm">
+                        <div className="text-xl font-bold text-emerald-400">
+                          ≈ ${formatNumber(parseFloat(fromAmount) * fromToken.price, 2)} USD
+                        </div>
                       </div>
                     )}
                   </div>
