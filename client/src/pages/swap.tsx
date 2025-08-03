@@ -42,6 +42,12 @@ interface SwapQuote {
   route: string[];
 }
 
+interface LimitOrder {
+  triggerPrice: string;
+  expiry: string;
+  priceAdjustment: number;
+}
+
 function SwapContent() {
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
@@ -60,6 +66,20 @@ function SwapContent() {
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to'>('from');
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
+  
+  // Limit order specific state
+  const [limitOrder, setLimitOrder] = useState<LimitOrder>({
+    triggerPrice: "",
+    expiry: "1 day",
+    priceAdjustment: 0
+  });
+  
+  // Buy mode specific state
+  const [fiatAmount, setFiatAmount] = useState("");
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+  
+  // Sell mode specific state
+  const [sellPercentage, setSellPercentage] = useState<number | null>(null);
 
   // Helper functions for token selection
   const openTokenModal = (type: 'from' | 'to') => {
@@ -239,11 +259,63 @@ function SwapContent() {
   const { data: priceHistory, isLoading: chartLoading } = usePriceHistory(chartContractAddress, chartTimeframe);
   const { data: tokenData } = useTokenData(chartContractAddress);
 
-  // Set initial tokens
+  // Set initial tokens based on active tab
   useEffect(() => {
-    setFromToken(tokens[1]); // USDT
-    setToToken(tokens[0]); // OEC
-  }, []);
+    if (activeTab === "Buy") {
+      setFromToken(null); // No from token for buy mode
+      setToToken(tokens[0]); // OEC
+    } else if (activeTab === "Sell") {
+      setFromToken(tokens[0]); // OEC
+      setToToken(tokens[1]); // USDT
+    } else {
+      setFromToken(tokens[1]); // USDT
+      setToToken(tokens[0]); // OEC
+    }
+  }, [activeTab]);
+
+  // Handle percentage selection for sell mode
+  const handleSellPercentage = (percentage: number) => {
+    if (!fromToken) return;
+    
+    setSellPercentage(percentage);
+    const balance = fromToken.balance || 0;
+    const amount = (balance * percentage / 100).toString();
+    setFromAmount(amount);
+    setLastEditedField('from');
+  };
+
+  // Handle fiat preset amounts for buy mode
+  const handleFiatPreset = (amount: number) => {
+    setFiatAmount(amount.toString());
+    if (toToken) {
+      const tokenAmount = amount / toToken.price;
+      setToAmount(tokenAmount.toString());
+    }
+  };
+
+  // Calculate limit order trigger price based on market price and adjustment
+  const calculateLimitPrice = () => {
+    if (!fromToken || !toToken) return "";
+    
+    const marketRate = toToken.price / fromToken.price;
+    const adjustedRate = marketRate * (1 + limitOrder.priceAdjustment / 100);
+    return adjustedRate.toFixed(6);
+  };
+
+  // Handle tab changes with state reset
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setFromAmount("");
+    setToAmount("");
+    setFiatAmount("");
+    setSellPercentage(null);
+    setQuote(null);
+    setLimitOrder({
+      triggerPrice: "",
+      expiry: "1 day",
+      priceAdjustment: 0
+    });
+  };
 
   // Chart formatting functions
   const formatXAxis = (tickItem: number) => {
@@ -292,7 +364,7 @@ function SwapContent() {
                       key={tab}
                       variant={activeTab === tab ? "default" : "ghost"}
                       size="sm"
-                      onClick={() => setActiveTab(tab)}
+                      onClick={() => handleTabChange(tab)}
                       className={
                         activeTab === tab
                           ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
@@ -373,129 +445,388 @@ function SwapContent() {
                 </Card>
               )}
 
-              {/* From Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm">
-                    {activeTab === "Buy" ? "Buy" : activeTab === "Sell" ? "Sell" : "From"}
-                  </span>
-                  {fromToken && (
-                    <span className="text-gray-400 text-sm">
-                      Balance: {formatNumber(10000, 2)} {fromToken.symbol}
-                    </span>
-                  )}
+              {/* Limit Order Interface */}
+              {activeTab === "Limit" && (
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">When 1 {fromToken?.symbol || 'Token'} is worth</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Input
+                        type="number"
+                        value={limitOrder.triggerPrice || calculateLimitPrice()}
+                        onChange={(e) => setLimitOrder({...limitOrder, triggerPrice: e.target.value})}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border border-[var(--crypto-border)] rounded-lg p-3 text-white text-lg font-semibold"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('to')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {toToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{toToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    {/* Market Price Adjustments */}
+                    <div className="flex items-center space-x-2 mt-3">
+                      <span className="text-gray-400 text-sm">Market</span>
+                      {[1, 5, 10].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant={limitOrder.priceAdjustment === percentage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setLimitOrder({...limitOrder, priceAdjustment: percentage})}
+                          className="text-xs"
+                        >
+                          +{percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Amount Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">Sell</span>
+                      {fromToken && (
+                        <span className="text-gray-400 text-sm">
+                          Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        type="number"
+                        value={fromAmount}
+                        onChange={(e) => {
+                          setFromAmount(e.target.value);
+                          setLastEditedField('from');
+                        }}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-8 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-lg"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('from')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {fromToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{fromToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Expiry Selection */}
+                  <div>
+                    <span className="text-gray-400 text-sm mb-3 block">Expiry</span>
+                    <div className="flex space-x-2">
+                      {["1 day", "1 week", "1 month", "1 year"].map((period) => (
+                        <Button
+                          key={period}
+                          variant={limitOrder.expiry === period ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setLimitOrder({...limitOrder, expiry: period})}
+                          className="text-xs"
+                        >
+                          {period}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Input
-                    type="number"
-                    value={fromAmount}
-                    onChange={(e) => setFromAmount(e.target.value)}
-                    placeholder="0.0"
-                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                    style={{ 
-                      padding: 0, 
-                      margin: 0, 
-                      fontSize: '2.25rem',
-                      lineHeight: '1',
-                      fontWeight: 'bold',
-                      outline: 'none',
-                      border: 'none',
-                      boxShadow: 'none'
-                    }}
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => openTokenModal('from')}
-                    className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
-                  >
-                    {fromToken ? (
+              )}
+
+              {/* Buy Mode Interface */}
+              {activeTab === "Buy" && (
+                <div className="space-y-4">
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">You're buying</span>
+                    </div>
+                    
+                    {/* Fiat Amount Input */}
+                    <div className="flex items-center space-x-3 mb-4">
                       <div className="flex items-center space-x-2">
-                        <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
-                        <span>{fromToken.symbol}</span>
+                        <img src="https://flagcdn.com/w20/us.png" alt="USD" className="w-5 h-3" />
+                        <span className="text-white text-2xl font-bold">$</span>
                       </div>
-                    ) : (
-                      <span>Select token</span>
+                      <Input
+                        type="number"
+                        value={fiatAmount}
+                        onChange={(e) => {
+                          setFiatAmount(e.target.value);
+                          if (toToken && e.target.value) {
+                            const tokenAmount = parseFloat(e.target.value) / toToken.price;
+                            setToAmount(tokenAmount.toString());
+                          }
+                        }}
+                        placeholder="100"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-2xl"
+                      />
+                    </div>
+                    
+                    {/* Preset Amount Buttons */}
+                    <div className="flex space-x-2 mb-4">
+                      {[100, 300, 1000].map((amount) => (
+                        <Button
+                          key={amount}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleFiatPreset(amount)}
+                          className="text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"
+                        >
+                          ${amount}
+                        </Button>
+                      ))}
+                    </div>
+                    
+                    {/* Token Selection */}
+                    <div className="flex items-center space-x-3">
+                      <span className="text-gray-400 text-sm">For</span>
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('to')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {toToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{toToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    {/* Estimated Token Amount */}
+                    {toToken && fiatAmount && (
+                      <div className="text-center text-gray-400 text-sm mt-4 p-3 bg-[var(--crypto-card)] rounded-lg">
+                        ≈ {formatNumber(parseFloat(fiatAmount) / toToken.price, 6)} {toToken.symbol}
+                      </div>
                     )}
+                  </div>
+                </div>
+              )}
+
+              {/* Sell Mode Interface */}
+              {activeTab === "Sell" && (
+                <div className="space-y-4">
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">You're selling</span>
+                      {fromToken && (
+                        <span className="text-gray-400 text-sm">
+                          Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Percentage Buttons */}
+                    <div className="flex space-x-2 mb-4">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant={sellPercentage === percentage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => handleSellPercentage(percentage)}
+                          className={sellPercentage === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"}
+                        >
+                          {percentage === 100 ? "Max" : `${percentage}%`}
+                        </Button>
+                      ))}
+                    </div>
+                    
+                    {/* Token Amount */}
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        type="number"
+                        value={fromAmount}
+                        onChange={(e) => {
+                          setFromAmount(e.target.value);
+                          setSellPercentage(null);
+                          setLastEditedField('from');
+                        }}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-2xl"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('from')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {fromToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{fromToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                    
+                    {/* Estimated USD Value */}
+                    {fromToken && fromAmount && (
+                      <div className="text-center text-gray-400 text-sm mt-4 p-3 bg-[var(--crypto-card)] rounded-lg">
+                        ≈ ${formatNumber(parseFloat(fromAmount) * fromToken.price, 2)} USD
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Standard Swap Interface (Swap tab only) */}
+              {activeTab === "Swap" && (
+                <>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">From</span>
+                      {fromToken && (
+                        <span className="text-gray-400 text-sm">
+                          Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        type="number"
+                        value={fromAmount}
+                        onChange={(e) => {
+                          setFromAmount(e.target.value);
+                          setLastEditedField('from');
+                        }}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('from')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {fromToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{fromToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                    {fromToken && (
+                      <div className="text-right text-gray-400 text-sm mt-2">
+                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {/* Swap Arrow - Only for Swap tab */}
+              {activeTab === "Swap" && (
+                <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleSwapTokens}
+                    className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                  >
+                    <ArrowUpDown className="w-5 h-5 text-gray-400" />
                   </Button>
                 </div>
-                {fromToken && (
-                  <div className="text-right text-gray-400 text-sm mt-2">
-                    ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+              )}
+
+              {/* To Token - Only for Swap tab */}
+              {activeTab === "Swap" && (
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-gray-400 text-sm">To</span>
+                    {toToken && (
+                      <span className="text-gray-400 text-sm">
+                        Balance: {formatNumber(toToken.balance || 0, 2)} {toToken.symbol}
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* Swap Arrow - Overlapping and cutting through borders */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSwapTokens}
-                  className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
-                >
-                  <ArrowUpDown className="w-5 h-5 text-gray-400" />
-                </Button>
-              </div>
-
-              {/* To Token */}
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-gray-400 text-sm">
-                    {activeTab === "Buy" ? "For" : activeTab === "Sell" ? "For" : "To"}
-                  </span>
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      type="number"
+                      value={toAmount}
+                      onChange={(e) => {
+                        setToAmount(e.target.value);
+                        setLastEditedField('to');
+                      }}
+                      placeholder="0.0"
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => openTokenModal('to')}
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                    >
+                      {toToken ? (
+                        <div className="flex items-center space-x-2">
+                          <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                          <span>{toToken.symbol}</span>
+                        </div>
+                      ) : (
+                        <span>Select token</span>
+                      )}
+                    </Button>
+                  </div>
                   {toToken && (
-                    <span className="text-gray-400 text-sm">
-                      Balance: {formatNumber(5000, 2)} {toToken.symbol}
-                    </span>
+                    <div className="text-right text-gray-400 text-sm mt-2">
+                      ≈ ${formatNumber((parseFloat(toAmount) || 0) * toToken.price, 2)}
+                    </div>
                   )}
                 </div>
-                <div className="flex items-center space-x-3">
-                  <Input
-                    type="number"
-                    value={toAmount}
-                    onChange={(e) => {
-                      setToAmount(e.target.value);
-                      setLastEditedField('to');
-                    }}
-                    placeholder="0.0"
-                    className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                    style={{ 
-                      padding: 0, 
-                      margin: 0, 
-                      fontSize: '2.25rem',
-                      lineHeight: '1',
-                      fontWeight: 'bold',
-                      outline: 'none',
-                      border: 'none',
-                      boxShadow: 'none'
-                    }}
-                  />
-                  <Button
-                    variant="outline"
-                    onClick={() => openTokenModal('to')}
-                    className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
-                  >
-                    {toToken ? (
-                      <div className="flex items-center space-x-2">
-                        <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
-                        <span>{toToken.symbol}</span>
-                      </div>
-                    ) : (
-                      <span>Select token</span>
-                    )}
-                  </Button>
-                </div>
-                {toToken && (
-                  <div className="text-right text-gray-400 text-sm mt-2">
-                    ≈ ${formatNumber((parseFloat(toAmount) || 0) * toToken.price, 2)}
-                  </div>
-                )}
-              </div>
+              )}
 
-              {/* Swap Button */}
+              {/* Action Button */}
               <Button
                 onClick={handleSwapExecution}
-                disabled={!fromToken || !toToken || (!fromAmount && !toAmount) || isLoading}
+                disabled={
+                  isLoading || 
+                  (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
+                  (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
+                  (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
+                  (activeTab === "Sell" && (!fromToken || !fromAmount))
+                }
                 className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
               >
                 {isLoading ? (
@@ -503,17 +834,28 @@ function SwapContent() {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span>Processing...</span>
                   </div>
-                ) : !fromToken || !toToken ? (
-                  "Select Tokens"
-                ) : (!fromAmount && !toAmount) ? (
-                  "Enter Amount"
-                ) : (
-                  `${activeTab} ${fromToken.symbol}`
-                )}
+                ) : activeTab === "Swap" ? (
+                  !fromToken || !toToken ? "Select Tokens" : 
+                  (!fromAmount && !toAmount) ? "Enter Amount" : 
+                  `Swap ${fromToken.symbol}`
+                ) : activeTab === "Limit" ? (
+                  !fromToken || !toToken ? "Select Tokens" : 
+                  !fromAmount ? "Enter Amount" : 
+                  !limitOrder.triggerPrice ? "Set Limit Price" :
+                  `Place Limit Order`
+                ) : activeTab === "Buy" ? (
+                  !toToken ? "Select Token" : 
+                  !fiatAmount ? "Enter Amount" : 
+                  `Buy ${toToken.symbol}`
+                ) : activeTab === "Sell" ? (
+                  !fromToken ? "Select Token" : 
+                  !fromAmount ? "Enter Amount" : 
+                  `Sell ${fromToken.symbol}`
+                ) : "Connect Wallet"}
               </Button>
 
               {/* Quote and Trade Information */}
-              {quote && (
+              {activeTab === "Swap" && quote && (
                 <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">Exchange Rate</span>
@@ -529,6 +871,78 @@ function SwapContent() {
                     <span className="text-gray-400">Network Fee</span>
                     <span className="text-white">~$2.50</span>
                   </div>
+                </div>
+              )}
+
+              {/* Limit Order Information */}
+              {activeTab === "Limit" && fromToken && toToken && limitOrder.triggerPrice && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Trigger Price</span>
+                    <span className="text-white">
+                      {formatNumber(parseFloat(limitOrder.triggerPrice), 6)} {toToken.symbol}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Current Market Price</span>
+                    <span className="text-white">
+                      {formatNumber(toToken.price / fromToken.price, 6)} {toToken.symbol}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Expires</span>
+                    <span className="text-white">{limitOrder.expiry}</span>
+                  </div>
+                  <div className="text-xs text-yellow-400 mt-2">
+                    <AlertTriangle className="w-3 h-3 inline mr-1" />
+                    Limits may not execute exactly when tokens reach the specified price.
+                  </div>
+                </div>
+              )}
+
+              {/* Buy Information */}
+              {activeTab === "Buy" && toToken && fiatAmount && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">You Pay</span>
+                    <span className="text-white">${formatNumber(parseFloat(fiatAmount), 2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">You Receive</span>
+                    <span className="text-white">
+                      ≈ {formatNumber(parseFloat(fiatAmount) / toToken.price, 6)} {toToken.symbol}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Exchange Rate</span>
+                    <span className="text-white">1 {toToken.symbol} = ${formatNumber(toToken.price, 2)}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Sell Information */}
+              {activeTab === "Sell" && fromToken && fromAmount && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">You Sell</span>
+                    <span className="text-white">{formatNumber(parseFloat(fromAmount), 6)} {fromToken.symbol}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">You Receive</span>
+                    <span className="text-white">
+                      ≈ ${formatNumber(parseFloat(fromAmount) * fromToken.price, 2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Exchange Rate</span>
+                    <span className="text-white">1 {fromToken.symbol} = ${formatNumber(fromToken.price, 2)}</span>
+                  </div>
+                  {sellPercentage && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">Percentage of Balance</span>
+                      <span className="text-crypto-blue">{sellPercentage}%</span>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
