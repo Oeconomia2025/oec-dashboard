@@ -314,7 +314,7 @@ function SwapContent() {
     const newType = limitOrderType === 'sell' ? 'buy' : 'sell';
     setLimitOrderType(newType);
     
-    // Swap tokens when toggling
+    // Swap only the sell/for tokens, not the price condition token
     const tempToken = fromToken;
     setFromToken(toToken);
     setToToken(tempToken);
@@ -471,7 +471,7 @@ function SwapContent() {
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
                 <>
-                  {/* Price Condition Section */}
+                  {/* Price Condition Section - Unaffected by toggle */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">When 1 {fromToken?.symbol || 'Token'} is worth</span>
@@ -541,76 +541,78 @@ function SwapContent() {
                       ))}
                     </div>
                   </div>
-
-                  {/* Buy/Sell Toggle Button */}
-                  <div className="flex justify-center">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleLimitOrderToggle}
-                      className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
-                    >
-                      <ArrowUpDown className="w-5 h-5 text-gray-400" />
-                    </Button>
-                  </div>
                   
-                  {/* Sell Amount Section */}
-                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'Sell' : 'Buy'}</span>
+                  {/* Sell Amount Section with relative positioning for toggle */}
+                  <div className="relative">
+                    <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'Sell' : 'Buy'}</span>
+                        {fromToken && (
+                          <span className="text-gray-400 text-sm">
+                            Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center space-x-3">
+                        <Input
+                          type="number"
+                          value={fromAmount}
+                          onChange={(e) => {
+                            setFromAmount(e.target.value);
+                            setLastEditedField('from');
+                          }}
+                          placeholder="0.0"
+                          className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                          style={{ 
+                            padding: 0, 
+                            margin: 0, 
+                            fontSize: '2.25rem',
+                            lineHeight: '1',
+                            fontWeight: 'bold',
+                            outline: 'none',
+                            border: 'none',
+                            boxShadow: 'none'
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => openTokenModal('from')}
+                          className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                        >
+                          {fromToken ? (
+                            <div className="flex items-center space-x-2">
+                              <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                              <span>{fromToken.symbol}</span>
+                            </div>
+                          ) : (
+                            <span>Select token</span>
+                          )}
+                        </Button>
+                      </div>
                       {fromToken && (
-                        <span className="text-gray-400 text-sm">
-                          Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
-                        </span>
+                        <div className="text-right text-gray-400 text-sm mt-2">
+                          ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
+                        </div>
                       )}
                     </div>
-                    <div className="flex items-center space-x-3">
-                      <Input
-                        type="number"
-                        value={fromAmount}
-                        onChange={(e) => {
-                          setFromAmount(e.target.value);
-                          setLastEditedField('from');
-                        }}
-                        placeholder="0.0"
-                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
-                        style={{ 
-                          padding: 0, 
-                          margin: 0, 
-                          fontSize: '2.25rem',
-                          lineHeight: '1',
-                          fontWeight: 'bold',
-                          outline: 'none',
-                          border: 'none',
-                          boxShadow: 'none'
-                        }}
-                      />
+
+                    {/* Toggle Button - Overlapping between sections */}
+                    <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
                       <Button
-                        variant="outline"
-                        onClick={() => openTokenModal('from')}
-                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleLimitOrderToggle}
+                        className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
                       >
-                        {fromToken ? (
-                          <div className="flex items-center space-x-2">
-                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
-                            <span>{fromToken.symbol}</span>
-                          </div>
-                        ) : (
-                          <span>Select token</span>
-                        )}
+                        <ArrowUpDown className="w-5 h-5 text-gray-400" />
                       </Button>
                     </div>
-                    {fromToken && (
-                      <div className="text-right text-gray-400 text-sm mt-2">
-                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * fromToken.price, 2)}
-                      </div>
-                    )}
                   </div>
 
-                  {/* Buy Amount Section - Shows what you'll receive */}
+                  {/* For Amount Section - Shows what you'll receive */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'For' : 'For'}</span>
+                      <span className="text-gray-400 text-sm">For</span>
                       {toToken && (
                         <span className="text-gray-400 text-sm">
                           Balance: {formatNumber(toToken.balance || 0, 2)} {toToken.symbol}
