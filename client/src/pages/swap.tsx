@@ -314,7 +314,7 @@ function SwapContent() {
     const newType = limitOrderType === 'sell' ? 'buy' : 'sell';
     setLimitOrderType(newType);
     
-    // Swap only the sell/for tokens, not the price condition token
+    // Swap only the sell/for tokens, keeping the price condition token unchanged
     const tempToken = fromToken;
     setFromToken(toToken);
     setToToken(tempToken);
@@ -471,10 +471,10 @@ function SwapContent() {
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
                 <>
-                  {/* Price Condition Section - Unaffected by toggle */}
+                  {/* Price Condition Section - Token remains fixed, unaffected by toggle */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">When 1 {fromToken?.symbol || 'Token'} is worth</span>
+                      <span className="text-gray-400 text-sm">When 1 {tokens[0]?.symbol || 'OEC'} is worth</span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <Input
@@ -496,16 +496,15 @@ function SwapContent() {
                       />
                       <Button
                         variant="outline"
-                        onClick={() => openTokenModal('to')}
-                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto cursor-default"
                       >
-                        {toToken ? (
+                        {tokens[1] ? (
                           <div className="flex items-center space-x-2">
-                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
-                            <span>{toToken.symbol}</span>
+                            <img src={tokens[1].logo} alt={tokens[1].symbol} className="w-6 h-6 rounded-full" />
+                            <span>{tokens[1].symbol}</span>
                           </div>
                         ) : (
-                          <span>Select token</span>
+                          <span>USDT</span>
                         )}
                       </Button>
                     </div>
@@ -518,7 +517,7 @@ function SwapContent() {
                         onClick={() => setLimitOrder({...limitOrder, triggerPrice: getCurrentMarketPrice(), priceAdjustment: 0})}
                         className="text-xs text-gray-400 border-gray-600 hover:text-white hover:border-gray-400"
                       >
-                        Market {getCurrentMarketPrice()}
+                        Market
                       </Button>
                       {[1, 5, 10].map((percentage) => (
                         <Button
