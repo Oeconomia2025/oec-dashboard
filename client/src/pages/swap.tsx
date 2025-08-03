@@ -523,7 +523,7 @@ function SwapContent() {
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <div className={`grid gap-6 ${showChart ? (hideSidebar ? 'grid-cols-1 xl:grid-cols-3' : 'grid-cols-1 xl:grid-cols-5') : 'grid-cols-1 lg:grid-cols-3'}`}>
+        <div className={`grid gap-6 ${showChart ? (hideSidebar ? 'grid-cols-1 xl:grid-cols-2' : 'grid-cols-1 xl:grid-cols-5') : 'grid-cols-1 lg:grid-cols-3'}`}>
         {/* Main Swap Interface */}
         <div className={showChart ? (hideSidebar ? 'xl:col-span-1' : 'xl:col-span-2') : 'lg:col-span-2'}>
           <Card className="crypto-card border h-full">
