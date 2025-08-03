@@ -100,8 +100,48 @@ function SwapContent() {
   const selectToken = (token: Token) => {
     if (tokenSelectionFor === 'from') {
       setFromToken(token);
+      
+      // Check if all three sections would have the same token
+      const priceConditionFrom = getPriceConditionTokens().from;
+      const priceConditionTo = getPriceConditionTokens().to || toToken;
+      
+      if (token.symbol === priceConditionFrom?.symbol && token.symbol === priceConditionTo?.symbol) {
+        // All three would be the same, default the other two
+        const defaultToken = token.symbol === 'OEC' ? 
+          tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
+          tokens.find(t => t.symbol === 'OEC') || tokens[0];
+        
+        setToToken(defaultToken);
+        setPriceConditionTokens(prev => ({
+          from: defaultToken,
+          to: defaultToken
+        }));
+      }
     } else if (tokenSelectionFor === 'to') {
       setToToken(token);
+      
+      // Check if all three sections would have the same token
+      const priceConditionFrom = getPriceConditionTokens().from || fromToken;
+      const priceConditionTo = getPriceConditionTokens().to;
+      
+      if (token.symbol === fromToken?.symbol && token.symbol === priceConditionFrom?.symbol) {
+        // All three would be the same, default the other two
+        const defaultToken = token.symbol === 'OEC' ? 
+          tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
+          tokens.find(t => t.symbol === 'OEC') || tokens[0];
+        
+        setFromToken(defaultToken);
+        setPriceConditionTokens(prev => ({
+          from: defaultToken,
+          to: prev.to || token
+        }));
+      } else {
+        // Update price condition tokens if they haven't been set
+        setPriceConditionTokens(prev => ({
+          from: prev.from || fromToken,
+          to: token
+        }));
+      }
     } else if (tokenSelectionFor === 'priceCondition') {
       // Update price condition tokens and sync the "For" section
       setPriceConditionTokens(prev => ({
@@ -109,6 +149,22 @@ function SwapContent() {
         to: token
       }));
       setToToken(token);
+      
+      // Check if all three sections would have the same token
+      const priceConditionFrom = prev.from || fromToken;
+      
+      if (token.symbol === fromToken?.symbol && token.symbol === priceConditionFrom?.symbol) {
+        // All three would be the same, default the other two
+        const defaultToken = token.symbol === 'OEC' ? 
+          tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
+          tokens.find(t => t.symbol === 'OEC') || tokens[0];
+        
+        setFromToken(defaultToken);
+        setPriceConditionTokens({
+          from: defaultToken,
+          to: token
+        });
+      }
     }
     setIsTokenModalOpen(false);
   };
