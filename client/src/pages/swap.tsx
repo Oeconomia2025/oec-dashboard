@@ -413,10 +413,31 @@ function SwapContent() {
     });
   };
 
-  // Use OEC mock data for chart, but keep real API data for other components
-  const chartPriceHistory = (fromToken?.symbol === 'OEC' && showChart) 
-    ? generateOECPriceHistory(chartTimeframe)
-    : priceHistory;
+  // Check if we should show inverted chart (for OEC paired with stablecoin)
+  const shouldShowInvertedChart = () => {
+    if (!fromToken || !toToken || !showChart) return false;
+    
+    const isOECPair = fromToken.symbol === 'OEC' || toToken.symbol === 'OEC';
+    const hasStablecoinInPair = isStablecoin(fromToken) || isStablecoin(toToken);
+    
+    return isOECPair && hasStablecoinInPair;
+  };
+
+  // Generate inverted price history (showing how many OEC per stablecoin)
+  const generateInvertedOECHistory = (timeframe: string) => {
+    const oecHistory = generateOECPriceHistory(timeframe);
+    return oecHistory.map(point => ({
+      ...point,
+      price: 1 / point.price, // Invert the price (1 USDT = X OEC)
+    }));
+  };
+
+  // Use appropriate chart data based on token pair
+  const chartPriceHistory = shouldShowInvertedChart()
+    ? generateInvertedOECHistory(chartTimeframe)
+    : (fromToken?.symbol === 'OEC' && showChart)
+      ? generateOECPriceHistory(chartTimeframe)
+      : priceHistory;
 
   // Set initial tokens based on active tab
   useEffect(() => {
@@ -1382,7 +1403,10 @@ function SwapContent() {
                     <span>Price Chart</span>
                     {fromToken && toToken && (
                       <div className="text-sm text-gray-400">
-                        {fromToken.symbol}/{toToken.symbol}
+                        {shouldShowInvertedChart() 
+                          ? `${isStablecoin(fromToken) ? fromToken.symbol : toToken.symbol}/${fromToken.symbol === 'OEC' ? fromToken.symbol : toToken.symbol}`
+                          : `${fromToken.symbol}/${toToken.symbol}`
+                        }
                       </div>
                     )}
                   </div>
