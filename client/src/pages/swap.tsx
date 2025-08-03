@@ -74,6 +74,7 @@ function SwapContent() {
     priceAdjustment: 0
   });
   const [limitOrderType, setLimitOrderType] = useState<'sell' | 'buy'>('sell');
+  const [useNegativePercentages, setUseNegativePercentages] = useState(false);
   
   // Track the original price condition tokens (for stablecoin behavior)
   const [priceConditionTokens, setPriceConditionTokens] = useState<{from: Token | null, to: Token | null}>({
@@ -102,8 +103,9 @@ function SwapContent() {
       setFromToken(token);
       
       // Check if all three sections would have the same token
-      const priceConditionFrom = getPriceConditionTokens().from;
-      const priceConditionTo = getPriceConditionTokens().to || toToken;
+      const currentPriceCondition = getPriceConditionTokens();
+      const priceConditionFrom = currentPriceCondition.from || token; // Default to new token if not set
+      const priceConditionTo = currentPriceCondition.to || toToken;
       
       if (token.symbol === priceConditionFrom?.symbol && token.symbol === priceConditionTo?.symbol) {
         // All three would be the same, default the other two
@@ -112,9 +114,15 @@ function SwapContent() {
           tokens.find(t => t.symbol === 'OEC') || tokens[0];
         
         setToToken(defaultToken);
-        setPriceConditionTokens(prev => ({
-          from: defaultToken,
+        setPriceConditionTokens({
+          from: token,
           to: defaultToken
+        });
+      } else {
+        // Update price condition from token if not set
+        setPriceConditionTokens(prev => ({
+          from: prev.from || token,
+          to: prev.to || toToken
         }));
       }
     } else if (tokenSelectionFor === 'to') {
@@ -421,6 +429,18 @@ function SwapContent() {
       setPriceConditionTokens({ from: fromToken, to: toToken });
     }
     
+    // For stablecoin pairs, toggle percentage sign when switching between buy/sell
+    if (hasStablecoin()) {
+      setUseNegativePercentages(!useNegativePercentages);
+      // Reset price adjustment to positive equivalent
+      if (limitOrder.priceAdjustment < 0) {
+        setLimitOrder(prev => ({
+          ...prev,
+          priceAdjustment: Math.abs(prev.priceAdjustment)
+        }));
+      }
+    }
+    
     // Swap the sell/for tokens
     const tempToken = fromToken;
     setFromToken(toToken);
@@ -433,10 +453,11 @@ function SwapContent() {
 
   // Get percentage buttons based on stablecoin involvement
   const getPercentageButtons = () => {
-    if (hasStablecoin()) {
-      return [-10, -5, -1]; // Negative percentages for stablecoin pairs
+    const basePercentages = [1, 5, 10];
+    if (hasStablecoin() && useNegativePercentages) {
+      return basePercentages.map(p => -p); // Negative percentages only when toggled
     }
-    return [1, 5, 10]; // Positive percentages for token pairs
+    return basePercentages; // Default to positive percentages
   };
 
   // Handle tab changes with state reset
