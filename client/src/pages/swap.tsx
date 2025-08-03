@@ -64,7 +64,7 @@ function SwapContent() {
   const [chartTimeframe, setChartTimeframe] = useState("1D");
   const [activeTab, setActiveTab] = useState("Swap");
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
-  const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to'>('from');
+  const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to' | 'priceCondition'>('from');
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
   
   // Limit order specific state
@@ -89,8 +89,10 @@ function SwapContent() {
   const [sellPercentage, setSellPercentage] = useState<number | null>(null);
 
   // Helper functions for token selection
-  const openTokenModal = (type: 'from' | 'to') => {
-    setTokenSelectionFor(type);
+  const openTokenModal = (type?: 'from' | 'to' | 'priceCondition') => {
+    if (type) {
+      setTokenSelectionFor(type);
+    }
     setTokenSearchQuery(""); // Clear search when opening modal
     setIsTokenModalOpen(true);
   };
@@ -98,7 +100,14 @@ function SwapContent() {
   const selectToken = (token: Token) => {
     if (tokenSelectionFor === 'from') {
       setFromToken(token);
-    } else {
+    } else if (tokenSelectionFor === 'to') {
+      setToToken(token);
+    } else if (tokenSelectionFor === 'priceCondition') {
+      // Update price condition tokens and sync the "For" section
+      setPriceConditionTokens(prev => ({
+        from: prev.from || fromToken,
+        to: token
+      }));
       setToToken(token);
     }
     setIsTokenModalOpen(false);
@@ -547,7 +556,8 @@ function SwapContent() {
                       />
                       <Button
                         variant="outline"
-                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto cursor-default"
+                        onClick={() => openTokenModal('priceCondition')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
                       >
                         {getPriceConditionTokens().to ? (
                           <div className="flex items-center space-x-2">
