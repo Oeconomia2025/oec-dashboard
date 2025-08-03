@@ -380,7 +380,7 @@ function SwapContent() {
     const conditionTokens = getPriceConditionTokens();
     if (!conditionTokens.from || !conditionTokens.to) return "";
     
-    const marketRate = conditionTokens.to.price / conditionTokens.from.price;
+    const marketRate = conditionTokens.from.price / conditionTokens.to.price;
     const adjustedRate = marketRate * (1 + limitOrder.priceAdjustment / 100);
     return adjustedRate.toFixed(6);
   };
@@ -401,7 +401,7 @@ function SwapContent() {
   const getCurrentMarketPrice = () => {
     const conditionTokens = getPriceConditionTokens();
     if (!conditionTokens.from || !conditionTokens.to) return "0";
-    return (conditionTokens.to.price / conditionTokens.from.price).toFixed(6);
+    return (conditionTokens.from.price / conditionTokens.to.price).toFixed(6);
   };
 
   // Get the price condition tokens (what shows in "When 1 X is worth Y")
