@@ -1,6 +1,6 @@
 [build]
   publish = "dist/public"
-  command = "npm install --include=dev && npx vite build"
+  command = "npm install --include=dev && npx vite build --config vite.config.netlify.ts"
 
 [build.environment]
   NODE_VERSION = "18"

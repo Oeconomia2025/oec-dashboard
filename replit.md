@@ -74,6 +74,16 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
 - **Technical Details**: ThemeProvider working, toggle button functional, localStorage persistence working
 - **Note**: Considered acceptable limitation per user acknowledgment that "it's okay" if too difficult
 
+### Netlify Build Configuration Resolution (August 2025)
+- **Issue Resolved**: Multiple deployment failures due to Vite configuration incompatibility with Netlify's build environment
+- **Root Cause**: `import.meta.dirname` syntax and complex Vite config causing "Could not resolve entry module" errors
+- **Solution Implemented**: 
+  - Created `vite.config.netlify.ts` with simplified configuration using `__dirname`
+  - Updated `netlify.toml` to use Netlify-specific build config
+  - Removed server build from static deployment process
+- **Technical Details**: Netlify environment doesn't support newer Node.js syntax, required backward-compatible approach
+- **Result**: Build process now works reliably in Netlify's environment with proper path resolution
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
