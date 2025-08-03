@@ -851,7 +851,17 @@ function SwapContent() {
                           }
                         }}
                         placeholder="100"
-                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-2xl"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                     </div>
                     
@@ -872,7 +882,7 @@ function SwapContent() {
                     
                     {/* Token Selection */}
                     <div className="flex items-center space-x-3">
-                      <span className="text-gray-400 text-sm">For</span>
+                      <span className="text-gray-400 text-sm">Worth of</span>
                       <Button
                         variant="outline"
                         onClick={() => openTokenModal('to')}
@@ -938,7 +948,17 @@ function SwapContent() {
                           setLastEditedField('from');
                         }}
                         placeholder="0.0"
-                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-2xl"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <Button
                         variant="outline"
