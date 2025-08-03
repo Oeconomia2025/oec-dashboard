@@ -13,7 +13,7 @@ interface PriceChartProps {
 
 export function PriceChart({ contractAddress }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
-  const { data: priceHistory, isLoading } = usePriceHistory(contractAddress, timeframe);
+  const { data: priceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
 
   const formatXAxis = (tickItem: number) => {
     const date = new Date(tickItem * 1000);
@@ -73,7 +73,8 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
           <div className="h-80 bg-gradient-to-br from-crypto-green/10 to-crypto-blue/10 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-crypto-green mx-auto mb-4" />
-              <p className="text-gray-400">No price data available</p>
+              <p className="text-gray-400 text-lg mb-2">Price Data Unavailable</p>
+              <p className="text-gray-500 text-sm">This feature requires live API access.<br />Deploy with backend to see real-time price charts.</p>
             </div>
           </div>
         ) : (
