@@ -493,7 +493,7 @@ function SwapContent() {
                     </div>
                   </div>
                   
-                  {/* Amount Section */}
+                  {/* Sell Amount Section */}
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">Sell</span>
@@ -523,6 +523,39 @@ function SwapContent() {
                           <div className="flex items-center space-x-2">
                             <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
                             <span>{fromToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Buy Amount Section - Shows what you'll receive */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">Buy</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        type="number"
+                        value={toAmount}
+                        onChange={(e) => {
+                          setToAmount(e.target.value);
+                          setLastEditedField('to');
+                        }}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-8 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none text-lg"
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('to')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {toToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{toToken.symbol}</span>
                           </div>
                         ) : (
                           <span>Select token</span>
@@ -889,6 +922,14 @@ function SwapContent() {
                       {formatNumber(toToken.price / fromToken.price, 6)} {toToken.symbol}
                     </span>
                   </div>
+                  {fromAmount && (
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400">You'll receive</span>
+                      <span className="text-white">
+                        ≈ {formatNumber(parseFloat(fromAmount) * parseFloat(limitOrder.triggerPrice), 6)} {toToken.symbol}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">Expires</span>
                     <span className="text-white">{limitOrder.expiry}</span>
