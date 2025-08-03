@@ -102,7 +102,7 @@ export function Portfolio() {
       return response.json()
     },
     enabled: !!address && isConnected,
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 60000, // Refresh every 60 seconds (doubled to reduce API rate limiting)
   })
 
   const formatNumber = (num: number) => {
