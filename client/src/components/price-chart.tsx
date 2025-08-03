@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
+import { TrendingUp } from "lucide-react";
 import { usePriceHistory } from "@/hooks/use-token-data";
 import type { PriceHistory } from "@shared/schema";
 
