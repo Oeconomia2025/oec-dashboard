@@ -1,216 +1,62 @@
 # replit.md
 
 ## Overview
-
-This is a cryptocurrency token dashboard application built for the "Oeconomia" (OEC) token on the BSC (Binance Smart Chain) network. The application provides comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap.
-
-## Recent Changes (August 2025)
-
-### Comprehensive Swap Interface Enhancement (August 2025)
-- **Feature Enhanced**: Complete overhaul of swap functionality with professional UI/UX improvements
-- **Implementation**: 
-  - Added percentage buttons (25%, 50%, 75%, Max) to main Swap function, positioned right-aligned with "From" label
-  - Enhanced highlighted calculation sections in Buy/Sell modes with prominent gradient styling (cyan for Buy, emerald for Sell)
-  - Implemented comprehensive fee structure matching Uniswap standards: Protocol Fee (0.25%) with real-time calculations
-  - Updated "Network Fee" to "Network Cost" for industry-standard terminology
-  - Repositioned balance display below token selection with right alignment for clean layout
-  - Updated OEC token price to realistic $7.37374 while preserving existing decimal formatting logic
-- **Visual Polish**: Large input text styling, removed number input arrows, enhanced button prominence
-- **User Feedback**: "This is looking better and better. I am over satisfied!" - exceptional satisfaction with comprehensive improvements
-- **Result**: Professional trading interface with intuitive controls, transparent fee disclosure, and industry-standard layout design
-
-### Navigation & Header System Enhancement
-- **Feature Added**: Dynamic page titles and descriptions in top navigation header
-- **Implementation**: Centralized page information system with context-aware headers
-- **Visual Cleanup**: Removed duplicate page headers from all page bodies for streamlined design
-- **Gradient Consistency**: Applied custom cyan-to-magenta gradient (linear-gradient(45deg, #00d4ff, #ff00ff)) to active navigation and wallet buttons
-- **Footer Addition**: Added "© 2025 Oeconomia. All rights reserved." footer to all pages
-- **User Feedback**: "It all looks very good" - complete satisfaction with unified design system
-- **Result**: Professional, cohesive interface with consistent branding and clean information architecture
-
-### Staking DApp Implementation
-- **Feature Added**: Comprehensive staking interface with multiple pool options (flexible, 30-day, 90-day, 180-day)
-- **Visual Enhancements**: Each pool displays unique gradient color schemes - blue/cyan, emerald/teal, purple/pink, amber/orange
-- **Technical Implementation**: Tabbed interface for stake/unstake/rewards with real-time calculations
-- **Smart Contract Ready**: All functions prepared for integration when contracts are deployed
-- **User Feedback**: "This is reeeeaaally nice looking" - highly positive response to colorful design
-- **Result**: Professional staking interface ready for contract integration with excellent visual appeal
-
-### Interactive ROI Calculator & Achievement System
-- **ROI Calculator**: Real-time calculations with adjustable amounts, time periods, and pool selection
-- **Achievement Badges**: Gamified system with 6 badge types (First Stake, Diamond Hands, Whale Staker, etc.)
-- **Collapsible Interface**: Both sections feature prominent toggle buttons with smooth expand/collapse
-- **Visual Polish**: Enhanced toggle styling with proper spacing and hover effects
-- **User Feedback**: "This is what I wanted. Very well done" - perfect spacing and functionality
-- **Result**: Complete interactive staking experience with professional UI/UX design
-
-### Dashboard Analytics Enhancement
-- **Feature Added**: Volume & Liquidity Analytics and Historical Performance charts positioned under price chart
-- **Layout Optimization**: Aligned analytics components with matching width for cohesive dashboard flow
-- **Data Integration**: Comprehensive trading metrics with multiple timeframe support
-- **Result**: Enhanced dashboard providing deeper token insights and market analysis
-
-### Portfolio Color Differentiation
-- **Feature Updated**: Pool and farm containers now use distinct color schemes
-- **Color Implementation**: Pools use teal/cyan gradients, farms use emerald/green gradients
-- **Visual Consistency**: Matching badges and action buttons with theme-appropriate colors
-- **Result**: Clear visual distinction between different DeFi position types
-
-### Navigation System Enhancement
-- **Issue Resolved**: Sidebar navigation was expanding unexpectedly when clicking navigation icons while in collapsed state
-- **Solution Implemented**: Multi-layered state protection system with localStorage persistence and navigation state locking
-- **Technical Details**: 
-  - Added state locking mechanism during navigation using React refs
-  - Implemented localStorage synchronization to prevent state resets
-  - Enhanced useEffect monitoring to enforce locked states
-  - Added immediate post-navigation state restoration callbacks
-- **Result**: Sidebar now maintains collapsed state consistently across all page navigation
-
-### Development Disclaimer Modal
-- **Feature Added**: One-time popup modal for new visitors warning about DApp development status
-- **Implementation**: localStorage-based tracking to show only once per user
-- **Content**: Clear messaging about placeholder/demo status with warning not to use real funds
-- **Result**: Professional disclaimer system that informs users about development status
-
-### Successful Netlify Deployment & Error Handling
-- **Achievement**: Successfully deployed to https://oeconomia.io via Netlify with comprehensive error handling
-- **Technical Implementation**: Enhanced React Query error handling with graceful API failure management
-- **Error Handling**: App no longer crashes when backend APIs unavailable - shows appropriate "data unavailable" messages
-- **Price Chart Enhancement**: Added informative messaging when live price data isn't accessible on static deployment
-- **User Feedback**: "It's online! Thank you. It's almost perfect" - successful deployment confirmation
-- **Result**: Fully functional static deployment with wallet connectivity and complete UI without crashes
-
-### Light/Dark Mode Toggle Implementation
-- **Issue**: Theme toggle button implemented but visual changes not applying despite JavaScript state changes
-- **Status**: Theme classes being applied to document root correctly, but CSS variables not updating visually
-- **User Feedback**: "It doesn't work still" - toggle not producing visible theme changes
-- **Technical Details**: ThemeProvider working, toggle button functional, localStorage persistence working
-- **Note**: Considered acceptable limitation per user acknowledgment that "it's okay" if too difficult
-
-### Netlify Build Configuration Resolution (August 2025)
-- **Issue Resolved**: Multiple deployment failures due to Vite configuration incompatibility with Netlify's build environment
-- **Root Cause**: `import.meta.dirname` syntax and complex Vite config causing "Could not resolve entry module" errors
-- **Solution Implemented**: 
-  - Created `vite.config.netlify.ts` with simplified configuration using `__dirname`
-  - Updated `netlify.toml` to use Netlify-specific build config
-  - Removed server build from static deployment process
-- **Technical Details**: Netlify environment doesn't support newer Node.js syntax, required backward-compatible approach
-- **Result**: Build process now works reliably in Netlify's environment with proper path resolution
-- **Production Status**: Successfully deployed with professional error messaging replacing "Failed to load token data"
-
-### Express API to Netlify Functions Conversion (August 2025)
-- **Feature Added**: Complete conversion of Express.js API routes to Netlify serverless functions for live data on production
-- **Implementation**: 
-  - Created 7 separate Netlify Functions: token, transactions, holders, price-history, network-status, volume-analytics, portfolio
-  - Each function handles CORS and proper error handling for production deployment
-  - Functions use same service layer (BSCScan, CoinGecko, PancakeSwap APIs) as development environment
-  - Added automated build process using esbuild to compile TypeScript functions to CommonJS
-- **Technical Details**:
-  - Functions located in `netlify/functions/` with shared service library in `lib/` subfolder
-  - Configured Netlify redirects to route `/api/*` paths to appropriate functions
-  - Build process: TypeScript → CommonJS bundling with external package optimization
-  - Maintains same API contract as Express server for seamless frontend compatibility
-- **Production Error Resolution**: Fixed critical production crash caused by aggressive React Query error handling
-  - Problem: React Query returning null for failed API calls in production, breaking components expecting data structures
-  - Solution: Enhanced error handling with proper error throwing, robust formatting functions, and app-wide error boundary
-  - Disabled problematic volume analytics endpoint temporarily to prevent recurring crashes
-  - Added comprehensive null/undefined checks to all formatting utilities
-- **User Feedback**: "It works perfectly. Thank you" - production deployment now stable and functional
-- **Result**: Production site successfully serving real-time cryptocurrency data with stable error handling
+This project is a cryptocurrency token dashboard application for the "Oeconomia" (OEC) token on the BSC (Binance Smart Chain) network. Its purpose is to provide comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap. The business vision is to create a professional trading interface with intuitive controls, transparent fee disclosure, industry-standard layout, and optimal screen space utilization, making it an essential tool for OEC token holders and traders.
 
 ## User Preferences
-
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
 ### Frontend Architecture
 - **Framework**: React 18 with TypeScript
-- **Routing**: Wouter (lightweight React router)
+- **Routing**: Wouter
 - **State Management**: TanStack Query (React Query) for server state management
 - **UI Components**: Custom components built with Radix UI primitives and shadcn/ui
-- **Styling**: Tailwind CSS with custom crypto-themed design system
-- **Build Tool**: Vite for fast development and optimized production builds
+- **Styling**: Tailwind CSS with custom crypto-themed design system, utilizing custom gradient color schemes for visual distinction (e.g., cyan-to-magenta for active elements, distinct gradients for staking pools).
+- **Build Tool**: Vite
+- **UI/UX Decisions**:
+    - Professional UI/UX improvements for swap functionality including percentage buttons, highlighted calculation sections with gradient styling, and standardized fee structures.
+    - Dynamic page titles and descriptions in the top navigation header for context-aware headers.
+    - Unified design system with consistent branding, incorporating a custom gradient for active navigation and wallet buttons.
+    - Comprehensive staking interface with distinct gradient color schemes for different pool options.
+    - Interactive ROI Calculator and Achievement system with collapsible interfaces and enhanced toggle styling.
+    - Clear visual distinction between different DeFi position types (pools vs. farms) using distinct color schemes.
+    - One-time popup modal for new visitors warning about DApp development status.
 
 ### Backend Architecture
-- **Runtime**: Node.js with Express.js server
-- **Language**: TypeScript throughout the entire stack
-- **API Design**: REST API with structured endpoints for token data, transactions, and network status
-- **External API Integration**: Multiple crypto data sources (CoinGecko, PancakeSwap, BSCScan)
-- **Development Mode**: Vite middleware integration for hot module replacement
+- **Runtime**: Node.js with Express.js server (converted to Netlify serverless functions for production)
+- **Language**: TypeScript
+- **API Design**: REST API with structured endpoints for token data, transactions, and network status.
+- **External API Integration**: Multiple crypto data sources (CoinGecko, PancakeSwap, BSCScan).
+- **Deployment**: Netlify for static site and serverless function deployment. Build configuration adapted for Netlify's environment.
 
 ### Data Storage
-- **Database ORM**: Drizzle ORM configured for PostgreSQL
+- **Database ORM**: Drizzle ORM
 - **Database Provider**: Neon Database (serverless PostgreSQL)
-- **Session Storage**: PostgreSQL-based session storage with connect-pg-simple
-- **Token Tracking**: Persistent storage for tracked tokens and historical snapshots
-- **User Watchlists**: Database-backed user preferences and price alerts
-- **Historical Data**: Token price and market data snapshots for analytics
+- **Session Storage**: PostgreSQL-based session storage
+- **Data Persistence**: Persistent storage for tracked tokens, historical snapshots, user watchlists, and price alerts.
 
-## Key Components
-
-### Frontend Components
-1. **Dashboard**: Main application interface with token overview and analytics
-2. **Token Overview**: Real-time price, market cap, and key metrics display
-3. **Price Chart**: Interactive price history charts with multiple timeframes
-4. **Transactions Table**: Live transaction feed with filtering and pagination
-5. **Holder Statistics**: Top token holders analysis with distribution charts
-6. **Token Info Panel**: Contract details, network status, and technical information
-7. **Quick Actions**: Direct links to trading platforms and blockchain explorers
-
-### Backend Services
-1. **BSC API Service**: Blockchain data from BSCScan API
-2. **CoinGecko API Service**: Market data and price information
-3. **PancakeSwap API Service**: DEX-specific trading data and pair information
-4. **Token Data Aggregation**: Combines multiple data sources with intelligent fallbacks
-
-### Shared Schema
-- Zod-based type validation for API responses
-- Shared TypeScript types between client and server
-- Comprehensive data models for tokens, transactions, holders, and network status
-
-## Data Flow
-
-1. **Client Request**: React components trigger API calls via TanStack Query
-2. **Server Processing**: Express routes handle requests and coordinate external API calls
-3. **Data Aggregation**: Multiple crypto APIs are called in parallel for comprehensive data
-4. **Response Formatting**: Data is validated against Zod schemas and returned to client
-5. **Client Updates**: TanStack Query manages caching, refetching, and UI updates
-6. **Real-time Updates**: Automatic polling keeps data fresh (15-60 second intervals)
+### System Design Choices
+- Focus on real-time data with automatic polling (15-60 second intervals).
+- Modular design for extensibility with additional crypto data sources and features.
+- Robust error handling with graceful API failure management and app-wide error boundaries.
+- State locking mechanism and localStorage persistence for consistent sidebar navigation across pages.
 
 ## External Dependencies
 
 ### Crypto Data Sources
-- **CoinGecko API**: Primary source for market data and token information
-- **PancakeSwap API**: DEX trading data and liquidity information
-- **BSCScan API**: Blockchain transactions and network status
+- **CoinGecko API**: Market data and token information.
+- **PancakeSwap API**: DEX trading data and liquidity information.
+- **BSCScan API**: Blockchain transactions and network status.
 
 ### UI Libraries
-- **Radix UI**: Accessible component primitives
-- **Recharts**: Interactive charting library for price history
-- **Lucide Icons**: Modern icon library
-- **Tailwind CSS**: Utility-first CSS framework
+- **Radix UI**: Accessible component primitives.
+- **Recharts**: Interactive charting library.
+- **Lucide Icons**: Icon library.
+- **Tailwind CSS**: Utility-first CSS framework.
 
 ### Development Tools
-- **Vite**: Build tool with HMR and optimized bundling
-- **TypeScript**: Type safety across the entire stack
-- **ESBuild**: Fast bundling for production server code
-
-## Deployment Strategy
-
-### Build Process
-- **Client**: Vite builds React app to `dist/public`
-- **Server**: ESBuild bundles Node.js server to `dist/index.js`
-- **Type Checking**: TypeScript compilation check without emission
-
-### Environment Configuration
-- **Database**: PostgreSQL connection via `DATABASE_URL`
-- **API Keys**: External service authentication (CoinGecko, BSCScan)
-- **Network**: BSC mainnet integration with testnet fallback options
-
-### Production Setup
-- **Server**: Express serves static files and API routes
-- **Database**: Drizzle migrations and schema management
-- **Monitoring**: Request logging and error handling middleware
-
-The application follows a modern full-stack TypeScript architecture with emphasis on type safety, real-time data, and user experience. The modular design allows for easy extension with additional crypto data sources and features.
+- **Vite**: Build tool.
+- **TypeScript**: Type safety across the stack.
+- **ESBuild**: Fast bundling for production server code.
