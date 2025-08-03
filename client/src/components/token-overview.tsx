@@ -27,7 +27,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card className="crypto-card p-6 text-center">
-          <p className="text-gray-400">Failed to load token data</p>
+          <p className="text-gray-400">Live data unavailable on static deployment</p>
+          <p className="text-gray-500 text-sm mt-2">Connect to a development environment for real-time token data</p>
         </Card>
       </div>
     );

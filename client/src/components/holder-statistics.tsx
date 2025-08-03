@@ -60,7 +60,8 @@ export function HolderStatistics({ contractAddress, tokenData }: HolderStatistic
           </div>
         ) : !topHolders || topHolders.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-400">No holder data available</p>
+            <p className="text-gray-400">Holder data unavailable on static deployment</p>
+            <p className="text-gray-500 text-sm mt-2">Requires live blockchain API access</p>
           </div>
         ) : (
           <div className="space-y-3">

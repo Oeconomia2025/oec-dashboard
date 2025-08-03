@@ -86,7 +86,8 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
           </div>
         ) : !transactions || transactions.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-gray-400">No recent transactions found</p>
+            <p className="text-gray-400">Transaction data unavailable on static deployment</p>
+            <p className="text-gray-500 text-sm mt-2">Requires live blockchain API access</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
