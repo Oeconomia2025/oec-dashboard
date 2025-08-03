@@ -302,9 +302,10 @@ function SwapContent() {
 
   // Calculate limit order trigger price based on market price and adjustment
   const calculateLimitPrice = () => {
-    if (!fromToken || !toToken) return "";
+    const conditionTokens = getPriceConditionTokens();
+    if (!conditionTokens.from || !conditionTokens.to) return "";
     
-    const marketRate = toToken.price / fromToken.price;
+    const marketRate = conditionTokens.to.price / conditionTokens.from.price;
     const adjustedRate = marketRate * (1 + limitOrder.priceAdjustment / 100);
     return adjustedRate.toFixed(6);
   };
@@ -323,8 +324,9 @@ function SwapContent() {
 
   // Get current market price for display
   const getCurrentMarketPrice = () => {
-    if (!fromToken || !toToken) return "0";
-    return (toToken.price / fromToken.price).toFixed(6);
+    const conditionTokens = getPriceConditionTokens();
+    if (!conditionTokens.from || !conditionTokens.to) return "0";
+    return (conditionTokens.to.price / conditionTokens.from.price).toFixed(6);
   };
 
   // Get the price condition tokens (what shows in "When 1 X is worth Y")
@@ -599,7 +601,7 @@ function SwapContent() {
                   <div className="relative">
                     <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-gray-400 text-sm">{limitOrderType === 'sell' ? 'Sell' : 'Buy'}</span>
+                        <span className="text-gray-400 text-sm">Sell</span>
                         {fromToken && (
                           <span className="text-gray-400 text-sm">
                             Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
