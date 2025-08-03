@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatNumber(num: number): string {
+  if (typeof num !== 'number' || isNaN(num) || !isFinite(num)) {
+    return '0';
+  }
   return num.toLocaleString('en-US', { 
     minimumFractionDigits: 0, 
     maximumFractionDigits: 5 
@@ -13,5 +16,8 @@ export function formatNumber(num: number): string {
 }
 
 export function formatPrice(price: number): string {
+  if (typeof price !== 'number' || isNaN(price) || !isFinite(price)) {
+    return '$0';
+  }
   return `$${formatNumber(price)}`;
 }
