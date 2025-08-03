@@ -97,8 +97,13 @@ This is a cryptocurrency token dashboard application built for the "Oeconomia" (
   - Configured Netlify redirects to route `/api/*` paths to appropriate functions
   - Build process: TypeScript → CommonJS bundling with external package optimization
   - Maintains same API contract as Express server for seamless frontend compatibility
-- **Production Readiness**: Functions tested and building successfully, ready for live data deployment
-- **Result**: Production site will now have access to real-time cryptocurrency data instead of static placeholder messages
+- **Production Error Resolution**: Fixed critical production crash caused by aggressive React Query error handling
+  - Problem: React Query returning null for failed API calls in production, breaking components expecting data structures
+  - Solution: Enhanced error handling with proper error throwing, robust formatting functions, and app-wide error boundary
+  - Disabled problematic volume analytics endpoint temporarily to prevent recurring crashes
+  - Added comprehensive null/undefined checks to all formatting utilities
+- **User Feedback**: "It works perfectly. Thank you" - production deployment now stable and functional
+- **Result**: Production site successfully serving real-time cryptocurrency data with stable error handling
 
 ## User Preferences
 
