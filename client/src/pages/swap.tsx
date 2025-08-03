@@ -1007,21 +1007,20 @@ function SwapContent() {
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">From</span>
-                    </div>
-                    
-                    {/* Percentage Buttons */}
-                    <div className="flex space-x-2 mb-4">
-                      {[25, 50, 75, 100].map((percentage) => (
-                        <Button
-                          key={percentage}
-                          variant={swapPercentage === percentage ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handleSwapPercentage(percentage)}
-                          className={swapPercentage === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"}
-                        >
-                          {percentage === 100 ? "Max" : `${percentage}%`}
-                        </Button>
-                      ))}
+                      {/* Percentage Buttons */}
+                      <div className="flex space-x-2">
+                        {[25, 50, 75, 100].map((percentage) => (
+                          <Button
+                            key={percentage}
+                            variant={swapPercentage === percentage ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleSwapPercentage(percentage)}
+                            className={swapPercentage === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"}
+                          >
+                            {percentage === 100 ? "Max" : `${percentage}%`}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                     
                     <div className="flex items-center space-x-3">
@@ -1064,7 +1063,7 @@ function SwapContent() {
                     
                     {/* Balance below token selection */}
                     {fromToken && (
-                      <div className="text-center text-gray-400 text-sm mt-2">
+                      <div className="text-right text-gray-400 text-sm mt-2">
                         Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
                       </div>
                     )}
