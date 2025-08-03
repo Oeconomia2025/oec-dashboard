@@ -62,6 +62,7 @@ function SwapContent() {
   const [showSettings, setShowSettings] = useState(false);
   const [showChart, setShowChart] = useState(false);
   const [chartTimeframe, setChartTimeframe] = useState("1D");
+  const [hideSidebar, setHideSidebar] = useState(false);
   const [activeTab, setActiveTab] = useState("Swap");
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to' | 'priceCondition'>('from');
@@ -522,9 +523,9 @@ function SwapContent() {
   return (
     <div className="p-8">
       <div className="max-w-7xl mx-auto">
-        <div className={`grid gap-6 ${showChart ? 'grid-cols-1 xl:grid-cols-5' : 'grid-cols-1 lg:grid-cols-3'}`}>
+        <div className={`grid gap-6 ${showChart ? (hideSidebar ? 'grid-cols-1 xl:grid-cols-3' : 'grid-cols-1 xl:grid-cols-5') : 'grid-cols-1 lg:grid-cols-3'}`}>
         {/* Main Swap Interface */}
-        <div className={showChart ? 'xl:col-span-2' : 'lg:col-span-2'}>
+        <div className={showChart ? (hideSidebar ? 'xl:col-span-1' : 'xl:col-span-2') : 'lg:col-span-2'}>
           <Card className="crypto-card border h-full">
             <CardHeader className="pb-0">
               {/* Tab Navigation */}
@@ -550,7 +551,10 @@ function SwapContent() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setShowChart(!showChart)}
+                    onClick={() => {
+                      setShowChart(!showChart);
+                      setHideSidebar(!showChart);
+                    }}
                     className={`text-gray-400 hover:text-white ${showChart ? 'text-crypto-blue' : ''}`}
                   >
                     <BarChart3 className="w-4 h-4" />
@@ -1421,6 +1425,7 @@ function SwapContent() {
         )}
 
         {/* Sidebar Info */}
+        {!hideSidebar && (
         <div className="space-y-6">
           {/* Market Stats */}
           <Card className="crypto-card border">
@@ -1513,6 +1518,7 @@ function SwapContent() {
             </CardContent>
           </Card>
         </div>
+        )}
       </div>
 
       {/* Token Selection Modal */}
