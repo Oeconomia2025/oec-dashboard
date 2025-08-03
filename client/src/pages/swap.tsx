@@ -1313,12 +1313,12 @@ function SwapContent() {
               </Button>
 
               {/* Quote and Trade Information */}
-              {activeTab === "Swap" && quote && (
+              {activeTab === "Swap" && fromToken && toToken && (fromAmount || toAmount) && (
                 <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400">Exchange Rate</span>
                     <span className="text-white">
-                      1 {fromToken?.symbol} = {formatNumber(quote.exchangeRate, 6)} {toToken?.symbol}
+                      1 {fromToken?.symbol} = {formatNumber(quote?.exchangeRate || (fromToken.price / toToken.price), 6)} {toToken?.symbol}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
