@@ -75,6 +75,12 @@ function SwapContent() {
   });
   const [limitOrderType, setLimitOrderType] = useState<'sell' | 'buy'>('sell');
   
+  // Track the original price condition tokens (for stablecoin behavior)
+  const [priceConditionTokens, setPriceConditionTokens] = useState<{from: Token | null, to: Token | null}>({
+    from: null,
+    to: null
+  });
+  
   // Buy mode specific state
   const [fiatAmount, setFiatAmount] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
@@ -303,10 +309,37 @@ function SwapContent() {
     return adjustedRate.toFixed(6);
   };
 
+  // Check if a token is a stablecoin
+  const isStablecoin = (token: Token | null) => {
+    if (!token) return false;
+    const stablecoins = ['USDT', 'USDC', 'BUSD', 'DAI', 'UST', 'FRAX'];
+    return stablecoins.includes(token.symbol.toUpperCase());
+  };
+
+  // Check if current pair involves a stablecoin
+  const hasStablecoin = () => {
+    return isStablecoin(fromToken) || isStablecoin(toToken);
+  };
+
   // Get current market price for display
   const getCurrentMarketPrice = () => {
     if (!fromToken || !toToken) return "0";
     return (toToken.price / fromToken.price).toFixed(6);
+  };
+
+  // Get the price condition tokens (what shows in "When 1 X is worth Y")
+  const getPriceConditionTokens = () => {
+    // If no stablecoin involved, use current from/to tokens
+    if (!hasStablecoin()) {
+      return { from: fromToken, to: toToken };
+    }
+    
+    // If stablecoin involved, keep the original pair or use current
+    if (priceConditionTokens.from && priceConditionTokens.to) {
+      return priceConditionTokens;
+    }
+    
+    return { from: fromToken, to: toToken };
   };
 
   // Handle buy/sell toggle for limit orders
@@ -314,7 +347,12 @@ function SwapContent() {
     const newType = limitOrderType === 'sell' ? 'buy' : 'sell';
     setLimitOrderType(newType);
     
-    // Swap only the sell/for tokens, keeping the price condition token unchanged
+    // Set price condition tokens if not already set
+    if (!priceConditionTokens.from || !priceConditionTokens.to) {
+      setPriceConditionTokens({ from: fromToken, to: toToken });
+    }
+    
+    // Swap the sell/for tokens
     const tempToken = fromToken;
     setFromToken(toToken);
     setToToken(tempToken);
@@ -322,6 +360,14 @@ function SwapContent() {
     // Clear amounts
     setFromAmount("");
     setToAmount("");
+  };
+
+  // Get percentage buttons based on stablecoin involvement
+  const getPercentageButtons = () => {
+    if (hasStablecoin()) {
+      return [-10, -5, -1]; // Negative percentages for stablecoin pairs
+    }
+    return [1, 5, 10]; // Positive percentages for token pairs
   };
 
   // Handle tab changes with state reset
@@ -338,6 +384,7 @@ function SwapContent() {
       priceAdjustment: 0
     });
     setLimitOrderType('sell');
+    setPriceConditionTokens({ from: null, to: null });
   };
 
   // Chart formatting functions
@@ -471,10 +518,12 @@ function SwapContent() {
               {/* Limit Order Interface */}
               {activeTab === "Limit" && (
                 <>
-                  {/* Price Condition Section - Token remains fixed, unaffected by toggle */}
+                  {/* Price Condition Section - Behavior depends on stablecoin involvement */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">When 1 {tokens[0]?.symbol || 'OEC'} is worth</span>
+                      <span className="text-gray-400 text-sm">
+                        When 1 {getPriceConditionTokens().from?.symbol || fromToken?.symbol || 'Token'} is worth
+                      </span>
                     </div>
                     <div className="flex items-center space-x-3">
                       <Input
@@ -498,13 +547,18 @@ function SwapContent() {
                         variant="outline"
                         className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto cursor-default"
                       >
-                        {tokens[1] ? (
+                        {getPriceConditionTokens().to ? (
                           <div className="flex items-center space-x-2">
-                            <img src={tokens[1].logo} alt={tokens[1].symbol} className="w-6 h-6 rounded-full" />
-                            <span>{tokens[1].symbol}</span>
+                            <img src={getPriceConditionTokens().to!.logo} alt={getPriceConditionTokens().to!.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{getPriceConditionTokens().to!.symbol}</span>
+                          </div>
+                        ) : toToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{toToken.symbol}</span>
                           </div>
                         ) : (
-                          <span>USDT</span>
+                          <span>Select token</span>
                         )}
                       </Button>
                     </div>
@@ -519,7 +573,7 @@ function SwapContent() {
                       >
                         Market
                       </Button>
-                      {[1, 5, 10].map((percentage) => (
+                      {getPercentageButtons().map((percentage) => (
                         <Button
                           key={percentage}
                           variant={limitOrder.priceAdjustment === percentage ? "default" : "outline"}
@@ -535,7 +589,7 @@ function SwapContent() {
                           }}
                           className={limitOrder.priceAdjustment === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80 text-xs" : "text-xs"}
                         >
-                          +{percentage}%
+                          {percentage > 0 ? '+' : ''}{percentage}%
                         </Button>
                       ))}
                     </div>
