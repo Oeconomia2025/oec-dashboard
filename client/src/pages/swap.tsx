@@ -1272,7 +1272,7 @@ function SwapContent() {
 
         {/* Price Chart */}
         {showChart && (
-          <div className="xl:col-span-2">
+          <div className={hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'}>
             <Card className="crypto-card border h-full">
               <CardHeader>
                 <CardTitle className="text-white flex items-center justify-between">
