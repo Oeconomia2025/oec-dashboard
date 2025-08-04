@@ -487,7 +487,7 @@ function LiquidityContent() {
                                 value={minPrice}
                                 onChange={(e) => setMinPrice(e.target.value)}
                                 placeholder="0.0"
-                                className="bg-transparent border-[var(--crypto-border)] text-white"
+                                className="bg-transparent border-0 text-white text-xl focus:ring-0 focus:border-0 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                               />
                               <p className="text-xs text-gray-400 mt-1">
                                 {selectedToken1.symbol} per {selectedToken0.symbol}
@@ -500,7 +500,7 @@ function LiquidityContent() {
                                 value={maxPrice}
                                 onChange={(e) => setMaxPrice(e.target.value)}
                                 placeholder="0.0"
-                                className="bg-transparent border-[var(--crypto-border)] text-white"
+                                className="bg-transparent border-0 text-white text-xl focus:ring-0 focus:border-0 focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                               />
                               <p className="text-xs text-gray-400 mt-1">
                                 {selectedToken1.symbol} per {selectedToken0.symbol}
