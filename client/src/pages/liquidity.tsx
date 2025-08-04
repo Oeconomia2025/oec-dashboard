@@ -1279,7 +1279,7 @@ function LiquidityContent() {
                       {filteredTokens.map((token, index) => (
                         <tr key={token.id} className="border-b border-crypto-border hover:bg-crypto-surface/20 transition-all duration-200">
                           <td className="py-4 px-6">
-                            <span className="text-gray-400 font-medium">{index + 1}</span>
+                            <span className="text-gray-400 font-mono">{index + 1}</span>
                           </td>
                           <td className="py-4 px-6">
                             <div className="flex items-center space-x-3">
@@ -1292,15 +1292,13 @@ function LiquidityContent() {
                                 }}
                               />
                               <div>
-                                <div className="font-medium text-white">{token.symbol}</div>
+                                <div className="font-medium">{token.symbol}</div>
                                 <div className="text-sm text-gray-400">{token.name}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="py-4 px-6">
-                            <span className="text-white font-medium">
-                              ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
-                            </span>
+                          <td className="py-4 px-6 font-mono">
+                            ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
                           </td>
                           <td className="py-4 px-6">
                             <div className={`flex items-center space-x-1 ${
@@ -1316,23 +1314,17 @@ function LiquidityContent() {
                               </span>
                             </div>
                           </td>
-                          <td className="py-4 px-6">
-                            <span className="text-white">
-                              ${(token.volume24h / 1000000).toFixed(1)}M
-                            </span>
+                          <td className="py-4 px-6 font-mono">
+                            ${(token.volume24h / 1000000).toFixed(1)}M
                           </td>
-                          <td className="py-4 px-6">
-                            <span className="text-white">
-                              ${token.marketCap > 1000000000 ? 
-                                (token.marketCap / 1000000000).toFixed(1) + 'B' : 
-                                (token.marketCap / 1000000).toFixed(0) + 'M'
-                              }
-                            </span>
+                          <td className="py-4 px-6 font-mono">
+                            ${token.marketCap > 1000000000 ? 
+                              (token.marketCap / 1000000000).toFixed(1) + 'B' : 
+                              (token.marketCap / 1000000).toFixed(0) + 'M'
+                            }
                           </td>
-                          <td className="py-4 px-6">
-                            <span className="text-white">
-                              {token.holders.toLocaleString()}
-                            </span>
+                          <td className="py-4 px-6 font-mono">
+                            {token.holders.toLocaleString()}
                           </td>
                         </tr>
                       ))}
