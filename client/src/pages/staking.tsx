@@ -801,34 +801,6 @@ export function Staking() {
                   {/* Expanded Details */}
                   {isExpanded && (
                     <div className="border-t border-white/10 p-6 bg-black/20">
-                      {/* Pool Achievements */}
-                      {poolAchievements.length > 0 && (
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-2 mb-3">
-                            <Award className="w-4 h-4 text-crypto-gold" />
-                            <span className="text-sm font-medium text-crypto-gold">Pool Achievements</span>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            {poolAchievements.map((achievement) => {
-                              const AchievementIcon = achievement.icon;
-                              return (
-                                <div 
-                                  key={achievement.id}
-                                  className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs border ${
-                                    achievement.earned
-                                      ? 'bg-green-500/20 border-green-500/50 text-green-300'
-                                      : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
-                                  }`}
-                                >
-                                  <AchievementIcon className="w-3 h-3" />
-                                  <span>{achievement.name}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
                   <Separator className="my-4 bg-white/20" />
 
                   <Tabs defaultValue="stake" className="w-full">
