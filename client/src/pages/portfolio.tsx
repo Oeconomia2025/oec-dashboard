@@ -278,11 +278,11 @@ export function Portfolio() {
           {holdingsExpanded && (
             <div>
               {balancesLoading ? (
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <Skeleton className="w-8 h-8 rounded-full" />
+                    <div key={i} className="flex items-center justify-between p-2 bg-[var(--crypto-dark)]/50 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <Skeleton className="w-7 h-7 rounded-full" />
                         <div>
                           <Skeleton className="h-4 w-20 mb-1" />
                           <Skeleton className="h-3 w-16" />
@@ -296,19 +296,19 @@ export function Portfolio() {
                   ))}
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-1">
                   {/* BNB Balance */}
                   {bnbBalance && parseFloat(bnbBalance.formatted) > 0 && (
-                    <div className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
-                      <div className="flex items-center space-x-3">
+                    <div className="flex items-center justify-between p-2 bg-[var(--crypto-dark)]/50 rounded-lg">
+                      <div className="flex items-center space-x-2">
                         <img 
                           src={getTokenLogo('BNB')} 
                           alt="BNB" 
-                          className="w-8 h-8 rounded-full"
+                          className="w-7 h-7 rounded-full"
                           onError={(e) => {
                             // Fallback if image fails to load
                             e.currentTarget.style.display = 'none';
-                            e.currentTarget.parentElement!.innerHTML = '<div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-xs">BNB</div>';
+                            e.currentTarget.parentElement!.innerHTML = '<div class="w-7 h-7 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-xs">BNB</div>';
                           }}
                         />
                         <div>
@@ -328,16 +328,16 @@ export function Portfolio() {
                     const balance = parseFloat(token.balance) / Math.pow(10, token.decimals)
                     
                     return (
-                      <div key={token.address} className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
-                        <div className="flex items-center space-x-3">
+                      <div key={token.address} className="flex items-center justify-between p-2 bg-[var(--crypto-dark)]/50 rounded-lg">
+                        <div className="flex items-center space-x-2">
                           <img 
                             src={getTokenLogo(token.symbol, token.address)} 
                             alt={token.symbol} 
-                            className="w-8 h-8 rounded-full"
+                            className="w-7 h-7 rounded-full"
                             onError={(e) => {
                               // Fallback if image fails to load
                               e.currentTarget.style.display = 'none';
-                              e.currentTarget.parentElement!.innerHTML = `<div class="w-8 h-8 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-white font-bold text-xs">${token.symbol.slice(0, 3)}</div>`;
+                              e.currentTarget.parentElement!.innerHTML = `<div class="w-7 h-7 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-white font-bold text-xs">${token.symbol.slice(0, 3)}</div>`;
                             }}
                           />
                           <div>
