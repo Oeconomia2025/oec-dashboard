@@ -255,8 +255,8 @@ function LiquidityContent() {
   const mockPools = [
     {
       id: 1,
-      tokenA: { symbol: "USDT", name: "Tether USD", logo: "🔗" },
-      tokenB: { symbol: "BNB", name: "Binance Coin", logo: "🟡" },
+      tokenA: { symbol: "USDT", name: "Tether USD", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png" },
+      tokenB: { symbol: "BNB", name: "Binance Coin", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" },
       fee: "0.05%",
       volume24h: "$2.4M",
       volume7d: "$18.2M",
@@ -267,8 +267,8 @@ function LiquidityContent() {
     },
     {
       id: 2,
-      tokenA: { symbol: "OEC", name: "Oeconomia", logo: "🌐" },
-      tokenB: { symbol: "USDT", name: "Tether USD", logo: "🔗" },
+      tokenA: { symbol: "OEC", name: "Oeconomia", logo: "/oec-logo.png" },
+      tokenB: { symbol: "USDT", name: "Tether USD", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png" },
       fee: "0.30%",
       volume24h: "$567K",
       volume7d: "$4.2M",
@@ -279,8 +279,8 @@ function LiquidityContent() {
     },
     {
       id: 3,
-      tokenA: { symbol: "WBNB", name: "Wrapped BNB", logo: "🟡" },
-      tokenB: { symbol: "BUSD", name: "Binance USD", logo: "💛" },
+      tokenA: { symbol: "WBNB", name: "Wrapped BNB", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" },
+      tokenB: { symbol: "BUSD", name: "Binance USD", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png" },
       fee: "0.25%",
       volume24h: "$1.8M",
       volume7d: "$12.6M",
@@ -291,8 +291,8 @@ function LiquidityContent() {
     },
     {
       id: 4,
-      tokenA: { symbol: "CAKE", name: "PancakeSwap", logo: "🥞" },
-      tokenB: { symbol: "WBNB", name: "Wrapped BNB", logo: "🟡" },
+      tokenA: { symbol: "CAKE", name: "PancakeSwap", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/7186.png" },
+      tokenB: { symbol: "WBNB", name: "Wrapped BNB", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" },
       fee: "0.25%",
       volume24h: "$890K",
       volume7d: "$6.8M",
@@ -303,14 +303,74 @@ function LiquidityContent() {
     },
     {
       id: 5,
-      tokenA: { symbol: "ETH", name: "Ethereum", logo: "⚪" },
-      tokenB: { symbol: "USDT", name: "Tether USD", logo: "🔗" },
+      tokenA: { symbol: "ETH", name: "Ethereum", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png" },
+      tokenB: { symbol: "USDT", name: "Tether USD", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png" },
       fee: "0.05%",
       volume24h: "$3.1M",
       volume7d: "$21.4M",
       tvl: "$12.8M",
       apr: "8.9%",
       priceChange24h: 1.4,
+      network: "BSC"
+    },
+    {
+      id: 6,
+      tokenA: { symbol: "BTCB", name: "Bitcoin BEP20", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png" },
+      tokenB: { symbol: "BNB", name: "Binance Coin", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" },
+      fee: "0.25%",
+      volume24h: "$1.2M",
+      volume7d: "$8.7M",
+      tvl: "$6.3M",
+      apr: "15.2%",
+      priceChange24h: 3.4,
+      network: "BSC"
+    },
+    {
+      id: 7,
+      tokenA: { symbol: "ADA", name: "Cardano", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png" },
+      tokenB: { symbol: "USDC", name: "USD Coin", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png" },
+      fee: "0.30%",
+      volume24h: "$445K",
+      volume7d: "$3.1M",
+      tvl: "$1.8M",
+      apr: "28.5%",
+      priceChange24h: -2.1,
+      network: "BSC"
+    },
+    {
+      id: 8,
+      tokenA: { symbol: "DOT", name: "Polkadot", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png" },
+      tokenB: { symbol: "BNB", name: "Binance Coin", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png" },
+      fee: "0.25%",
+      volume24h: "$678K",
+      volume7d: "$4.9M",
+      tvl: "$2.7M",
+      apr: "22.1%",
+      priceChange24h: 1.8,
+      network: "BSC"
+    },
+    {
+      id: 9,
+      tokenA: { symbol: "LINK", name: "Chainlink", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png" },
+      tokenB: { symbol: "ETH", name: "Ethereum", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png" },
+      fee: "0.30%",
+      volume24h: "$523K",
+      volume7d: "$3.8M",
+      tvl: "$2.2M",
+      apr: "26.7%",
+      priceChange24h: 4.2,
+      network: "BSC"
+    },
+    {
+      id: 10,
+      tokenA: { symbol: "UNI", name: "Uniswap", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png" },
+      tokenB: { symbol: "USDT", name: "Tether USD", logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png" },
+      fee: "0.25%",
+      volume24h: "$389K",
+      volume7d: "$2.6M",
+      tvl: "$1.9M",
+      apr: "19.8%",
+      priceChange24h: -0.7,
       network: "BSC"
     }
   ];
@@ -1028,12 +1088,16 @@ function LiquidityContent() {
                           <td className="py-4 px-6">
                             <div className="flex items-center space-x-3">
                               <div className="flex items-center -space-x-2">
-                                <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark z-10">
-                                  {pool.tokenA.logo}
-                                </div>
-                                <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark">
-                                  {pool.tokenB.logo}
-                                </div>
+                                <img 
+                                  src={pool.tokenA.logo} 
+                                  alt={pool.tokenA.symbol}
+                                  className="w-8 h-8 rounded-full border-2 border-crypto-dark z-10"
+                                />
+                                <img 
+                                  src={pool.tokenB.logo} 
+                                  alt={pool.tokenB.symbol}
+                                  className="w-8 h-8 rounded-full border-2 border-crypto-dark"
+                                />
                               </div>
                               <div>
                                 <div className="font-medium">
