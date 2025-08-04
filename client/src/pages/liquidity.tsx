@@ -193,31 +193,33 @@ function LiquidityContent() {
         <div className="max-w-7xl mx-auto">
 
           {/* Navigation Tabs */}
-          <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1 mb-6 w-fit">
-            <Button
-              variant={activeView === 'positions' ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveView('positions')}
-              className={
-                activeView === 'positions'
-                  ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
-                  : "text-gray-400 hover:text-white px-4 py-2"
-              }
-            >
-              My Positions
-            </Button>
-            <Button
-              variant={activeView === 'create' ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setActiveView('create')}
-              className={
-                activeView === 'create'
-                  ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
-                  : "text-gray-400 hover:text-white px-4 py-2"
-              }
-            >
-              Create Position
-            </Button>
+          <div className="mb-6">
+            <div className="grid w-auto grid-cols-2 bg-gray-800 border border-gray-700 rounded-lg p-1">
+              <Button
+                variant={activeView === 'positions' ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveView('positions')}
+                className={
+                  activeView === 'positions'
+                    ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-3 rounded-md"
+                    : "text-gray-400 hover:text-white px-6 py-3 rounded-md hover:bg-gray-700/50"
+                }
+              >
+                My Positions
+              </Button>
+              <Button
+                variant={activeView === 'create' ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveView('create')}
+                className={
+                  activeView === 'create'
+                    ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-3 rounded-md"
+                    : "text-gray-400 hover:text-white px-6 py-3 rounded-md hover:bg-gray-700/50"
+                }
+              >
+                Create Position
+              </Button>
+            </div>
           </div>
 
           {/* Positions View */}
