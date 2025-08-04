@@ -2,7 +2,7 @@ import { useAccount, useBalance } from 'wagmi'
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink, Droplets, Sprout, Gift } from 'lucide-react'
+import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink, Droplets, Sprout, Gift, ChevronDown, ChevronUp } from 'lucide-react'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { WalletConnect } from "@/components/wallet-connect"
@@ -36,6 +36,7 @@ interface PoolFarm {
 
 export function Portfolio() {
   const { address, isConnected } = useAccount()
+  const [holdingsExpanded, setHoldingsExpanded] = useState(true)
   const [watchedTokens, setWatchedTokens] = useState<string[]>([
     '0x55d398326f99059fF775485246999027B3197955', // USDT
     '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56', // BUSD
@@ -251,99 +252,114 @@ export function Portfolio() {
 
         {/* Token Holdings */}
         <Card className="crypto-card p-6 border mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Holdings</h2>
+          <div 
+            className="flex items-center justify-between mb-6 cursor-pointer hover:bg-gray-800/30 -m-2 p-2 rounded-lg transition-colors"
+            onClick={() => setHoldingsExpanded(!holdingsExpanded)}
+          >
+            <div className="flex items-center space-x-3">
+              <h2 className="text-xl font-semibold">Holdings</h2>
+              {holdingsExpanded ? (
+                <ChevronUp className="w-5 h-5 text-gray-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-gray-400" />
+              )}
+            </div>
             <Button 
               variant="outline" 
               size="sm"
               className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+              onClick={(e) => e.stopPropagation()}
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Token
             </Button>
           </div>
 
-          {balancesLoading ? (
-            <div className="space-y-4">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <Skeleton className="w-10 h-10 rounded-full" />
-                    <div>
-                      <Skeleton className="h-4 w-20 mb-2" />
-                      <Skeleton className="h-3 w-16" />
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <Skeleton className="h-4 w-24 mb-2" />
-                    <Skeleton className="h-3 w-16" />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* BNB Balance */}
-              {bnbBalance && parseFloat(bnbBalance.formatted) > 0 && (
-                <div className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <img 
-                      src={getTokenLogo('BNB')} 
-                      alt="BNB" 
-                      className="w-10 h-10 rounded-full"
-                      onError={(e) => {
-                        // Fallback if image fails to load
-                        e.currentTarget.style.display = 'none';
-                        e.currentTarget.parentElement!.innerHTML = '<div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-sm">BNB</div>';
-                      }}
-                    />
-                    <div>
-                      <div className="font-medium">Binance Coin</div>
-                      <div className="text-sm text-gray-400">BNB</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium">{formatNumber(parseFloat(bnbBalance.formatted || '0'))} BNB</div>
-                    <div className="text-sm text-gray-400">≈ {formatPrice(bnbValue)}</div>
-                  </div>
-                </div>
-              )}
-
-              {/* Token Balances */}
-              {tokenBalances?.map((token: TokenBalance) => {
-                const balance = parseFloat(token.balance) / Math.pow(10, token.decimals)
-                
-                return (
-                  <div key={token.address} className="flex items-center justify-between p-4 bg-[var(--crypto-dark)]/50 rounded-lg">
-                    <div className="flex items-center space-x-4">
-                      <img 
-                        src={getTokenLogo(token.symbol, token.address)} 
-                        alt={token.symbol} 
-                        className="w-10 h-10 rounded-full"
-                        onError={(e) => {
-                          // Fallback if image fails to load
-                          e.currentTarget.style.display = 'none';
-                          e.currentTarget.parentElement!.innerHTML = `<div class="w-10 h-10 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-white font-bold text-xs">${token.symbol.slice(0, 3)}</div>`;
-                        }}
-                      />
-                      <div>
-                        <div className="font-medium">{token.name}</div>
-                        <div className="text-sm text-gray-400">{token.symbol}</div>
+          {holdingsExpanded && (
+            <div>
+              {balancesLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Skeleton className="w-8 h-8 rounded-full" />
+                        <div>
+                          <Skeleton className="h-4 w-20 mb-1" />
+                          <Skeleton className="h-3 w-16" />
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Skeleton className="h-4 w-24 mb-1" />
+                        <Skeleton className="h-3 w-16" />
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium">{formatNumber(balance)} {token.symbol}</div>
-                      <div className="text-sm text-gray-400">
-                        {token.value && token.value > 0 && isFinite(token.value) ? formatPrice(token.value) : '---'}
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {/* BNB Balance */}
+                  {bnbBalance && parseFloat(bnbBalance.formatted) > 0 && (
+                    <div className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <img 
+                          src={getTokenLogo('BNB')} 
+                          alt="BNB" 
+                          className="w-8 h-8 rounded-full"
+                          onError={(e) => {
+                            // Fallback if image fails to load
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.parentElement!.innerHTML = '<div class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-black font-bold text-xs">BNB</div>';
+                          }}
+                        />
+                        <div>
+                          <div className="font-medium">Binance Coin</div>
+                          <div className="text-sm text-gray-400">BNB</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium">{formatNumber(parseFloat(bnbBalance.formatted || '0'))} BNB</div>
+                        <div className="text-sm text-gray-400">≈ {formatPrice(bnbValue)}</div>
                       </div>
                     </div>
-                  </div>
-                )
-              })}
+                  )}
 
-              {(!tokenBalances || tokenBalances.length === 0) && (
-                <div className="text-center py-8">
-                  <p className="text-gray-400">No token balances found</p>
+                  {/* Token Balances */}
+                  {tokenBalances?.map((token: TokenBalance) => {
+                    const balance = parseFloat(token.balance) / Math.pow(10, token.decimals)
+                    
+                    return (
+                      <div key={token.address} className="flex items-center justify-between p-3 bg-[var(--crypto-dark)]/50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <img 
+                            src={getTokenLogo(token.symbol, token.address)} 
+                            alt={token.symbol} 
+                            className="w-8 h-8 rounded-full"
+                            onError={(e) => {
+                              // Fallback if image fails to load
+                              e.currentTarget.style.display = 'none';
+                              e.currentTarget.parentElement!.innerHTML = `<div class="w-8 h-8 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center text-white font-bold text-xs">${token.symbol.slice(0, 3)}</div>`;
+                            }}
+                          />
+                          <div>
+                            <div className="font-medium">{token.name}</div>
+                            <div className="text-sm text-gray-400">{token.symbol}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium">{formatNumber(balance)} {token.symbol}</div>
+                          <div className="text-sm text-gray-400">
+                            {token.value && token.value > 0 && isFinite(token.value) ? formatPrice(token.value) : '---'}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {(!tokenBalances || tokenBalances.length === 0) && (
+                    <div className="text-center py-8">
+                      <p className="text-gray-400">No token balances found</p>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
