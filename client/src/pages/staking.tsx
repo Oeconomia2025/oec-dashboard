@@ -232,6 +232,7 @@ export function Staking() {
   // Collapsible sections state
   const [isROIExpanded, setIsROIExpanded] = useState(true);
   const [isAchievementsExpanded, setIsAchievementsExpanded] = useState(true);
+  const [expandedPools, setExpandedPools] = useState<Set<number>>(new Set());
 
   const formatNumber = (num: number) => {
     return num.toLocaleString('en-US', { 
@@ -313,6 +314,16 @@ export function Staking() {
       setIsClaiming(false);
       // Show success message
     }, 2000);
+  };
+
+  const togglePoolExpansion = (poolId: number) => {
+    const newExpanded = new Set(expandedPools);
+    if (newExpanded.has(poolId)) {
+      newExpanded.delete(poolId);
+    } else {
+      newExpanded.add(poolId);
+    }
+    setExpandedPools(newExpanded);
   };
 
   if (!isConnected) {
@@ -709,69 +720,113 @@ export function Staking() {
                 const scheme = colorSchemes[index % colorSchemes.length];
                 const poolAchievements = getPoolAchievements(pool.id, pool.userStaked, 45); // Mock 45 days staking
                 
+                const isExpanded = expandedPools.has(pool.id);
+                
                 return (
-                <Card key={pool.id} className={`p-6 border ${scheme.border} bg-gradient-to-r ${scheme.gradient} ${scheme.hoverGradient} transition-all duration-300 backdrop-blur-sm`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className={`w-12 h-12 bg-gradient-to-r ${scheme.icon} rounded-full flex items-center justify-center shadow-lg`}>
-                        <Lock className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <div className="flex items-center space-x-2">
-                          <h3 className="text-lg font-semibold">{pool.name}</h3>
-                          <Badge className={`${scheme.badge} border-0 font-semibold shadow-sm`}>
-                            {pool.apy}% APY
-                          </Badge>
+                <Card key={pool.id} className={`border ${scheme.border} bg-gradient-to-r ${scheme.gradient} ${scheme.hoverGradient} transition-all duration-300 backdrop-blur-sm overflow-hidden`}>
+                  <div 
+                    className="p-6 cursor-pointer hover:bg-white/5 transition-colors"
+                    onClick={() => togglePoolExpansion(pool.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className={`w-12 h-12 bg-gradient-to-r ${scheme.icon} rounded-full flex items-center justify-center shadow-lg`}>
+                          <Lock className="w-6 h-6 text-white" />
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-400">
-                          <span className="flex items-center space-x-1">
-                            <Clock className="w-3 h-3" />
-                            <span>{pool.lockPeriod}</span>
-                          </span>
-                          <span className="flex items-center space-x-1">
-                            <Coins className="w-3 h-3" />
-                            <span>{formatNumber(pool.totalStaked)} staked</span>
-                          </span>
+                        <div>
+                          <div className="flex items-center space-x-2">
+                            <h3 className="text-lg font-semibold">{pool.name}</h3>
+                            <Badge className={`${scheme.badge} border-0 font-semibold shadow-sm`}>
+                              {pool.apy}% APY
+                            </Badge>
+                          </div>
+                          <div className="flex items-center space-x-4 text-sm text-gray-400">
+                            <span className="flex items-center space-x-1">
+                              <Clock className="w-3 h-3" />
+                              <span>{pool.lockPeriod}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Coins className="w-3 h-3" />
+                              <span>{formatNumber(pool.totalStaked)} staked</span>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-semibold">
-                        {formatNumber(pool.userStaked)} {pool.tokenSymbol}
-                      </div>
-                      <div className="text-sm text-gray-400">
-                        {formatNumber(pool.userRewards)} rewards
+                      
+                      <div className="flex items-center space-x-6">
+                        {/* Pool Achievements in Header */}
+                        {poolAchievements.length > 0 && (
+                          <div className="flex items-center space-x-2">
+                            <Award className="w-4 h-4 text-crypto-gold" />
+                            <span className="text-sm text-crypto-gold">Pool Achievements</span>
+                            <div className="flex space-x-1">
+                              {poolAchievements.slice(0, 3).map((achievement) => {
+                                const AchievementIcon = achievement.icon;
+                                return (
+                                  <div 
+                                    key={achievement.id}
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                                      achievement.earned
+                                        ? 'bg-green-500/20 text-green-300'
+                                        : 'bg-gray-500/20 text-gray-400'
+                                    }`}
+                                  >
+                                    <AchievementIcon className="w-3 h-3" />
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                        
+                        <div className="text-right">
+                          <div className="text-lg font-semibold">
+                            {formatNumber(pool.userStaked)} {pool.tokenSymbol}
+                          </div>
+                          <div className="text-sm text-gray-400">
+                            {formatNumber(pool.userRewards)} rewards
+                          </div>
+                        </div>
+                        
+                        {isExpanded ? (
+                          <ChevronUp className="w-5 h-5 text-gray-400" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5 text-gray-400" />
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Pool Achievements */}
-                  {poolAchievements.length > 0 && (
-                    <div className="mb-4">
-                      <div className="flex items-center space-x-2 mb-3">
-                        <Award className="w-4 h-4 text-crypto-gold" />
-                        <span className="text-sm font-medium text-crypto-gold">Pool Achievements</span>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {poolAchievements.map((achievement) => {
-                          const AchievementIcon = achievement.icon;
-                          return (
-                            <div 
-                              key={achievement.id}
-                              className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs border ${
-                                achievement.earned
-                                  ? 'bg-green-500/20 border-green-500/50 text-green-300'
-                                  : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
-                              }`}
-                            >
-                              <AchievementIcon className="w-3 h-3" />
-                              <span>{achievement.name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                  {/* Expanded Details */}
+                  {isExpanded && (
+                    <div className="border-t border-white/10 p-6 bg-black/20">
+                      {/* Pool Achievements */}
+                      {poolAchievements.length > 0 && (
+                        <div className="mb-4">
+                          <div className="flex items-center space-x-2 mb-3">
+                            <Award className="w-4 h-4 text-crypto-gold" />
+                            <span className="text-sm font-medium text-crypto-gold">Pool Achievements</span>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {poolAchievements.map((achievement) => {
+                              const AchievementIcon = achievement.icon;
+                              return (
+                                <div 
+                                  key={achievement.id}
+                                  className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs border ${
+                                    achievement.earned
+                                      ? 'bg-green-500/20 border-green-500/50 text-green-300'
+                                      : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
+                                  }`}
+                                >
+                                  <AchievementIcon className="w-3 h-3" />
+                                  <span>{achievement.name}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
 
                   <Separator className="my-4 bg-white/20" />
 
@@ -932,6 +987,8 @@ export function Staking() {
                       </div>
                     </TabsContent>
                   </Tabs>
+                    </div>
+                  )}
                 </Card>
                 );
               })}
