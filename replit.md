@@ -3,6 +3,8 @@
 ## Overview
 This project is a cryptocurrency token dashboard application for the "Oeconomia" (OEC) token on the BSC (Binance Smart Chain) network. Its purpose is to provide comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap. The business vision is to create a professional trading interface with intuitive controls, transparent fee disclosure, industry-standard layout, and optimal screen space utilization, making it an essential tool for OEC token holders and traders.
 
+**Current Status (August 2025)**: Dashboard converted from USD to ETH denomination as placeholder for future OEC token integration. All price displays, market data, and portfolio values now show clean numerical ETH amounts without redundant ticker symbols.
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
