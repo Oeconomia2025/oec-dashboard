@@ -49,7 +49,10 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
     <div className="lg:col-span-2">
       <Card className="crypto-card p-6 border">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">Price Chart</h2>
+          <div className="flex items-center space-x-3">
+            <h2 className="text-xl font-semibold">Price Chart</h2>
+            <span className="text-sm text-gray-400 bg-gray-800/50 px-2 py-1 rounded">BSC-USD</span>
+          </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (
               <Button
