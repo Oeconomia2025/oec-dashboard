@@ -754,12 +754,9 @@ export function Staking() {
                       </div>
                       
                       <div className="flex items-center justify-between">
-                        {/* Center: Pool Achievements - Using same alignment logic as liquidity positions */}
-                        <div className="flex items-center space-x-6">
-                          <div className="text-center min-w-[280px]">
-                            {/* Empty spacer to push achievements to center */}
-                          </div>
-                          <div className="flex items-center space-x-3 min-w-[240px]">
+                        {/* Pool Achievements - Centered with consistent positioning */}
+                        <div className="flex-1 flex justify-center">
+                          <div className="flex items-center space-x-3">
                             <Award className="w-4 h-4 text-crypto-gold" />
                             <span className="text-sm text-crypto-gold">Pool Achievements</span>
                             {poolAchievements.map((achievement) => {
@@ -782,7 +779,7 @@ export function Staking() {
                         
                         {/* Right: Staked Amount + Expand */}
                         <div className="flex items-center space-x-4">
-                          <div className="text-right min-w-[120px]">
+                          <div className="text-right">
                             <div className="text-lg font-semibold">
                               {formatNumber(pool.userStaked)} {pool.tokenSymbol}
                             </div>
