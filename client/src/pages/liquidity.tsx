@@ -72,7 +72,7 @@ function LiquidityContent() {
         name: "Binance Coin",
         address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
         decimals: 18,
-        logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
         price: 610.50,
         balance: 5
       },
@@ -93,7 +93,7 @@ function LiquidityContent() {
         name: "Tether USD",
         address: "0x55d398326f99059fF775485246999027B3197955",
         decimals: 18,
-        logo: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
         price: 1.00,
         balance: 500
       },
@@ -133,7 +133,7 @@ function LiquidityContent() {
       name: "Binance Coin",
       address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
       decimals: 18,
-      logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
       price: 610.50,
       balance: 5
     },
@@ -142,7 +142,7 @@ function LiquidityContent() {
       name: "Tether USD",
       address: "0x55d398326f99059fF775485246999027B3197955",
       decimals: 18,
-      logo: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
       price: 1.00,
       balance: 500
     },
@@ -151,7 +151,7 @@ function LiquidityContent() {
       name: "Wrapped Ethereum",
       address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
       decimals: 18,
-      logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
       price: 3200.50,
       balance: 2
     }
@@ -191,19 +191,6 @@ function LiquidityContent() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Back Button (only shown when creating) */}
-          {activeView === 'create' && (
-            <div className="mb-8 flex justify-end">
-              <Button
-                variant="outline"
-                onClick={() => setActiveView('positions')}
-                className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Positions
-              </Button>
-            </div>
-          )}
 
           {/* Navigation Tabs */}
           <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1 mb-6 w-fit">
