@@ -1,0 +1,715 @@
+import { useState, useEffect } from "react";
+import { Layout } from "@/components/layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  Plus, 
+  ArrowLeft, 
+  Settings, 
+  Info, 
+  TrendingUp,
+  Droplets,
+  Star,
+  ExternalLink,
+  AlertTriangle,
+  Zap
+} from "lucide-react";
+
+interface Token {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: number;
+  logo: string;
+  price: number;
+  balance?: number;
+}
+
+interface Position {
+  id: string;
+  token0: Token;
+  token1: Token;
+  liquidity: string;
+  fee: number;
+  minPrice: number;
+  maxPrice: number;
+  currentPrice: number;
+  uncollectedFees0: string;
+  uncollectedFees1: string;
+  value: number;
+  status: 'in-range' | 'out-of-range';
+}
+
+function LiquidityContent() {
+  const [activeView, setActiveView] = useState<'positions' | 'create'>('positions');
+  const [selectedToken0, setSelectedToken0] = useState<Token | null>(null);
+  const [selectedToken1, setSelectedToken1] = useState<Token | null>(null);
+  const [amount0, setAmount0] = useState("");
+  const [amount1, setAmount1] = useState("");
+  const [selectedFee, setSelectedFee] = useState<number>(0.25);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Sample positions data
+  const [positions] = useState<Position[]>([
+    {
+      id: "1",
+      token0: {
+        symbol: "OEC",
+        name: "Oeconomia",
+        address: "0x55d398326f99059fF775485246999027B3197955",
+        decimals: 18,
+        logo: "/oec-logo.png",
+        price: 0.85,
+        balance: 1000
+      },
+      token1: {
+        symbol: "BNB",
+        name: "Binance Coin",
+        address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+        decimals: 18,
+        logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+        price: 610.50,
+        balance: 5
+      },
+      liquidity: "12.5",
+      fee: 0.25,
+      minPrice: 0.00120,
+      maxPrice: 0.00180,
+      currentPrice: 0.00139,
+      uncollectedFees0: "2.34",
+      uncollectedFees1: "0.0012",
+      value: 2450.75,
+      status: 'in-range'
+    },
+    {
+      id: "2",
+      token0: {
+        symbol: "USDT",
+        name: "Tether USD",
+        address: "0x55d398326f99059fF775485246999027B3197955",
+        decimals: 18,
+        logo: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+        price: 1.00,
+        balance: 500
+      },
+      token1: {
+        symbol: "OEC",
+        name: "Oeconomia",
+        address: "0x55d398326f99059fF775485246999027B3197955",
+        decimals: 18,
+        logo: "/oec-logo.png",
+        price: 0.85,
+        balance: 1000
+      },
+      liquidity: "8.2",
+      fee: 0.5,
+      minPrice: 0.75,
+      maxPrice: 1.20,
+      currentPrice: 0.85,
+      uncollectedFees0: "1.23",
+      uncollectedFees1: "0.89",
+      value: 1680.50,
+      status: 'in-range'
+    }
+  ]);
+
+  const availableTokens: Token[] = [
+    {
+      symbol: "OEC",
+      name: "Oeconomia",
+      address: "0x55d398326f99059fF775485246999027B3197955",
+      decimals: 18,
+      logo: "/oec-logo.png",
+      price: 0.85,
+      balance: 1000
+    },
+    {
+      symbol: "BNB",
+      name: "Binance Coin",
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      decimals: 18,
+      logo: "https://cryptologos.cc/logos/bnb-bnb-logo.png",
+      price: 610.50,
+      balance: 5
+    },
+    {
+      symbol: "USDT",
+      name: "Tether USD",
+      address: "0x55d398326f99059fF775485246999027B3197955",
+      decimals: 18,
+      logo: "https://cryptologos.cc/logos/tether-usdt-logo.png",
+      price: 1.00,
+      balance: 500
+    },
+    {
+      symbol: "WETH",
+      name: "Wrapped Ethereum",
+      address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+      decimals: 18,
+      logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+      price: 3200.50,
+      balance: 2
+    }
+  ];
+
+  const feeOptions = [
+    { value: 0.05, label: "0.05%", description: "Best for stablecoin pairs" },
+    { value: 0.25, label: "0.25%", description: "Best for most pairs" },
+    { value: 0.5, label: "0.5%", description: "Best for exotic pairs" },
+    { value: 1.0, label: "1.0%", description: "Best for very exotic pairs" }
+  ];
+
+  const formatNumber = (num: number, decimals: number = 2) => {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(num);
+  };
+
+  const formatPrice = (price: number) => {
+    return `$${formatNumber(price, 2)}`;
+  };
+
+  const calculateTotalValue = () => {
+    return positions.reduce((total, position) => total + position.value, 0);
+  };
+
+  const calculateTotalFees = () => {
+    return positions.reduce((total, position) => {
+      const fees0Value = parseFloat(position.uncollectedFees0) * position.token0.price;
+      const fees1Value = parseFloat(position.uncollectedFees1) * position.token1.price;
+      return total + fees0Value + fees1Value;
+    }, 0);
+  };
+
+  return (
+    <Layout>
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-white mb-2">Liquidity Pools</h1>
+                <p className="text-gray-400">Provide liquidity to earn fees and rewards</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                {activeView === 'create' && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setActiveView('positions')}
+                    className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Back to Positions
+                  </Button>
+                )}
+                {activeView === 'positions' && (
+                  <Button
+                    onClick={() => setActiveView('create')}
+                    className="bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Position
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Tabs */}
+          <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1 mb-6 w-fit">
+            <Button
+              variant={activeView === 'positions' ? "default" : "ghost"}
+              onClick={() => setActiveView('positions')}
+              className={
+                activeView === 'positions'
+                  ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2"
+                  : "text-gray-400 hover:text-white px-6 py-2"
+              }
+            >
+              My Positions
+            </Button>
+            <Button
+              variant={activeView === 'create' ? "default" : "ghost"}
+              onClick={() => setActiveView('create')}
+              className={
+                activeView === 'create'
+                  ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2"
+                  : "text-gray-400 hover:text-white px-6 py-2"
+              }
+            >
+              Create Position
+            </Button>
+          </div>
+
+          {/* Positions View */}
+          {activeView === 'positions' && (
+            <div className="space-y-6">
+              {/* Portfolio Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="crypto-card border">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Total Liquidity</p>
+                        <p className="text-2xl font-bold text-white">{formatPrice(calculateTotalValue())}</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-lg flex items-center justify-center">
+                        <Droplets className="w-6 h-6 text-cyan-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="crypto-card border">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Uncollected Fees</p>
+                        <p className="text-2xl font-bold text-white">{formatPrice(calculateTotalFees())}</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-lg flex items-center justify-center">
+                        <TrendingUp className="w-6 h-6 text-green-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="crypto-card border">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-gray-400 text-sm mb-1">Active Positions</p>
+                        <p className="text-2xl font-bold text-white">{positions.length}</p>
+                      </div>
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center">
+                        <Star className="w-6 h-6 text-purple-400" />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Positions List */}
+              <Card className="crypto-card border">
+                <CardHeader>
+                  <CardTitle className="text-white">Your Positions</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {positions.length === 0 ? (
+                    <div className="text-center py-12">
+                      <div className="w-16 h-16 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Droplets className="w-8 h-8 text-crypto-blue" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-white mb-2">No liquidity positions</h3>
+                      <p className="text-gray-400 mb-6">Create your first position to start earning fees</p>
+                      <Button
+                        onClick={() => setActiveView('create')}
+                        className="bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Position
+                      </Button>
+                    </div>
+                  ) : (
+                    positions.map((position) => (
+                      <Card key={position.id} className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
+                        <CardContent className="p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-4">
+                              <div className="flex items-center -space-x-2">
+                                <img 
+                                  src={position.token0.logo} 
+                                  alt={position.token0.symbol}
+                                  className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
+                                />
+                                <img 
+                                  src={position.token1.logo} 
+                                  alt={position.token1.symbol}
+                                  className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
+                                />
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-white">
+                                  {position.token0.symbol}/{position.token1.symbol}
+                                </h3>
+                                <div className="flex items-center space-x-2">
+                                  <Badge className={`text-xs ${position.status === 'in-range' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                    {position.status === 'in-range' ? 'In Range' : 'Out of Range'}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {position.fee}% Fee
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
+                              <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                            <div>
+                              <p className="text-xs text-gray-400 mb-1">Min Price</p>
+                              <p className="text-sm font-medium text-white">{formatNumber(position.minPrice, 6)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-400 mb-1">Max Price</p>
+                              <p className="text-sm font-medium text-white">{formatNumber(position.maxPrice, 6)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-400 mb-1">Current Price</p>
+                              <p className="text-sm font-medium text-white">{formatNumber(position.currentPrice, 6)}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-400 mb-1">Uncollected Fees</p>
+                              <p className="text-sm font-medium text-green-400">
+                                {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex space-x-2">
+                              <Button size="sm" variant="outline" className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10">
+                                Add Liquidity
+                              </Button>
+                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-400 hover:bg-gray-600/10">
+                                Remove
+                              </Button>
+                              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                                Collect Fees
+                              </Button>
+                            </div>
+                            <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                              <ExternalLink className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Create Position View */}
+          {activeView === 'create' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Create Interface */}
+              <div className="lg:col-span-2">
+                <Card className="crypto-card border">
+                  <CardHeader>
+                    <CardTitle className="text-white">Create a New Position</CardTitle>
+                    <p className="text-gray-400">Select a fee tier and price range to provide liquidity</p>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Token Pair Selection */}
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-white">Select Pair</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-sm text-gray-400 mb-2 block">Token 1</label>
+                          <Select onValueChange={(value) => {
+                            const token = availableTokens.find(t => t.symbol === value);
+                            setSelectedToken0(token || null);
+                          }}>
+                            <SelectTrigger className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white">
+                              <SelectValue placeholder="Select token" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableTokens.map((token) => (
+                                <SelectItem key={token.symbol} value={token.symbol}>
+                                  <div className="flex items-center space-x-2">
+                                    <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
+                                    <span>{token.symbol}</span>
+                                    <span className="text-gray-400">- {token.name}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <label className="text-sm text-gray-400 mb-2 block">Token 2</label>
+                          <Select onValueChange={(value) => {
+                            const token = availableTokens.find(t => t.symbol === value);
+                            setSelectedToken1(token || null);
+                          }}>
+                            <SelectTrigger className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white">
+                              <SelectValue placeholder="Select token" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableTokens.map((token) => (
+                                <SelectItem key={token.symbol} value={token.symbol}>
+                                  <div className="flex items-center space-x-2">
+                                    <img src={token.logo} alt={token.symbol} className="w-5 h-5 rounded-full" />
+                                    <span>{token.symbol}</span>
+                                    <span className="text-gray-400">- {token.name}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Fee Tier Selection */}
+                    {selectedToken0 && selectedToken1 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-white">Select Fee Tier</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {feeOptions.map((option) => (
+                            <Button
+                              key={option.value}
+                              variant={selectedFee === option.value ? "default" : "outline"}
+                              onClick={() => setSelectedFee(option.value)}
+                              className={`h-auto p-4 flex flex-col items-center space-y-2 ${
+                                selectedFee === option.value
+                                  ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white border-crypto-blue"
+                                  : "border-[var(--crypto-border)] text-gray-400 hover:text-white hover:border-crypto-blue/50"
+                              }`}
+                            >
+                              <span className="font-semibold">{option.label}</span>
+                              <span className="text-xs opacity-80 text-center">{option.description}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Price Range */}
+                    {selectedToken0 && selectedToken1 && selectedFee && (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="text-lg font-semibold text-white">Set Price Range</h3>
+                          <div className="flex items-center space-x-2 text-sm text-gray-400">
+                            <span>Current Price:</span>
+                            <span className="text-white font-medium">
+                              {formatNumber(selectedToken1.price / selectedToken0.price, 6)} {selectedToken1.symbol}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm text-gray-400 mb-2 block">Min Price</label>
+                              <Input
+                                type="number"
+                                value={minPrice}
+                                onChange={(e) => setMinPrice(e.target.value)}
+                                placeholder="0.0"
+                                className="bg-transparent border-[var(--crypto-border)] text-white"
+                              />
+                              <p className="text-xs text-gray-400 mt-1">
+                                {selectedToken1.symbol} per {selectedToken0.symbol}
+                              </p>
+                            </div>
+                            <div>
+                              <label className="text-sm text-gray-400 mb-2 block">Max Price</label>
+                              <Input
+                                type="number"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                                placeholder="0.0"
+                                className="bg-transparent border-[var(--crypto-border)] text-white"
+                              />
+                              <p className="text-xs text-gray-400 mt-1">
+                                {selectedToken1.symbol} per {selectedToken0.symbol}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Deposit Amounts */}
+                    {selectedToken0 && selectedToken1 && minPrice && maxPrice && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-white">Deposit Amounts</h3>
+                        
+                        <div className="space-y-3">
+                          <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-gray-400 text-sm">{selectedToken0.symbol}</span>
+                              <span className="text-gray-400 text-sm">
+                                Balance: {formatNumber(selectedToken0.balance || 0, 2)}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <Input
+                                type="number"
+                                value={amount0}
+                                onChange={(e) => setAmount0(e.target.value)}
+                                placeholder="0.0"
+                                className="flex-1 bg-transparent border-none text-white text-xl font-semibold"
+                              />
+                              <div className="flex items-center space-x-2">
+                                <img src={selectedToken0.logo} alt={selectedToken0.symbol} className="w-6 h-6 rounded-full" />
+                                <span className="text-white font-medium">{selectedToken0.symbol}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                            <div className="flex items-center justify-between mb-3">
+                              <span className="text-gray-400 text-sm">{selectedToken1.symbol}</span>
+                              <span className="text-gray-400 text-sm">
+                                Balance: {formatNumber(selectedToken1.balance || 0, 2)}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-3">
+                              <Input
+                                type="number"
+                                value={amount1}
+                                onChange={(e) => setAmount1(e.target.value)}
+                                placeholder="0.0"
+                                className="flex-1 bg-transparent border-none text-white text-xl font-semibold"
+                              />
+                              <div className="flex items-center space-x-2">
+                                <img src={selectedToken1.logo} alt={selectedToken1.symbol} className="w-6 h-6 rounded-full" />
+                                <span className="text-white font-medium">{selectedToken1.symbol}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Create Position Button */}
+                    {selectedToken0 && selectedToken1 && amount0 && amount1 && (
+                      <Button
+                        onClick={() => {
+                          setIsLoading(true);
+                          // Simulate transaction
+                          setTimeout(() => {
+                            setIsLoading(false);
+                            setActiveView('positions');
+                          }, 2000);
+                        }}
+                        disabled={isLoading}
+                        className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 py-6 text-lg"
+                      >
+                        {isLoading ? (
+                          <div className="flex items-center space-x-2">
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            <span>Creating Position...</span>
+                          </div>
+                        ) : (
+                          "Create Position"
+                        )}
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Info Sidebar */}
+              <div className="space-y-6">
+                <Card className="crypto-card border">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center space-x-2">
+                      <Info className="w-5 h-5" />
+                      <span>Position Summary</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {selectedToken0 && selectedToken1 ? (
+                      <>
+                        <div className="flex items-center space-x-3 p-3 bg-[var(--crypto-dark)] rounded-lg">
+                          <div className="flex items-center -space-x-2">
+                            <img src={selectedToken0.logo} alt={selectedToken0.symbol} className="w-8 h-8 rounded-full border-2 border-[var(--crypto-card)]" />
+                            <img src={selectedToken1.logo} alt={selectedToken1.symbol} className="w-8 h-8 rounded-full border-2 border-[var(--crypto-card)]" />
+                          </div>
+                          <div>
+                            <p className="font-semibold text-white">{selectedToken0.symbol}/{selectedToken1.symbol}</p>
+                            <p className="text-sm text-gray-400">{selectedFee}% Fee Tier</p>
+                          </div>
+                        </div>
+                        
+                        {amount0 && amount1 && (
+                          <>
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-400">Est. Total Value</span>
+                                <span className="text-white">
+                                  {formatPrice((parseFloat(amount0) * selectedToken0.price) + (parseFloat(amount1) * selectedToken1.price))}
+                                </span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-400">Network Fee</span>
+                                <span className="text-white">~$2.50</span>
+                              </div>
+                            </div>
+                            
+                            <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                              <div className="flex items-start space-x-2">
+                                <AlertTriangle className="w-4 h-4 text-yellow-400 mt-0.5 flex-shrink-0" />
+                                <div className="text-xs text-yellow-400">
+                                  <p className="font-medium mb-1">Impermanent Loss Risk</p>
+                                  <p>Your position may lose value if token prices diverge significantly.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <p className="text-gray-400 text-sm">Select tokens to see position details</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="crypto-card border">
+                  <CardHeader>
+                    <CardTitle className="text-white flex items-center space-x-2">
+                      <Zap className="w-5 h-5" />
+                      <span>Learn More</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button variant="ghost" className="w-full justify-start text-left text-gray-400 hover:text-white">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      <div>
+                        <p className="font-medium">About Liquidity Pools</p>
+                        <p className="text-xs opacity-80">Learn how AMMs work</p>
+                      </div>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-left text-gray-400 hover:text-white">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      <div>
+                        <p className="font-medium">Fee Tier Guide</p>
+                        <p className="text-xs opacity-80">Choose the right fee</p>
+                      </div>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-left text-gray-400 hover:text-white">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      <div>
+                        <p className="font-medium">Impermanent Loss</p>
+                        <p className="text-xs opacity-80">Understand the risks</p>
+                      </div>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+}
+
+export default function Liquidity() {
+  return <LiquidityContent />;
+}

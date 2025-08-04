@@ -21,6 +21,7 @@ import {
   AlertTriangle,
   BarChart3
 } from "lucide-react";
+import { useLocation } from "wouter";
 
 interface Token {
   symbol: string;
@@ -49,6 +50,7 @@ interface LimitOrder {
 }
 
 function SwapContent() {
+  const [, setLocation] = useLocation();
   const [fromToken, setFromToken] = useState<Token | null>(null);
   const [toToken, setToToken] = useState<Token | null>(null);
   const [fromAmount, setFromAmount] = useState("");
@@ -1417,6 +1419,23 @@ function SwapContent() {
                   )}
                 </div>
               )}
+
+              {/* Liquidity Button */}
+              <div className="mt-4">
+                <Button
+                  onClick={() => setLocation('/liquidity')}
+                  variant="outline"
+                  className="w-full border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10 py-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                      <path d="M12 16L13.09 18.26L16 19L13.09 19.74L12 22L10.91 19.74L8 19L10.91 18.26L12 16Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                    </svg>
+                    <span>Manage Liquidity</span>
+                  </div>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>

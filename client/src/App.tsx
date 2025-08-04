@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import { Portfolio } from "@/pages/portfolio";
 import Analytics from "@/pages/analytics";
 import Swap from "@/pages/swap";
+import Liquidity from "@/pages/liquidity";
 import Staking from "@/pages/staking";
 import Governance from "@/pages/governance";
 import Learn from "@/pages/learn";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/analytics" component={Analytics} />
       <Route path="/portfolio" component={Portfolio} />
       <Route path="/swap" component={Swap} />
+      <Route path="/liquidity" component={Liquidity} />
       <Route path="/staking" component={Staking} />
       <Route path="/governance" component={Governance} />
       <Route path="/learn" component={Learn} />
