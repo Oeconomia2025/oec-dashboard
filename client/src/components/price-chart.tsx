@@ -48,7 +48,7 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
 
   return (
     <div className="lg:col-span-2">
-      <Card className="crypto-card p-6 border">
+      <Card className="crypto-card p-6 border bg-crypto-card">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <h2 className="text-xl font-semibold">Price Chart</h2>
