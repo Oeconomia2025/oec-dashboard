@@ -1081,6 +1081,7 @@ function LiquidityContent() {
                         <tr 
                           key={pool.id} 
                           className="border-b border-crypto-border hover:bg-crypto-surface/50 transition-colors cursor-pointer"
+                          onClick={() => setActiveView('create')}
                         >
                           <td className="py-4 px-6">
                             <span className="text-gray-400 font-mono">{index + 1}</span>
@@ -1132,14 +1133,10 @@ function LiquidityContent() {
                             </div>
                           </td>
                           <td className="py-4 px-6 text-right">
-                            <Button 
-                              size="sm" 
-                              className="bg-crypto-blue hover:bg-crypto-blue/80"
-                              onClick={() => setActiveView('create')}
-                            >
-                              Add Liquidity
-                              <ArrowUpRight className="w-4 h-4 ml-1" />
-                            </Button>
+                            <div className="flex items-center justify-end space-x-2 text-gray-400">
+                              <span className="text-sm">Click to add liquidity</span>
+                              <ArrowUpRight className="w-4 h-4" />
+                            </div>
                           </td>
                         </tr>
                       ))}
