@@ -191,34 +191,28 @@ function LiquidityContent() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-white mb-2">Liquidity Pools</h1>
-                <p className="text-gray-400">Provide liquidity to earn fees and rewards</p>
-              </div>
-              <div className="flex items-center space-x-3">
-                {activeView === 'create' && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setActiveView('positions')}
-                    className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Back to Positions
-                  </Button>
-                )}
-                {activeView === 'positions' && (
-                  <Button
-                    onClick={() => setActiveView('create')}
-                    className="bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Create Position
-                  </Button>
-                )}
-              </div>
+          {/* Action Buttons */}
+          <div className="mb-8 flex justify-end">
+            <div className="flex items-center space-x-3">
+              {activeView === 'create' && (
+                <Button
+                  variant="outline"
+                  onClick={() => setActiveView('positions')}
+                  className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Positions
+                </Button>
+              )}
+              {activeView === 'positions' && (
+                <Button
+                  onClick={() => setActiveView('create')}
+                  className="bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Position
+                </Button>
+              )}
             </div>
           </div>
 
