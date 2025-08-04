@@ -322,9 +322,14 @@ function LiquidityContent() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="text-right">
-                                  <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
-                                  <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
+                                <div className="text-right flex items-center space-x-3">
+                                  <div>
+                                    <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
+                                    <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
+                                  </div>
+                                  <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                                    <ExternalLink className="w-4 h-4" />
+                                  </Button>
                                 </div>
                               </div>
 
@@ -349,11 +354,7 @@ function LiquidityContent() {
                                 </div>
                               </div>
 
-                              <div className="flex items-center justify-end">
-                                <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
-                                  <ExternalLink className="w-4 h-4" />
-                                </Button>
-                              </div>
+
                             </div>
 
                             {/* Right side - Action Buttons */}
