@@ -4,6 +4,7 @@ import { bscApiService } from "./services/bsc-api";
 import { pancakeSwapApiService } from "./services/pancakeswap-api";
 import { coinGeckoApiService } from "./services/coingecko-api";
 import { alchemyApiService } from "./services/alchemy-api";
+import { moralisApiService } from "./services/moralis-api";
 import { storage } from "./storage";
 import { 
   TONE_TOKEN_CONFIG, 
@@ -104,12 +105,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { contractAddress } = req.params;
       const limit = parseInt(req.query.limit as string) || 20;
       
-      // Try Alchemy first, fallback to BSCScan
+      // Try Moralis first, fallback to BSCScan
       try {
-        const transactions = await alchemyApiService.getAssetTransfers(contractAddress, limit);
+        const transactions = await moralisApiService.getTokenTransfers(contractAddress, limit);
+        console.log(`Got ${transactions.length} transactions from Moralis`);
         res.json(transactions);
-      } catch (alchemyError) {
-        console.log("Alchemy failed, falling back to BSCScan for transactions");
+      } catch (moralisError) {
+        console.log("Moralis failed, falling back to BSCScan for transactions");
         const transactions = await bscApiService.getTokenTransactions(contractAddress, limit);
         res.json(transactions);
       }
@@ -175,12 +177,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get network status - fallback to BSCScan since Alchemy needs network enabled
   app.get("/api/network-status", async (req, res) => {
     try {
-      // Try Alchemy first, fallback to BSCScan
+      // Try Moralis first, fallback to BSCScan
       try {
-        const networkStatus = await alchemyApiService.getNetworkStatus();
+        const latestBlock = await moralisApiService.getLatestBlock();
+        const networkStatus = {
+          blockNumber: latestBlock?.number || 0,
+          gasPrice: 5, // Default BSC gas price in gwei
+          isHealthy: latestBlock ? true : false,
+          lastUpdated: new Date().toISOString()
+        };
         res.json(networkStatus);
-      } catch (alchemyError) {
-        console.log("Alchemy failed, falling back to BSCScan for network status");
+      } catch (moralisError) {
+        console.log("Moralis failed, falling back to BSCScan for network status");
         const networkStatus = await bscApiService.getNetworkStatus();
         res.json(networkStatus);
       }
@@ -208,8 +216,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (const tokenAddress of tokenAddresses) {
         try {
-          // Get token balance using Alchemy API
-          const balance = await alchemyApiService.getTokenBalance(tokenAddress, walletAddress);
+          // Get token balance using Moralis API for BSC
+          const balance = await moralisApiService.getTokenBalance(tokenAddress, walletAddress);
           
           // Get token info from our existing API
           const [coinGeckoData, pancakeSwapData] = await Promise.all([
@@ -281,8 +289,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { walletAddress } = req.params;
       
-      // Get all token balances for the wallet using Alchemy
-      const allTokens = await alchemyApiService.getAllTokenBalances(walletAddress);
+      // Get all token balances for the wallet using Moralis
+      const allTokens = await moralisApiService.getWalletTokenBalances(walletAddress);
       
       const enhancedPortfolio = [];
       
@@ -300,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const value = balanceNum * price;
 
           const portfolioItem = {
-            address: token.contractAddress,
+            address: token.token_address,
             name: token.name,
             symbol: token.symbol,
             balance: token.balance,

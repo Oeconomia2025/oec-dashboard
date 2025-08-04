@@ -12,7 +12,10 @@ interface TransactionsTableProps {
 export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
   const { data: transactions, isLoading } = useTransactions(contractAddress);
 
-  const formatAmount = (amount: number, symbol: string = "OEC") => {
+  const formatAmount = (amount: number | undefined, symbol: string = "OEC") => {
+    if (!amount && amount !== 0) {
+      return `0 ${symbol}`;
+    }
     const fixed = amount.toFixed(5);
     const formatted = parseFloat(fixed).toLocaleString('en-US', { 
       minimumFractionDigits: 0, 
@@ -21,12 +24,21 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
     return `${formatted} ${symbol}`;
   };
 
-  const formatAddress = (address: string) => {
+  const formatAddress = (address: string | undefined) => {
+    if (!address) {
+      return "Unknown Address";
+    }
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
-  const formatTime = (timestamp: string) => {
+  const formatTime = (timestamp: string | undefined) => {
+    if (!timestamp) {
+      return "Unknown time";
+    }
     const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return "Invalid time";
+    }
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
