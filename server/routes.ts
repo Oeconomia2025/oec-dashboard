@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { bscApiService } from "./services/bsc-api";
 import { pancakeSwapApiService } from "./services/pancakeswap-api";
 import { coinGeckoApiService } from "./services/coingecko-api";
+import { alchemyApiService } from "./services/alchemy-api";
 import { storage } from "./storage";
 import { 
   TONE_TOKEN_CONFIG, 
@@ -63,13 +64,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get recent transactions
+  // Get recent transactions using Alchemy API
   app.get("/api/transactions/:contractAddress", async (req, res) => {
     try {
       const { contractAddress } = req.params;
       const limit = parseInt(req.query.limit as string) || 20;
       
-      const transactions = await bscApiService.getTokenTransactions(contractAddress, limit);
+      const transactions = await alchemyApiService.getAssetTransfers(contractAddress, limit);
       res.json(transactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -130,10 +131,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get network status
+  // Get network status using Alchemy API
   app.get("/api/network-status", async (req, res) => {
     try {
-      const networkStatus = await bscApiService.getNetworkStatus();
+      const networkStatus = await alchemyApiService.getNetworkStatus();
       res.json(networkStatus);
     } catch (error) {
       console.error("Error fetching network status:", error);
@@ -159,8 +160,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       for (const tokenAddress of tokenAddresses) {
         try {
-          // Get token balance using BSCScan API
-          const balance = await bscApiService.getTokenBalance(walletAddress, tokenAddress);
+          // Get token balance using Alchemy API
+          const balance = await alchemyApiService.getTokenBalance(tokenAddress, walletAddress);
           
           // Get token info from our existing API
           const [coinGeckoData, pancakeSwapData] = await Promise.all([
@@ -221,6 +222,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching portfolio:", error);
       res.status(500).json({ 
         message: "Failed to fetch portfolio",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Enhanced portfolio endpoint using Alchemy's comprehensive token data
+  app.get("/api/portfolio-enhanced/:walletAddress", async (req, res) => {
+    try {
+      const { walletAddress } = req.params;
+      
+      // Get all token balances for the wallet using Alchemy
+      const allTokens = await alchemyApiService.getAllTokenBalances(walletAddress);
+      
+      const enhancedPortfolio = [];
+      
+      for (const token of allTokens) {
+        try {
+          // Get price data from existing APIs
+          const [coinGeckoData, pancakeSwapData] = await Promise.all([
+            coinGeckoApiService.getTokenDataByContract(token.contractAddress).catch(() => null),
+            pancakeSwapApiService.getTokenData(token.contractAddress).catch(() => null),
+          ]);
+
+          // Calculate balance in human-readable format
+          const balanceNum = parseFloat(token.balance) / Math.pow(10, token.decimals);
+          const price = coinGeckoData?.price || pancakeSwapData?.price || 0;
+          const value = balanceNum * price;
+
+          const portfolioItem = {
+            address: token.contractAddress,
+            name: token.name,
+            symbol: token.symbol,
+            balance: token.balance,
+            balanceFormatted: balanceNum,
+            decimals: token.decimals,
+            price: price,
+            value: value,
+            logo: token.logo,
+            priceChange24h: coinGeckoData?.priceChangePercent24h || 0,
+          };
+
+          // Only include tokens with significant balances or known tokens
+          if (balanceNum > 0.001 || value > 0.01) {
+            enhancedPortfolio.push(portfolioItem);
+          }
+        } catch (error) {
+          console.log(`Error processing token ${token.contractAddress}:`, error);
+        }
+      }
+
+      // Sort by value (highest first)
+      enhancedPortfolio.sort((a, b) => b.value - a.value);
+
+      res.json({
+        walletAddress,
+        totalValue: enhancedPortfolio.reduce((sum, token) => sum + token.value, 0),
+        tokenCount: enhancedPortfolio.length,
+        tokens: enhancedPortfolio,
+        lastUpdated: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error("Error fetching enhanced portfolio:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch enhanced portfolio",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
