@@ -1014,8 +1014,25 @@ function LiquidityContent() {
                 </Card>
               </div>
 
-              {/* Search */}
-              <div className="flex justify-end">
+              {/* Navigation and Search */}
+              <div className="flex justify-between items-center">
+                <div className="flex gap-2">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="bg-crypto-blue hover:bg-crypto-blue/80"
+                  >
+                    Pools
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"
+                  >
+                    Tokens
+                  </Button>
+                </div>
+                
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
