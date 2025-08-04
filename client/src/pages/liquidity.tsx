@@ -357,6 +357,12 @@ function LiquidityContent() {
                                 <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
                                   <ExternalLink className="w-4 h-4" />
                                 </Button>
+                                <div className="text-center">
+                                  <p className="text-cyan-400 font-semibold">
+                                    {((parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price) / position.value * 365 * 100).toFixed(2)}%
+                                  </p>
+                                  <p className="text-xs text-gray-400">APR</p>
+                                </div>
                               </div>
 
                               {/* Right: Collect Fees + Expand */}
