@@ -1028,19 +1028,7 @@ function LiquidityContent() {
                       />
                     </div>
                     
-                    <div className="flex gap-2">
-                      {timeframes.map((tf) => (
-                        <Button
-                          key={tf.key}
-                          variant={timeframe === tf.key ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTimeframe(tf.key)}
-                          className={timeframe === tf.key ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-gray-400 hover:text-white"}
-                        >
-                          {tf.label}
-                        </Button>
-                      ))}
-                    </div>
+
                   </div>
                   
                   <div className="flex gap-2">
