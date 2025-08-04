@@ -58,6 +58,7 @@ function LiquidityContent() {
   const [amount1, setAmount1] = useState("");
   const [selectedFee, setSelectedFee] = useState<number>(0.25);
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<'pools' | 'tokens'>('pools');
   const [timeframe, setTimeframe] = useState("1D");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -251,6 +252,120 @@ function LiquidityContent() {
     { value: 1.0, label: "1.0%", description: "Best for very exotic pairs" }
   ];
 
+  // Sample tokens data
+  const tokens = [
+    {
+      id: "1",
+      name: "Tether USD",
+      symbol: "USDT", 
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png",
+      price: 1.0001,
+      change24h: 0.01,
+      volume24h: 28500000,
+      marketCap: 73200000000,
+      holders: 1250000
+    },
+    {
+      id: "2", 
+      name: "Binance Coin",
+      symbol: "BNB",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png", 
+      price: 612.45,
+      change24h: 2.8,
+      volume24h: 890000000,
+      marketCap: 88400000000,
+      holders: 850000
+    },
+    {
+      id: "3",
+      name: "Wrapped BNB", 
+      symbol: "WBNB",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/7192.png",
+      price: 612.45,
+      change24h: 2.8, 
+      volume24h: 450000000,
+      marketCap: 12300000000,
+      holders: 420000
+    },
+    {
+      id: "4",
+      name: "Binance USD",
+      symbol: "BUSD", 
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/4687.png",
+      price: 1.0002,
+      change24h: -0.02,
+      volume24h: 125000000, 
+      marketCap: 8900000000,
+      holders: 320000
+    },
+    {
+      id: "5",
+      name: "PancakeSwap",
+      symbol: "CAKE",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/7186.png",
+      price: 3.24,
+      change24h: 5.2,
+      volume24h: 42000000,
+      marketCap: 890000000, 
+      holders: 185000
+    },
+    {
+      id: "6", 
+      name: "Ethereum",
+      symbol: "ETH",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png",
+      price: 3415.67,
+      change24h: 1.8,
+      volume24h: 1200000000,
+      marketCap: 410000000000,
+      holders: 95000
+    },
+    {
+      id: "7",
+      name: "Bitcoin",
+      symbol: "BTCB", 
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1.png",
+      price: 67890.23,
+      change24h: 3.1,
+      volume24h: 890000000,
+      marketCap: 1340000000000,
+      holders: 75000
+    },
+    {
+      id: "8",
+      name: "Cardano",
+      symbol: "ADA",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png", 
+      price: 0.89,
+      change24h: -1.2,
+      volume24h: 185000000,
+      marketCap: 31200000000,
+      holders: 45000
+    },
+    {
+      id: "9",
+      name: "Polkadot",
+      symbol: "DOT",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/6636.png",
+      price: 7.45,
+      change24h: 4.6,
+      volume24h: 67000000,
+      marketCap: 9800000000,
+      holders: 28000
+    },
+    {
+      id: "10",
+      name: "Chainlink", 
+      symbol: "LINK",
+      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png",
+      price: 18.92,
+      change24h: 2.4, 
+      volume24h: 125000000,
+      marketCap: 11200000000,
+      holders: 35000
+    }
+  ];
+
   // Mock pool data for pools view
   const mockPools = [
     {
@@ -380,6 +495,11 @@ function LiquidityContent() {
     pool.tokenB.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pool.tokenA.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pool.tokenB.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredTokens = tokens.filter(token =>
+    token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    token.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const timeframes = [
@@ -1018,16 +1138,18 @@ function LiquidityContent() {
               <div className="flex justify-between items-center">
                 <div className="flex gap-2">
                   <Button 
-                    variant="default" 
+                    variant={activeTab === 'pools' ? "default" : "outline"} 
                     size="sm" 
-                    className="bg-crypto-blue hover:bg-crypto-blue/80"
+                    className={activeTab === 'pools' ? "bg-crypto-blue hover:bg-crypto-blue/80" : "border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"}
+                    onClick={() => setActiveTab('pools')}
                   >
                     Pools
                   </Button>
                   <Button 
-                    variant="outline" 
+                    variant={activeTab === 'tokens' ? "default" : "outline"} 
                     size="sm" 
-                    className="border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"
+                    className={activeTab === 'tokens' ? "bg-crypto-blue hover:bg-crypto-blue/80" : "border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"}
+                    onClick={() => setActiveTab('tokens')}
                   >
                     Tokens
                   </Button>
@@ -1036,7 +1158,7 @@ function LiquidityContent() {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
-                    placeholder="Search pools..."
+                    placeholder={activeTab === 'pools' ? "Search pools..." : "Search tokens..."}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10 bg-[#1a1b23] border-crypto-border text-white placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-crypto-border focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -1044,13 +1166,15 @@ function LiquidityContent() {
                 </div>
               </div>
 
-              {/* Pools Table */}
-              <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
-                    <tr>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
+              {/* Tables Container */}
+              {activeTab === 'pools' ? (
+                <div>
+                <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
+                  <table className="w-full">
+                    <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
+                      <tr>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
                       <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
                       <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Vol</th>
                       <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Vol</th>
@@ -1135,6 +1259,102 @@ function LiquidityContent() {
               <div className="text-center text-sm text-gray-500">
                 <p>Pool data updates every 30 seconds • APR calculations include trading fees and liquidity mining rewards</p>
               </div>
+              </div>
+              ) : (
+                <div>
+                <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
+                  <table className="w-full">
+                    <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
+                      <tr>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Token</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Price</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Change</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Volume</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Market Cap</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Holders</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredTokens.map((token, index) => (
+                        <tr key={token.id} className="border-b border-crypto-border hover:bg-crypto-surface/20 transition-all duration-200">
+                          <td className="py-4 px-6">
+                            <span className="text-gray-400 font-medium">{index + 1}</span>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={token.logo} 
+                                alt={token.symbol}
+                                className="w-8 h-8 rounded-full"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/oec-logo.png';
+                                }}
+                              />
+                              <div>
+                                <div className="font-medium text-white">{token.symbol}</div>
+                                <div className="text-sm text-gray-400">{token.name}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="text-white font-medium">
+                              ${token.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })}
+                            </span>
+                          </td>
+                          <td className="py-4 px-6">
+                            <div className={`flex items-center space-x-1 ${
+                              token.change24h >= 0 ? 'text-crypto-green' : 'text-red-400'
+                            }`}>
+                              {token.change24h >= 0 ? (
+                                <TrendingUp className="w-4 h-4" />
+                              ) : (
+                                <TrendingDown className="w-4 h-4" />
+                              )}
+                              <span className="font-medium">
+                                {token.change24h >= 0 ? '+' : ''}{token.change24h}%
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="text-white">
+                              ${(token.volume24h / 1000000).toFixed(1)}M
+                            </span>
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="text-white">
+                              ${token.marketCap > 1000000000 ? 
+                                (token.marketCap / 1000000000).toFixed(1) + 'B' : 
+                                (token.marketCap / 1000000).toFixed(0) + 'M'
+                              }
+                            </span>
+                          </td>
+                          <td className="py-4 px-6">
+                            <span className="text-white">
+                              {token.holders.toLocaleString()}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                      
+                      {filteredTokens.length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="text-center py-12">
+                            <div className="text-gray-400 mb-2">No tokens found</div>
+                            <div className="text-sm text-gray-500">Try adjusting your search terms</div>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {/* Footer Note */}
+                <div className="text-center text-sm text-gray-500">
+                  <p>Token data updates every 30 seconds • Prices from BSC network via Moralis API</p>
+                </div>
+                </div>
+              )}
             </div>
           )}
         </div>
