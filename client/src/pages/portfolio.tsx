@@ -123,7 +123,7 @@ export function Portfolio() {
     const logoMap: Record<string, string> = {
       'OEC': '/oec-logo.png',
       'BNB': 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
-      'USDT': 'https://assets.coingecko.com/coins/images/325/small/Tether.png',
+      'USDT': 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=032',
       'BUSD': 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
       'USDC': 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
       'ETH': 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
@@ -137,7 +137,7 @@ export function Portfolio() {
     // Use address-based fallback if symbol lookup fails
     if (address) {
       const addressLookup: Record<string, string> = {
-        '0x55d398326f99059fF775485246999027B3197955': 'https://assets.coingecko.com/coins/images/325/small/Tether.png',
+        '0x55d398326f99059fF775485246999027B3197955': 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=032',
         '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56': 'https://assets.coingecko.com/coins/images/9576/small/BUSD.png',
         '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
         '0x2170Ed0880ac9A755fd29B2688956BD959F933F8': 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
