@@ -1056,27 +1056,22 @@ function LiquidityContent() {
               </Card>
 
               {/* Pools Table */}
-              <div className="border rounded-lg overflow-hidden relative">
-                <div className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
-                  <table className="w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Vol</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Vol</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-                <div className="overflow-x-auto max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
-                  <table className="w-full">
-                    <tbody>
-                      {filteredPools.map((pool, index) => (
+              <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
+                <table className="w-full">
+                  <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
+                    <tr>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Vol</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Vol</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
+                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPools.map((pool, index) => (
                         <tr 
                           key={pool.id} 
                           className="border-b border-crypto-border hover:bg-crypto-surface/50 transition-colors cursor-pointer"
@@ -1133,19 +1128,18 @@ function LiquidityContent() {
                           </td>
 
                         </tr>
-                      ))}
-                      
-                      {filteredPools.length === 0 && (
-                        <tr>
-                          <td colSpan={8} className="text-center py-12">
-                            <div className="text-gray-400 mb-2">No pools found</div>
-                            <div className="text-sm text-gray-500">Try adjusting your search terms</div>
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                    
+                    {filteredPools.length === 0 && (
+                      <tr>
+                        <td colSpan={8} className="text-center py-12">
+                          <div className="text-gray-400 mb-2">No pools found</div>
+                          <div className="text-sm text-gray-500">Try adjusting your search terms</div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
               
               {/* Footer Note */}
