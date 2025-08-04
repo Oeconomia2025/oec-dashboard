@@ -38,7 +38,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenData: TokenData = {
         id: contractAddress,
         name: coinGeckoData?.name || pancakeSwapData?.name || "Binance Bridged USDT (BNB Smart Chain)",
-        symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || "BSC-USD",
+        symbol: coinGeckoData?.symbol || pancakeSwapData?.symbol || "OEC",
         contractAddress,
         price: price,
         priceChange24h: coinGeckoData?.priceChange24h || -0.002,
