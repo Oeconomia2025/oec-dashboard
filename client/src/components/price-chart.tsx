@@ -33,7 +33,7 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
 
   const formatTooltip = (value: any, name: string) => {
     if (name === 'price') {
-      return [`${(Number(value) / 2500).toFixed(6)}`, 'Price'];
+      return [`${Number(value).toFixed(2)}`, 'Price'];
     }
     return [value, name];
   };

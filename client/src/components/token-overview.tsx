@@ -42,10 +42,10 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
     });
   };
 
-  const formatPrice = (price: number) => formatNumber(price / 2500);
-  const formatMarketCap = (cap: number) => formatNumber(cap / 2500);
-  const formatVolume = (vol: number) => formatNumber(vol / 2500);  
-  const formatLiquidity = (liq: number) => formatNumber(liq / 2500);
+  const formatPrice = (price: number) => formatNumber(price);
+  const formatMarketCap = (cap: number) => formatNumber(cap);
+  const formatVolume = (vol: number) => formatNumber(vol);  
+  const formatLiquidity = (liq: number) => formatNumber(liq);
   const formatSupply = (supply: number) => `${formatNumber(supply)} ${tokenData.symbol}`;
 
   return (
@@ -69,7 +69,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           <div className="text-sm text-gray-300">
             24h Change: 
             <span className={tokenData.priceChange24h >= 0 ? 'text-green-300' : 'text-red-300'}>
-              {tokenData.priceChange24h >= 0 ? '+' : ''}{(tokenData.priceChange24h / 2500).toFixed(6)}
+              {tokenData.priceChange24h >= 0 ? '+' : ''}{tokenData.priceChange24h.toFixed(2)}
             </span>
           </div>
         </div>
