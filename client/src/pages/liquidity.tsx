@@ -996,21 +996,17 @@ function LiquidityContent() {
               </Card>
 
               {/* Pools Table */}
-              <div className="crypto-card border rounded-lg overflow-hidden">
-                <div className="sticky top-20 z-20 bg-[#1a1b23] border-b border-crypto-border">
-                  <div className="w-full">
-                    <div className="grid grid-cols-9 py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
-                      <div className="text-left">#</div>
-                      <div className="text-left">Pool</div>
-                      <div className="text-left">Fee</div>
-                      <div className="text-left">24H Volume</div>
-                      <div className="text-left">7D Volume</div>
-                      <div className="text-left">TVL</div>
-                      <div className="text-left">APR</div>
-                      <div className="text-left">24H %</div>
-                      <div className="text-right">Action</div>
-                    </div>
-                  </div>
+              <div className="border rounded-lg overflow-hidden">
+                <div className="sticky top-20 z-20 bg-[#1a1b23] border-b border-crypto-border grid grid-cols-9 py-4 px-6 font-medium text-gray-400">
+                  <div className="text-left">#</div>
+                  <div className="text-left">Pool</div>
+                  <div className="text-left">Fee</div>
+                  <div className="text-left">24H Volume</div>
+                  <div className="text-left">7D Volume</div>
+                  <div className="text-left">TVL</div>
+                  <div className="text-left">APR</div>
+                  <div className="text-left">24H %</div>
+                  <div className="text-right">Action</div>
                 </div>
                 <div className="overflow-x-auto max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
                   <div className="w-full">
