@@ -291,76 +291,83 @@ function LiquidityContent() {
                     positions.map((position) => (
                       <Card key={position.id} className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
                         <CardContent className="p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center space-x-4">
-                              <div className="flex items-center -space-x-2">
-                                <img 
-                                  src={position.token0.logo} 
-                                  alt={position.token0.symbol}
-                                  className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
-                                />
-                                <img 
-                                  src={position.token1.logo} 
-                                  alt={position.token1.symbol}
-                                  className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
-                                />
-                              </div>
-                              <div>
-                                <h3 className="text-lg font-semibold text-white">
-                                  {position.token0.symbol}/{position.token1.symbol}
-                                </h3>
-                                <div className="flex items-center space-x-2">
-                                  <Badge className={`text-xs ${position.status === 'in-range' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                    {position.status === 'in-range' ? 'In Range' : 'Out of Range'}
-                                  </Badge>
-                                  <Badge variant="outline" className="text-xs">
-                                    {position.fee}% Fee
-                                  </Badge>
+                          <div className="flex justify-between">
+                            {/* Left side - Position Info */}
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center space-x-4">
+                                  <div className="flex items-center -space-x-2">
+                                    <img 
+                                      src={position.token0.logo} 
+                                      alt={position.token0.symbol}
+                                      className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
+                                    />
+                                    <img 
+                                      src={position.token1.logo} 
+                                      alt={position.token1.symbol}
+                                      className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
+                                    />
+                                  </div>
+                                  <div>
+                                    <h3 className="text-lg font-semibold text-white">
+                                      {position.token0.symbol}/{position.token1.symbol}
+                                    </h3>
+                                    <div className="flex items-center space-x-2">
+                                      <Badge className={`text-xs ${position.status === 'in-range' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                        {position.status === 'in-range' ? 'In Range' : 'Out of Range'}
+                                      </Badge>
+                                      <Badge variant="outline" className="text-xs">
+                                        {position.fee}% Fee
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
+                                  <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
                                 </div>
                               </div>
-                            </div>
-                            <div className="text-right">
-                              <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
-                              <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
-                            </div>
-                          </div>
 
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                            <div>
-                              <p className="text-xs text-gray-400 mb-1">Min Price</p>
-                              <p className="text-sm font-medium text-white">{formatNumber(position.minPrice, 6)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-400 mb-1">Max Price</p>
-                              <p className="text-sm font-medium text-white">{formatNumber(position.maxPrice, 6)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-400 mb-1">Current Price</p>
-                              <p className="text-sm font-medium text-white">{formatNumber(position.currentPrice, 6)}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs text-gray-400 mb-1">Uncollected Fees</p>
-                              <p className="text-sm font-medium text-green-400">
-                                {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
-                              </p>
-                            </div>
-                          </div>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                <div>
+                                  <p className="text-xs text-gray-400 mb-1">Min Price</p>
+                                  <p className="text-sm font-medium text-white">{formatNumber(position.minPrice, 6)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-400 mb-1">Max Price</p>
+                                  <p className="text-sm font-medium text-white">{formatNumber(position.maxPrice, 6)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-400 mb-1">Current Price</p>
+                                  <p className="text-sm font-medium text-white">{formatNumber(position.currentPrice, 6)}</p>
+                                </div>
+                                <div>
+                                  <p className="text-xs text-gray-400 mb-1">Uncollected Fees</p>
+                                  <p className="text-sm font-medium text-green-400">
+                                    {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
+                                  </p>
+                                </div>
+                              </div>
 
-                          <div className="flex items-center justify-between">
-                            <div className="flex space-x-2">
-                              <Button size="sm" variant="outline" className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10">
+                              <div className="flex items-center justify-end">
+                                <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                                  <ExternalLink className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </div>
+
+                            {/* Right side - Action Buttons */}
+                            <div className="flex flex-col space-y-2 ml-6">
+                              <Button size="sm" variant="outline" className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10 min-w-[120px]">
                                 Add Liquidity
                               </Button>
-                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-400 hover:bg-gray-600/10">
+                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-400 hover:bg-gray-600/10 min-w-[120px]">
                                 Remove
                               </Button>
-                              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white min-w-[120px]">
                                 Collect Fees
                               </Button>
                             </div>
-                            <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
-                              <ExternalLink className="w-4 h-4" />
-                            </Button>
                           </div>
                         </CardContent>
                       </Card>
