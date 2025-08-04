@@ -130,6 +130,42 @@ class MoralisApiService {
     }
   }
 
+  // Get price history from Moralis DEX data
+  async getTokenPriceHistory(tokenAddress: string, days: number): Promise<any[]> {
+    try {
+      // Use Moralis to get token price over time
+      const toDate = new Date();
+      const fromDate = new Date(toDate.getTime() - (days * 24 * 60 * 60 * 1000));
+      
+      const response = await this.makeRequest(`/erc20/${tokenAddress}/price`, {
+        chain: 'bsc',
+        from_date: fromDate.toISOString(),
+        to_date: toDate.toISOString()
+      });
+
+      // Transform Moralis response to our format
+      if (response && Array.isArray(response)) {
+        return response.map((item: any) => ({
+          timestamp: item.date || new Date().toISOString(),
+          price: item.usdPrice || 0
+        }));
+      }
+
+      // If no historical data available, get current price
+      const currentPrice = await this.makeRequest(`/erc20/${tokenAddress}/price`, {
+        chain: 'bsc'
+      });
+
+      return [{
+        timestamp: new Date().toISOString(),
+        price: currentPrice.usdPrice || 0
+      }];
+    } catch (error) {
+      console.error('Error fetching price history from Moralis:', error);
+      throw error;
+    }
+  }
+
   // Get token price from Moralis
   async getTokenPrice(tokenAddress: string): Promise<number> {
     try {

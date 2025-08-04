@@ -154,6 +154,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenAddresses = tokens.split(',');
       const portfolio = [];
 
+      // Helper function for token fallback data
+      const getTokenFallback = (address: string) => {
+        const knownTokens: Record<string, {name: string, symbol: string, decimals: number}> = {
+          '0x55d398326f99059fF775485246999027B3197955': { name: 'Tether USD', symbol: 'USDT', decimals: 18 },
+          '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56': { name: 'Binance USD', symbol: 'BUSD', decimals: 18 },
+          '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': { name: 'USD Coin', symbol: 'USDC', decimals: 18 },
+          '0x2170Ed0880ac9A755fd29B2688956BD959F933F8': { name: 'Wrapped Ethereum', symbol: 'WETH', decimals: 18 },
+          '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c': { name: 'Bitcoin BEP2', symbol: 'BTCB', decimals: 18 },
+          '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': { name: 'BNB', symbol: 'BNB', decimals: 18 },
+        };
+        return knownTokens[address.toLowerCase()] || { name: 'Unknown Token', symbol: 'UNK', decimals: 18 };
+      };
+
       for (const tokenAddress of tokenAddresses) {
         try {
           // Get token balance using Moralis API for BSC
@@ -164,19 +177,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             coinGeckoApiService.getTokenDataByContract(tokenAddress).catch(() => null),
             pancakeSwapApiService.getTokenData(tokenAddress).catch(() => null),
           ]);
-
-          // Better token info fallbacks based on known contract addresses
-          const getTokenFallback = (address: string) => {
-            const knownTokens: Record<string, {name: string, symbol: string, decimals: number}> = {
-              '0x55d398326f99059fF775485246999027B3197955': { name: 'Tether USD', symbol: 'USDT', decimals: 18 },
-              '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56': { name: 'Binance USD', symbol: 'BUSD', decimals: 18 },
-              '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d': { name: 'USD Coin', symbol: 'USDC', decimals: 18 },
-              '0x2170Ed0880ac9A755fd29B2688956BD959F933F8': { name: 'Wrapped Ethereum', symbol: 'WETH', decimals: 18 },
-              '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c': { name: 'Bitcoin BEP2', symbol: 'BTCB', decimals: 18 },
-              '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c': { name: 'BNB', symbol: 'BNB', decimals: 18 },
-            };
-            return knownTokens[address.toLowerCase()] || { name: 'Unknown Token', symbol: 'UNK', decimals: 18 };
-          };
 
           const fallback = getTokenFallback(tokenAddress);
           const tokenInfo = {
@@ -291,7 +291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get price history - now tracks real ETH price history from CoinGecko
   app.get("/api/price-history/:contractAddress/:timeframe", async (req, res) => {
     try {
-      const { timeframe } = req.params;
+      const { contractAddress, timeframe } = req.params;
       
       // Calculate days based on timeframe
       let days = 1;
@@ -312,8 +312,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           days = 1;
       }
       
-      // Use real ETH price history from CoinGecko only
-      const priceHistory = await coinGeckoApiService.getEthereumPriceHistory(days);
+      // Use Moralis for real-time price history every 5 minutes
+      const priceHistory = await moralisApiService.getTokenPriceHistory(contractAddress, days);
       
       res.json(priceHistory);
     } catch (error) {
