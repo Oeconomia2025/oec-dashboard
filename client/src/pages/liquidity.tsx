@@ -285,7 +285,7 @@ function LiquidityContent() {
 
           {/* Navigation Tabs */}
           <div className="mb-6">
-            <div className="grid w-auto grid-cols-2 bg-gray-800 border border-gray-700 rounded-lg p-1">
+            <div className="grid w-auto grid-cols-3 bg-gray-800 border border-gray-700 rounded-lg p-1">
               <Button
                 variant={activeView === 'positions' ? "default" : "ghost"}
                 size="sm"
@@ -309,6 +309,14 @@ function LiquidityContent() {
                 }
               >
                 Create Position
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = '/pools'}
+                className="text-gray-400 hover:text-white px-6 py-3 rounded-md hover:bg-gray-700/50"
+              >
+                Pools
               </Button>
             </div>
           </div>
