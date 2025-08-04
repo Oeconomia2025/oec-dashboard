@@ -753,25 +753,25 @@ export function Staking() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-6">
-                        {/* Pool Achievements in Header */}
+                      <div className="flex items-center justify-between flex-1">
+                        {/* Pool Achievements in Header - Left Aligned */}
                         {poolAchievements.length > 0 && (
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-3 min-w-[300px]">
                             <Award className="w-4 h-4 text-crypto-gold" />
                             <span className="text-sm text-crypto-gold">Pool Achievements</span>
-                            <div className="flex space-x-1">
-                              {poolAchievements.slice(0, 3).map((achievement) => {
+                            <div className="flex space-x-2">
+                              {poolAchievements.map((achievement) => {
                                 const AchievementIcon = achievement.icon;
                                 return (
                                   <div 
                                     key={achievement.id}
-                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center border ${
                                       achievement.earned
-                                        ? 'bg-green-500/20 text-green-300'
-                                        : 'bg-gray-500/20 text-gray-400'
+                                        ? 'bg-green-500/20 border-green-500/50 text-green-300'
+                                        : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
                                     }`}
                                   >
-                                    <AchievementIcon className="w-3 h-3" />
+                                    <AchievementIcon className="w-4 h-4" />
                                   </div>
                                 );
                               })}
@@ -779,20 +779,24 @@ export function Staking() {
                           </div>
                         )}
                         
-                        <div className="text-right">
-                          <div className="text-lg font-semibold">
-                            {formatNumber(pool.userStaked)} {pool.tokenSymbol}
-                          </div>
-                          <div className="text-sm text-gray-400">
-                            {formatNumber(pool.userRewards)} rewards
-                          </div>
-                        </div>
+                        {!poolAchievements.length && <div className="flex-1" />}
                         
-                        {isExpanded ? (
-                          <ChevronUp className="w-5 h-5 text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-5 h-5 text-gray-400" />
-                        )}
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <div className="text-lg font-semibold">
+                              {formatNumber(pool.userStaked)} {pool.tokenSymbol}
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              {formatNumber(pool.userRewards)} rewards
+                            </div>
+                          </div>
+                          
+                          {isExpanded ? (
+                            <ChevronUp className="w-5 h-5 text-gray-400" />
+                          ) : (
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
