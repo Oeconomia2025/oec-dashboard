@@ -144,8 +144,8 @@ function LiquidityContent() {
       minPrice: 28.5,
       maxPrice: 32.8,
       currentPrice: 30.46,
-      uncollectedFees0: "0.0045",
-      uncollectedFees1: "0.12",
+      uncollectedFees0: "0.0084",
+      uncollectedFees1: "0.257",
       value: 5250.00,
       status: 'in-range'
     },
@@ -174,8 +174,8 @@ function LiquidityContent() {
       minPrice: 95000,
       maxPrice: 102000,
       currentPrice: 97500,
-      uncollectedFees0: "0.0012",
-      uncollectedFees1: "85.50",
+      uncollectedFees0: "0.0009",
+      uncollectedFees1: "31.50",
       value: 3800.00,
       status: 'in-range'
     }
