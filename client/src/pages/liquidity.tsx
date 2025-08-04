@@ -996,11 +996,11 @@ function LiquidityContent() {
               </Card>
 
               {/* Pools Table */}
-              <Card className="crypto-card">
-                <div className="overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-auto scrollbar-hide">
+              <div className="crypto-card border rounded-lg overflow-hidden">
+                <div className="sticky top-20 z-20 bg-[#1a1b23] border-b border-crypto-border">
                   <table className="w-full">
-                    <thead className="sticky top-20 z-20 bg-[#1a1b23]">
-                      <tr className="border-b border-crypto-border">
+                    <thead>
+                      <tr>
                         <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
                         <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
                         <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
@@ -1010,6 +1010,23 @@ function LiquidityContent() {
                         <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
                         <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
                         <th className="text-right p-6 font-medium text-gray-400 bg-[#1a1b23]">Action</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div className="overflow-x-auto max-h-[calc(100vh-300px)] overflow-y-auto scrollbar-hide">
+                  <table className="w-full">
+                    <thead className="invisible">
+                      <tr>
+                        <th className="text-left p-6 font-medium text-gray-400">#</th>
+                        <th className="text-left p-6 font-medium text-gray-400">Pool</th>
+                        <th className="text-left p-6 font-medium text-gray-400">Fee</th>
+                        <th className="text-left p-6 font-medium text-gray-400">24H Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400">7D Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400">TVL</th>
+                        <th className="text-left p-6 font-medium text-gray-400">APR</th>
+                        <th className="text-left p-6 font-medium text-gray-400">24H %</th>
+                        <th className="text-right p-6 font-medium text-gray-400">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1080,15 +1097,15 @@ function LiquidityContent() {
                       ))}
                     </tbody>
                   </table>
+                  
+                  {filteredPools.length === 0 && (
+                    <div className="text-center py-12">
+                      <div className="text-gray-400 mb-2">No pools found</div>
+                      <div className="text-sm text-gray-500">Try adjusting your search terms</div>
+                    </div>
+                  )}
                 </div>
-                
-                {filteredPools.length === 0 && (
-                  <div className="text-center py-12">
-                    <div className="text-gray-400 mb-2">No pools found</div>
-                    <div className="text-sm text-gray-500">Try adjusting your search terms</div>
-                  </div>
-                )}
-              </Card>
+              </div>
               
               {/* Footer Note */}
               <div className="text-center text-sm text-gray-500">
