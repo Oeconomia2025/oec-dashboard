@@ -15,8 +15,9 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
   const { data: priceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
 
-  const formatXAxis = (tickItem: number) => {
-    const date = new Date(tickItem * 1000);
+  const formatXAxis = (tickItem: any) => {
+    // Handle both timestamp formats: Unix timestamp and ISO string
+    const date = typeof tickItem === 'string' ? new Date(tickItem) : new Date(tickItem * 1000);
     switch (timeframe) {
       case "1H":
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -100,13 +101,16 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
                 />
                 <YAxis 
                   domain={['dataMin * 0.99', 'dataMax * 1.01']}
-                  tickFormatter={(value) => `$${value.toFixed(6)}`}
+                  tickFormatter={(value) => `${value.toFixed(0)}`}
                   stroke="#9CA3AF"
                   fontSize={12}
                 />
                 <Tooltip 
                   formatter={formatTooltip}
-                  labelFormatter={(value) => new Date(value * 1000).toLocaleString()}
+                  labelFormatter={(value) => {
+                    const date = typeof value === 'string' ? new Date(value) : new Date(value * 1000);
+                    return date.toLocaleString();
+                  }}
                   contentStyle={{
                     backgroundColor: 'var(--crypto-card)',
                     border: '1px solid var(--crypto-border)',
