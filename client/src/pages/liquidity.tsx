@@ -998,112 +998,91 @@ function LiquidityContent() {
               {/* Pools Table */}
               <div className="crypto-card border rounded-lg overflow-hidden">
                 <div className="sticky top-20 z-20 bg-[#1a1b23] border-b border-crypto-border">
-                  <table className="w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
-                        <th className="text-right py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Action</th>
-                      </tr>
-                    </thead>
-                  </table>
+                  <div className="w-full">
+                    <div className="grid grid-cols-9 py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                      <div className="text-left">#</div>
+                      <div className="text-left">Pool</div>
+                      <div className="text-left">Fee</div>
+                      <div className="text-left">24H Volume</div>
+                      <div className="text-left">7D Volume</div>
+                      <div className="text-left">TVL</div>
+                      <div className="text-left">APR</div>
+                      <div className="text-left">24H %</div>
+                      <div className="text-right">Action</div>
+                    </div>
+                  </div>
                 </div>
                 <div className="overflow-x-auto max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
-                  <table className="w-full">
-                    <thead className="invisible">
-                      <tr>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">#</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">Pool</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">Fee</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">24H Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">7D Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">TVL</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">APR</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400">24H %</th>
-                        <th className="text-right py-4 px-6 font-medium text-gray-400">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredPools.map((pool, index) => (
-                        <tr 
-                          key={pool.id} 
-                          className="border-b border-crypto-border hover:bg-crypto-surface/50 transition-colors cursor-pointer"
-                        >
-                          <td className="p-6">
-                            <span className="text-gray-400 font-mono">{index + 1}</span>
-                          </td>
-                          <td className="p-6">
-                            <div className="flex items-center space-x-3">
-                              <div className="flex items-center -space-x-2">
-                                <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark z-10">
-                                  {pool.tokenA.logo}
-                                </div>
-                                <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark">
-                                  {pool.tokenB.logo}
-                                </div>
-                              </div>
-                              <div>
-                                <div className="font-medium">
-                                  {pool.tokenA.symbol}/{pool.tokenB.symbol}
-                                </div>
-                                <div className="text-sm text-gray-400">
-                                  {pool.tokenA.name} • {pool.tokenB.name}
-                                </div>
-                              </div>
+                  <div className="w-full">
+                    {filteredPools.map((pool, index) => (
+                      <div 
+                        key={pool.id} 
+                        className="grid grid-cols-9 py-4 px-6 border-b border-crypto-border hover:bg-crypto-surface/50 transition-colors cursor-pointer"
+                      >
+                        <div className="text-gray-400 font-mono">{index + 1}</div>
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center -space-x-2">
+                            <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark z-10">
+                              {pool.tokenA.logo}
                             </div>
-                          </td>
-                          <td className="p-6">
-                            <Badge variant="outline" className="border-crypto-border text-crypto-blue">
-                              {pool.fee}
-                            </Badge>
-                          </td>
-                          <td className="p-6 font-mono">{pool.volume24h}</td>
-                          <td className="p-6 font-mono text-gray-400">{pool.volume7d}</td>
-                          <td className="p-6 font-mono">{pool.tvl}</td>
-                          <td className="p-6">
-                            <span className="text-crypto-green font-medium">{pool.apr}</span>
-                          </td>
-                          <td className="p-6">
-                            <div className={`flex items-center space-x-1 ${
-                              pool.priceChange24h >= 0 ? 'text-crypto-green' : 'text-red-400'
-                            }`}>
-                              {pool.priceChange24h >= 0 ? (
-                                <TrendingUp className="w-4 h-4" />
-                              ) : (
-                                <TrendingDown className="w-4 h-4" />
-                              )}
-                              <span className="font-medium">
-                                {pool.priceChange24h >= 0 ? '+' : ''}{pool.priceChange24h}%
-                              </span>
+                            <div className="w-8 h-8 bg-crypto-surface rounded-full flex items-center justify-center text-sm border-2 border-crypto-dark">
+                              {pool.tokenB.logo}
                             </div>
-                          </td>
-                          <td className="p-6 text-right">
-                            <Button 
-                              size="sm" 
-                              className="bg-crypto-blue hover:bg-crypto-blue/80"
-                              onClick={() => setActiveView('create')}
-                            >
-                              Add Liquidity
-                              <ArrowUpRight className="w-4 h-4 ml-1" />
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                          </div>
+                          <div>
+                            <div className="font-medium">
+                              {pool.tokenA.symbol}/{pool.tokenB.symbol}
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              {pool.tokenA.name} • {pool.tokenB.name}
+                            </div>
+                          </div>
+                        </div>
+                        <div>
+                          <Badge variant="outline" className="border-crypto-border text-crypto-blue">
+                            {pool.fee}
+                          </Badge>
+                        </div>
+                        <div className="font-mono">{pool.volume24h}</div>
+                        <div className="font-mono text-gray-400">{pool.volume7d}</div>
+                        <div className="font-mono">{pool.tvl}</div>
+                        <div>
+                          <span className="text-crypto-green font-medium">{pool.apr}</span>
+                        </div>
+                        <div>
+                          <div className={`flex items-center space-x-1 ${
+                            pool.priceChange24h >= 0 ? 'text-crypto-green' : 'text-red-400'
+                          }`}>
+                            {pool.priceChange24h >= 0 ? (
+                              <TrendingUp className="w-4 h-4" />
+                            ) : (
+                              <TrendingDown className="w-4 h-4" />
+                            )}
+                            <span className="font-medium">
+                              {pool.priceChange24h >= 0 ? '+' : ''}{pool.priceChange24h}%
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Button 
+                            size="sm" 
+                            className="bg-crypto-blue hover:bg-crypto-blue/80"
+                            onClick={() => setActiveView('create')}
+                          >
+                            Add Liquidity
+                            <ArrowUpRight className="w-4 h-4 ml-1" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   
-                  {filteredPools.length === 0 && (
-                    <div className="text-center py-12">
-                      <div className="text-gray-400 mb-2">No pools found</div>
-                      <div className="text-sm text-gray-500">Try adjusting your search terms</div>
-                    </div>
-                  )}
+                    {filteredPools.length === 0 && (
+                      <div className="text-center py-12">
+                        <div className="text-gray-400 mb-2">No pools found</div>
+                        <div className="text-sm text-gray-500">Try adjusting your search terms</div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
               
