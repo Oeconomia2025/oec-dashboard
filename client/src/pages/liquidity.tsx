@@ -1069,7 +1069,6 @@ function LiquidityContent() {
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
-                        <th className="text-right py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Action</th>
                       </tr>
                     </thead>
                   </table>
@@ -1132,18 +1131,13 @@ function LiquidityContent() {
                               </span>
                             </div>
                           </td>
-                          <td className="py-4 px-6 text-right">
-                            <div className="flex items-center justify-end space-x-2 text-gray-400">
-                              <span className="text-sm">Click to add liquidity</span>
-                              <ArrowUpRight className="w-4 h-4" />
-                            </div>
-                          </td>
+
                         </tr>
                       ))}
                       
                       {filteredPools.length === 0 && (
                         <tr>
-                          <td colSpan={9} className="text-center py-12">
+                          <td colSpan={8} className="text-center py-12">
                             <div className="text-gray-400 mb-2">No pools found</div>
                             <div className="text-sm text-gray-500">Try adjusting your search terms</div>
                           </td>
