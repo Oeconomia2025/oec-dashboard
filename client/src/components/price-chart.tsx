@@ -77,8 +77,17 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
           <div className="h-80 bg-gradient-to-br from-crypto-green/10 to-crypto-blue/10 rounded-lg flex items-center justify-center">
             <div className="text-center">
               <TrendingUp className="w-12 h-12 text-crypto-green mx-auto mb-4" />
-              <p className="text-gray-400 text-lg mb-2">Price Data Unavailable</p>
-              <p className="text-gray-500 text-sm">This feature requires live API access.<br />Deploy with backend to see real-time price charts.</p>
+              <p className="text-gray-400 text-lg mb-2">No Historical Data</p>
+              <p className="text-gray-500 text-sm">Current price: ${priceHistory?.[0]?.price || 'Loading...'}</p>
+            </div>
+          </div>
+        ) : priceHistory.length === 1 ? (
+          <div className="h-80 bg-gradient-to-br from-crypto-green/10 to-crypto-blue/10 rounded-lg flex items-center justify-center">
+            <div className="text-center">
+              <TrendingUp className="w-12 h-12 text-crypto-green mx-auto mb-4" />
+              <p className="text-gray-400 text-lg mb-2">Current Price</p>
+              <p className="text-crypto-green text-3xl font-bold">${priceHistory[0].price.toFixed(4)}</p>
+              <p className="text-gray-500 text-sm mt-2">Real-time data from Moralis API</p>
             </div>
           </div>
         ) : (

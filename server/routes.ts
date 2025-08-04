@@ -312,8 +312,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           days = 1;
       }
       
-      // Use Moralis for real-time price history every 5 minutes
-      const priceHistory = await moralisApiService.getTokenPriceHistory(contractAddress, days);
+      // Use only authentic Moralis current price data
+      const currentPrice = await moralisApiService.getTokenPrice(contractAddress);
+      
+      // Return single data point with current timestamp
+      const priceHistory = [{
+        timestamp: new Date().toISOString(),
+        price: currentPrice
+      }];
       
       res.json(priceHistory);
     } catch (error) {
