@@ -115,8 +115,8 @@ export function Portfolio() {
   }
 
   const formatPrice = (price: number) => {
-    if (isNaN(price) || !isFinite(price)) return '$0'
-    return `$${formatNumber(price)}`
+    if (isNaN(price) || !isFinite(price)) return '0 ETH'
+    return `${formatNumber(price / 2500)} ETH` // Convert USD to ETH estimate
   }
 
   // Token logo mapping - matches swap page logos

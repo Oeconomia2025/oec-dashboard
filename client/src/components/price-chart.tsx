@@ -33,7 +33,7 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
 
   const formatTooltip = (value: any, name: string) => {
     if (name === 'price') {
-      return [`$${Number(value).toFixed(6)}`, 'Price'];
+      return [`${Number(value).toFixed(6)} ETH`, 'Price'];
     }
     return [value, name];
   };
@@ -51,7 +51,7 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <h2 className="text-xl font-semibold">Price Chart</h2>
-            <span className="text-sm text-gray-400 bg-gray-800/50 px-2 py-1 rounded">BSC-USD</span>
+            <span className="text-sm text-gray-400 bg-gray-800/50 px-2 py-1 rounded">BSC-ETH</span>
           </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (

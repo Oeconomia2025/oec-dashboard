@@ -64,14 +64,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get recent transactions using Alchemy API
+  // Get recent transactions - fallback to BSCScan since Alchemy needs network enabled
   app.get("/api/transactions/:contractAddress", async (req, res) => {
     try {
       const { contractAddress } = req.params;
       const limit = parseInt(req.query.limit as string) || 20;
       
-      const transactions = await alchemyApiService.getAssetTransfers(contractAddress, limit);
-      res.json(transactions);
+      // Try Alchemy first, fallback to BSCScan
+      try {
+        const transactions = await alchemyApiService.getAssetTransfers(contractAddress, limit);
+        res.json(transactions);
+      } catch (alchemyError) {
+        console.log("Alchemy failed, falling back to BSCScan for transactions");
+        const transactions = await bscApiService.getTokenTransactions(contractAddress, limit);
+        res.json(transactions);
+      }
     } catch (error) {
       console.error("Error fetching transactions:", error);
       res.status(500).json({ 
@@ -131,11 +138,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get network status using Alchemy API
+  // Get network status - fallback to BSCScan since Alchemy needs network enabled
   app.get("/api/network-status", async (req, res) => {
     try {
-      const networkStatus = await alchemyApiService.getNetworkStatus();
-      res.json(networkStatus);
+      // Try Alchemy first, fallback to BSCScan
+      try {
+        const networkStatus = await alchemyApiService.getNetworkStatus();
+        res.json(networkStatus);
+      } catch (alchemyError) {
+        console.log("Alchemy failed, falling back to BSCScan for network status");
+        const networkStatus = await bscApiService.getNetworkStatus();
+        res.json(networkStatus);
+      }
     } catch (error) {
       console.error("Error fetching network status:", error);
       res.status(500).json({ 
