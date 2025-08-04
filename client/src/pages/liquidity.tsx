@@ -999,17 +999,17 @@ function LiquidityContent() {
               <Card className="crypto-card">
                 <div className="overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-auto">
                   <table className="w-full">
-                    <thead className="sticky top-0 z-20 bg-crypto-card">
+                    <thead className="sticky top-0 z-20 bg-[#1a1b23]">
                       <tr className="border-b border-crypto-border">
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">#</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">Pool</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">Fee</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">24H Volume</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">7D Volume</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">TVL</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">APR</th>
-                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">24H %</th>
-                        <th className="text-right p-6 font-medium text-gray-400 bg-crypto-card">Action</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">24H Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">7D Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
+                        <th className="text-right p-6 font-medium text-gray-400 bg-[#1a1b23]">Action</th>
                       </tr>
                     </thead>
                     <tbody>
