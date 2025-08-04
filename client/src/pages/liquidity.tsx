@@ -1015,33 +1015,31 @@ function LiquidityContent() {
               </div>
 
               {/* Filters and Search */}
-              <Card className="crypto-card p-6">
-                <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                  <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        placeholder="Search pools..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-[#1a1b23] border-crypto-border text-white placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-crypto-border focus-visible:ring-0 focus-visible:ring-offset-0"
-                      />
-                    </div>
-                    
-
+              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+                <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search pools..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10 bg-[#1a1b23] border-crypto-border text-white placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-crypto-border focus-visible:ring-0 focus-visible:ring-offset-0"
+                    />
                   </div>
                   
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="border-crypto-border text-gray-400 hover:text-white">
-                      <Filter className="w-4 h-4 mr-2" />
-                      Filter
-                    </Button>
-                    <Badge variant="outline" className="border-crypto-border text-crypto-green">
-                      BSC Network
-                    </Badge>
-                  </div>
+
                 </div>
-              </Card>
+                
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="border-crypto-border text-gray-400 hover:text-white">
+                    <Filter className="w-4 h-4 mr-2" />
+                    Filter
+                  </Button>
+                  <Badge variant="outline" className="border-crypto-border text-crypto-green">
+                    BSC Network
+                  </Badge>
+                </div>
+              </div>
 
               {/* Pools Table */}
               <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
