@@ -1136,19 +1136,19 @@ function LiquidityContent() {
 
               {/* Navigation and Search */}
               <div className="flex justify-between items-center">
-                <div className="flex gap-2">
+                <div className="grid w-auto grid-cols-2 bg-gray-800 border border-gray-700 rounded-lg p-1">
                   <Button 
-                    variant={activeTab === 'pools' ? "default" : "outline"} 
+                    variant={activeTab === 'pools' ? "default" : "ghost"} 
                     size="sm" 
-                    className={activeTab === 'pools' ? "bg-crypto-blue hover:bg-crypto-blue/80" : "border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"}
+                    className={activeTab === 'pools' ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 rounded-md w-24" : "text-gray-400 hover:text-white px-6 py-2 rounded-md hover:bg-gray-700/50 w-24"}
                     onClick={() => setActiveTab('pools')}
                   >
                     Pools
                   </Button>
                   <Button 
-                    variant={activeTab === 'tokens' ? "default" : "outline"} 
+                    variant={activeTab === 'tokens' ? "default" : "ghost"} 
                     size="sm" 
-                    className={activeTab === 'tokens' ? "bg-crypto-blue hover:bg-crypto-blue/80" : "border-crypto-border text-gray-400 hover:text-white hover:bg-crypto-surface/50"}
+                    className={activeTab === 'tokens' ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 rounded-md w-24" : "text-gray-400 hover:text-white px-6 py-2 rounded-md hover:bg-gray-700/50 w-24"}
                     onClick={() => setActiveTab('tokens')}
                   >
                     Tokens
