@@ -366,7 +366,7 @@ function LiquidityContent() {
                 <CardHeader>
                   <CardTitle className="text-white">Your Positions</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-0.5">
                   {positions.length === 0 ? (
                     <div className="text-center py-12">
                       <div className="w-16 h-16 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
