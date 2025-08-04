@@ -15,7 +15,9 @@ import {
   Star,
   ExternalLink,
   AlertTriangle,
-  Zap
+  Zap,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 
 interface Token {
@@ -48,6 +50,7 @@ function LiquidityContent() {
   const [selectedToken0, setSelectedToken0] = useState<Token | null>(null);
   const [selectedToken1, setSelectedToken1] = useState<Token | null>(null);
   const [amount0, setAmount0] = useState("");
+  const [expandedPositions, setExpandedPositions] = useState<Set<string>>(new Set());
   const [amount1, setAmount1] = useState("");
   const [selectedFee, setSelectedFee] = useState<number>(0.25);
   const [minPrice, setMinPrice] = useState("");
@@ -187,6 +190,16 @@ function LiquidityContent() {
     }, 0);
   };
 
+  const togglePositionExpansion = (positionId: string) => {
+    const newExpanded = new Set(expandedPositions);
+    if (newExpanded.has(positionId)) {
+      newExpanded.delete(positionId);
+    } else {
+      newExpanded.add(positionId);
+    }
+    setExpandedPositions(newExpanded);
+  };
+
   return (
     <Layout>
       <div className="p-8">
@@ -292,91 +305,120 @@ function LiquidityContent() {
                       </Button>
                     </div>
                   ) : (
-                    positions.map((position) => (
-                      <Card key={position.id} className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]">
-                        <CardContent className="p-6">
-                          <div className="flex justify-between">
-                            {/* Left side - Position Info */}
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center space-x-4">
-                                  <div className="flex items-center -space-x-2">
-                                    <img 
-                                      src={position.token0.logo} 
-                                      alt={position.token0.symbol}
-                                      className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
-                                    />
-                                    <img 
-                                      src={position.token1.logo} 
-                                      alt={position.token1.symbol}
-                                      className="w-10 h-10 rounded-full border-2 border-[var(--crypto-card)]"
-                                    />
-                                  </div>
-                                  <div>
-                                    <h3 className="text-lg font-semibold text-white">
-                                      {position.token0.symbol}/{position.token1.symbol}
-                                    </h3>
-                                    <div className="flex items-center space-x-2">
-                                      <Badge className={`text-xs ${position.status === 'in-range' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                        {position.status === 'in-range' ? 'In Range' : 'Out of Range'}
-                                      </Badge>
-                                      <Badge variant="outline" className="text-xs">
-                                        {position.fee}% Fee
-                                      </Badge>
-                                    </div>
-                                  </div>
+                    positions.map((position) => {
+                      const isExpanded = expandedPositions.has(position.id);
+                      return (
+                        <div key={position.id} className="bg-[var(--crypto-dark)] border border-[var(--crypto-border)] rounded-lg overflow-hidden">
+                          {/* Collapsed Header */}
+                          <div 
+                            className="p-4 cursor-pointer hover:bg-gray-800/50 transition-colors"
+                            onClick={() => togglePositionExpansion(position.id)}
+                          >
+                            <div className="flex items-center justify-between">
+                              {/* Left: Token Pair & Status */}
+                              <div className="flex items-center space-x-4">
+                                <div className="flex items-center -space-x-2">
+                                  <img 
+                                    src={position.token0.logo} 
+                                    alt={position.token0.symbol}
+                                    className="w-8 h-8 rounded-full border-2 border-[var(--crypto-card)]"
+                                  />
+                                  <img 
+                                    src={position.token1.logo} 
+                                    alt={position.token1.symbol}
+                                    className="w-8 h-8 rounded-full border-2 border-[var(--crypto-card)]"
+                                  />
                                 </div>
-                                <div className="text-right flex items-center space-x-3">
-                                  <div>
-                                    <p className="text-lg font-semibold text-white">{formatPrice(position.value)}</p>
-                                    <p className="text-sm text-gray-400">{position.liquidity} Liquidity</p>
-                                  </div>
-                                  <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
-                                    <ExternalLink className="w-4 h-4" />
-                                  </Button>
+                                <div className="flex items-center space-x-3">
+                                  <h3 className="text-white font-semibold">
+                                    {position.token0.symbol}/{position.token1.symbol}
+                                  </h3>
+                                  <Badge className={`text-xs ${position.status === 'in-range' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                    {position.status === 'in-range' ? 'In Range' : 'Out of Range'}
+                                  </Badge>
+                                  <Badge variant="outline" className="text-xs">
+                                    {position.fee}% Fee
+                                  </Badge>
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                              {/* Center: Key Values */}
+                              <div className="flex items-center space-x-8">
+                                <div className="text-center">
+                                  <p className="text-green-400 font-semibold">
+                                    {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
+                                  </p>
+                                  <p className="text-xs text-gray-400">Uncollected Fees</p>
+                                </div>
+                                <div className="text-center">
+                                  <p className="text-white font-semibold">{formatPrice(position.value)}</p>
+                                  <p className="text-xs text-gray-400">{position.liquidity} Liquidity</p>
+                                </div>
+                                <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                                  <ExternalLink className="w-4 h-4" />
+                                </Button>
+                              </div>
+
+                              {/* Right: Collect Fees + Expand */}
+                              <div className="flex items-center space-x-3">
+                                <Button 
+                                  size="sm" 
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Handle collect fees
+                                  }}
+                                >
+                                  Collect Fees
+                                </Button>
+                                {isExpanded ? (
+                                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                                ) : (
+                                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Expanded Details */}
+                          {isExpanded && (
+                            <div className="border-t border-[var(--crypto-border)] p-4 bg-gray-900/20">
+                              <div className="grid grid-cols-3 gap-6 mb-4">
                                 <div>
                                   <p className="text-xs text-gray-400 mb-1">Min Price</p>
-                                  <p className="text-sm font-medium text-white">{formatNumber(position.minPrice, 6)}</p>
+                                  <p className="text-lg font-bold text-white">{formatNumber(position.minPrice, 6)}</p>
                                 </div>
                                 <div>
                                   <p className="text-xs text-gray-400 mb-1">Max Price</p>
-                                  <p className="text-sm font-medium text-white">{formatNumber(position.maxPrice, 6)}</p>
+                                  <p className="text-lg font-bold text-white">{formatNumber(position.maxPrice, 6)}</p>
                                 </div>
                                 <div>
                                   <p className="text-xs text-gray-400 mb-1">Current Price</p>
-                                  <p className="text-sm font-medium text-white">{formatNumber(position.currentPrice, 6)}</p>
-                                </div>
-                                <div>
-                                  <p className="text-xs text-gray-400 mb-1">Uncollected Fees</p>
-                                  <p className="text-sm font-medium text-green-400">
-                                    {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
-                                  </p>
+                                  <p className="text-lg font-bold text-white">{formatNumber(position.currentPrice, 6)}</p>
                                 </div>
                               </div>
 
-
+                              <div className="flex items-center space-x-3">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+                                >
+                                  Add Liquidity
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="border-gray-600 text-gray-400 hover:bg-gray-600/10"
+                                >
+                                  Remove
+                                </Button>
+                              </div>
                             </div>
-
-                            {/* Right side - Action Buttons */}
-                            <div className="flex flex-col space-y-2 ml-6">
-                              <Button size="sm" variant="outline" className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10 min-w-[120px]">
-                                Add Liquidity
-                              </Button>
-                              <Button size="sm" variant="outline" className="border-gray-600 text-gray-400 hover:bg-gray-600/10 min-w-[120px]">
-                                Remove
-                              </Button>
-                              <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white min-w-[120px]">
-                                Collect Fees
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
+                          )}
+                        </div>
+                      );
+                    })
                   )}
                 </CardContent>
               </Card>
