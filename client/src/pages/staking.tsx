@@ -753,9 +753,12 @@ export function Staking() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between">
-                        {/* Pool Achievements - Center aligned */}
-                        <div className="flex items-center space-x-3 flex-1 justify-center">
+                      <div className="flex items-center">
+                        {/* Left spacer - pushes achievements to specific position */}
+                        <div className="w-[420px]"></div>
+                        
+                        {/* Pool Achievements - Fixed position alignment */}
+                        <div className="flex items-center space-x-3">
                           <Award className="w-4 h-4 text-crypto-gold" />
                           <span className="text-sm text-crypto-gold">Pool Achievements</span>
                           {poolAchievements.map((achievement) => {
@@ -775,8 +778,8 @@ export function Staking() {
                           })}
                         </div>
                         
-                        {/* Right section */}
-                        <div className="flex items-center space-x-4">
+                        {/* Right spacer and section */}
+                        <div className="flex-1 flex items-center justify-end space-x-4">
                           <div className="text-right">
                             <div className="text-lg font-semibold">
                               {formatNumber(pool.userStaked)} {pool.tokenSymbol}
