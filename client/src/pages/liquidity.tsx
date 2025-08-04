@@ -1064,8 +1064,8 @@ function LiquidityContent() {
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Volume</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Vol</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Vol</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
