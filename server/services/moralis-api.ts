@@ -109,22 +109,24 @@ class MoralisApiService {
     }
   }
 
-  // Get block information for network status
-  async getLatestBlock(): Promise<any> {
+  // Get network status with real-time BSC data
+  async getNetworkStatus(): Promise<any> {
     try {
-      // Use dateToBlock to get current block number
       const response = await this.makeRequest('/dateToBlock', {
         chain: 'bsc',
         date: new Date().toISOString()
       });
 
       return {
-        number: response.block || 0,
-        timestamp: new Date().toISOString()
+        blockNumber: response.block || 0,
+        gasPrice: 3, // BSC standard gas price in gwei
+        isHealthy: response.block > 0,
+        chainId: 56,
+        lastUpdated: new Date().toISOString()
       };
     } catch (error) {
-      console.error('Error fetching latest block from Moralis:', error);
-      return null;
+      console.error('Error fetching network status from Moralis:', error);
+      throw error;
     }
   }
 

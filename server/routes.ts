@@ -15,29 +15,7 @@ import {
   insertUserWatchlistSchema
 } from "@shared/schema";
 
-// Fallback price history generator
-function generateFallbackPriceHistory(days: number): any[] {
-  const now = Date.now();
-  const basePrice = 3539; // Current ETH price
-  const data: any[] = [];
-  
-  const points = days <= 1 ? 24 : days; // Hourly for 1 day, daily for others
-  const interval = days <= 1 ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 1 hour or 1 day
 
-  for (let i = points; i >= 0; i--) {
-    const timestamp = new Date(now - (i * interval)).toISOString();
-    // Generate realistic price variation based on current ETH volatility
-    const variation = (Math.random() - 0.5) * 0.03; // ±1.5% variation
-    const price = basePrice * (1 + variation * (i / points)); // Slight trend
-    
-    data.push({
-      timestamp,
-      price: Math.round(price * 100) / 100
-    });
-  }
-
-  return data;
-}
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Get comprehensive token data - now tracks ETH using real CoinGecko data
@@ -49,25 +27,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const ethData = await coinGeckoApiService.getEthereumData();
       
       if (!ethData) {
-        // Fallback to current market values if API fails
-        const tokenData: TokenData = {
-          id: "ethereum",
-          name: "Ethereum",
-          symbol: "ETH",
-          contractAddress: "ethereum",
-          price: 3539,
-          priceChange24h: 45.2,
-          priceChangePercent24h: 1.3,
-          marketCap: 427240000000,
-          volume24h: 22100000000,
-          totalSupply: 120426315,
-          circulatingSupply: 120426315,
-          liquidity: 0,
-          txCount24h: 0,
-          network: "Ethereum",
-          lastUpdated: new Date().toISOString(),
-        };
-        return res.json(tokenData);
+        throw new Error('ETH data unavailable from CoinGecko');
       }
 
       // Use real ETH data from CoinGecko
@@ -105,16 +65,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { contractAddress } = req.params;
       const limit = parseInt(req.query.limit as string) || 20;
       
-      // Try Moralis first, fallback to BSCScan
-      try {
-        const transactions = await moralisApiService.getTokenTransfers(contractAddress, limit);
-        console.log(`Got ${transactions.length} transactions from Moralis`);
-        res.json(transactions);
-      } catch (moralisError) {
-        console.log("Moralis failed, falling back to BSCScan for transactions");
-        const transactions = await bscApiService.getTokenTransactions(contractAddress, limit);
-        res.json(transactions);
-      }
+      // Use Moralis only for real-time transaction data
+      const transactions = await moralisApiService.getTokenTransfers(contractAddress, limit);
+      res.json(transactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
       res.status(500).json({ 
@@ -174,16 +127,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get network status - fallback to BSCScan since Alchemy needs network enabled
+  // Get network status from Moralis only
   app.get("/api/network-status", async (req, res) => {
     try {
-      // Use BSCScan for reliable network status data
-      const networkStatus = await bscApiService.getNetworkStatus();
+      const networkStatus = await moralisApiService.getNetworkStatus();
       res.json(networkStatus);
     } catch (error) {
-      console.error("Error fetching network status:", error);
+      console.error("Error fetching network status from Moralis:", error);
       res.status(500).json({ 
-        message: "Failed to fetch network status",
+        message: "Network status unavailable",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
@@ -360,20 +312,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           days = 1;
       }
       
-      // Fetch real ETH price history from CoinGecko
-      let priceHistory = await coinGeckoApiService.getEthereumPriceHistory(days);
-      
-      // If we get empty data, generate fallback for testing
-      if (!priceHistory || priceHistory.length === 0) {
-        console.log("Generating fallback price history for chart");
-        priceHistory = generateFallbackPriceHistory(days);
-      }
+      // Use real ETH price history from CoinGecko only
+      const priceHistory = await coinGeckoApiService.getEthereumPriceHistory(days);
       
       res.json(priceHistory);
     } catch (error) {
       console.error("Error fetching price history:", error);
       res.status(500).json({ 
-        message: "Failed to fetch price history",
+        message: "Price history unavailable",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }

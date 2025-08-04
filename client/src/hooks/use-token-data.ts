@@ -4,20 +4,20 @@ import type { TokenData, Transaction, Holder, NetworkStatus, PriceHistory } from
 export function useTokenData(contractAddress: string) {
   return useQuery<TokenData>({
     queryKey: ["/api/token", contractAddress],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     enabled: !!contractAddress,
-    retry: false, // Don't retry failed requests in production
-    staleTime: 60000, // Cache for 1 minute
+    retry: false,
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 }
 
 export function useTransactions(contractAddress: string) {
   return useQuery<Transaction[]>({
     queryKey: ["/api/transactions", contractAddress],
-    refetchInterval: 30000,
+    refetchInterval: 2 * 60 * 1000, // Refresh every 2 minutes
     enabled: !!contractAddress,
     retry: false,
-    staleTime: 60000,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 }
 
@@ -34,18 +34,18 @@ export function useTopHolders(contractAddress: string) {
 export function useNetworkStatus() {
   return useQuery<NetworkStatus>({
     queryKey: ["/api/network-status"],
-    refetchInterval: 15000, // Refresh every 15 seconds
+    refetchInterval: 1 * 60 * 1000, // Refresh every 1 minute
     retry: false,
-    staleTime: 30000,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 }
 
 export function usePriceHistory(contractAddress: string, timeframe: string = "1D") {
   return useQuery<PriceHistory[]>({
     queryKey: ["/api/price-history", contractAddress, timeframe],
-    refetchInterval: 60000, // Refresh every minute
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     enabled: !!contractAddress,
     retry: false,
-    staleTime: 120000,
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
   });
 }

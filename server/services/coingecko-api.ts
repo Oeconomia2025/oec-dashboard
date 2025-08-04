@@ -152,17 +152,13 @@ export class CoinGeckoApiService {
       const response = await fetch(`${url}?${params}`, { headers });
       
       if (!response.ok) {
-        // If rate limited or API error, return fallback data
-        console.warn(`CoinGecko rate limited (${response.status}), using fallback ETH price history`);
-        const fallback = this.generateEthFallbackHistory(days);
-        console.log(`Generated ${fallback.length} fallback data points`);
-        return fallback;
+        throw new Error(`CoinGecko rate limited: ${response.status}`);
       }
 
       const data = await response.json();
 
       if (!data.prices || !Array.isArray(data.prices)) {
-        return this.generateEthFallbackHistory(days);
+        throw new Error('Invalid price data from CoinGecko');
       }
 
       // Convert CoinGecko format to our format
@@ -172,35 +168,11 @@ export class CoinGeckoApiService {
       }));
     } catch (error) {
       console.error("Error fetching ETH price history from CoinGecko:", error);
-      console.log("Generating fallback ETH price history");
-      const fallback = this.generateEthFallbackHistory(days);
-      console.log(`Generated ${fallback.length} fallback data points in catch`);
-      return fallback;
+      throw error;
     }
   }
 
-  private generateEthFallbackHistory(days: number): any[] {
-    const now = Date.now();
-    const basePrice = 3539; // Current ETH price
-    const data: any[] = [];
-    
-    const points = days <= 1 ? 24 : days; // Hourly for 1 day, daily for others
-    const interval = days <= 1 ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000; // 1 hour or 1 day
 
-    for (let i = points; i >= 0; i--) {
-      const timestamp = new Date(now - (i * interval)).toISOString();
-      // Generate realistic price variation based on current ETH volatility
-      const variation = (Math.random() - 0.5) * 0.03; // ±1.5% variation
-      const price = basePrice * (1 + variation * (i / points)); // Slight trend
-      
-      data.push({
-        timestamp,
-        price: Math.round(price * 100) / 100
-      });
-    }
-
-    return data;
-  }
 }
 
 export const coinGeckoApiService = new CoinGeckoApiService();
