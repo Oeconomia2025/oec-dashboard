@@ -340,7 +340,7 @@ export function Layout({ children }: LayoutProps) {
               
               <div className="flex flex-col">
                 <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
-                <p className="text-sm text-muted-foreground">{currentPageInfo.description}</p>
+                <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
               </div>
             </div>
             
