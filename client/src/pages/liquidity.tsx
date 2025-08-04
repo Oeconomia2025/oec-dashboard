@@ -191,30 +191,19 @@ function LiquidityContent() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Action Buttons */}
-          <div className="mb-8 flex justify-end">
-            <div className="flex items-center space-x-3">
-              {activeView === 'create' && (
-                <Button
-                  variant="outline"
-                  onClick={() => setActiveView('positions')}
-                  className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Positions
-                </Button>
-              )}
-              {activeView === 'positions' && (
-                <Button
-                  onClick={() => setActiveView('create')}
-                  className="bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Position
-                </Button>
-              )}
+          {/* Back Button (only shown when creating) */}
+          {activeView === 'create' && (
+            <div className="mb-8 flex justify-end">
+              <Button
+                variant="outline"
+                onClick={() => setActiveView('positions')}
+                className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Positions
+              </Button>
             </div>
-          </div>
+          )}
 
           {/* Navigation Tabs */}
           <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1 mb-6 w-fit">
