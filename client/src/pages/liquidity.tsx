@@ -1074,12 +1074,12 @@ function LiquidityContent() {
                                 <img 
                                   src={pool.tokenA.logo} 
                                   alt={pool.tokenA.symbol}
-                                  className="w-8 h-8 rounded-full border-2 border-crypto-dark z-10"
+                                  className="w-8 h-8 rounded-full z-10"
                                 />
                                 <img 
                                   src={pool.tokenB.logo} 
                                   alt={pool.tokenB.symbol}
-                                  className="w-8 h-8 rounded-full border-2 border-crypto-dark"
+                                  className="w-8 h-8 rounded-full"
                                 />
                               </div>
                               <div>
