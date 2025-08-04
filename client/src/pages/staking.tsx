@@ -756,12 +756,14 @@ export function Staking() {
                       <div className="flex items-center justify-between flex-1">
                         <div className="flex-1"></div>
                         
-                        {/* Pool Achievements in Header - Center */}
+                        {/* Pool Achievements in Header - Column Layout */}
                         {poolAchievements.length > 0 && (
-                          <div className="flex items-center space-x-4">
-                            <Award className="w-4 h-4 text-crypto-gold" />
-                            <span className="text-sm text-crypto-gold">Pool Achievements</span>
-                            <div className="flex space-x-2">
+                          <div className="flex flex-col items-start space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <Award className="w-4 h-4 text-crypto-gold" />
+                              <span className="text-sm text-crypto-gold">Pool Achievements</span>
+                            </div>
+                            <div className="flex space-x-2 pl-6">
                               {poolAchievements.map((achievement) => {
                                 const AchievementIcon = achievement.icon;
                                 return (
