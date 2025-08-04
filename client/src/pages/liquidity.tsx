@@ -1024,7 +1024,7 @@ function LiquidityContent() {
                         placeholder="Search pools..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 bg-gray-700 border-crypto-border text-white placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-crypto-border focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="pl-10 bg-crypto-dark border-crypto-border text-white placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0 focus:outline-none focus:border-crypto-border focus-visible:ring-0 focus-visible:ring-offset-0"
                       />
                     </div>
                     
