@@ -753,34 +753,36 @@ export function Staking() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center">
-                        {/* Left spacer - pushes achievements to specific position */}
-                        <div className="w-[420px]"></div>
-                        
-                        {/* Pool Achievements - Fixed position alignment */}
-                        <div className="flex items-center space-x-3">
-                          <Award className="w-4 h-4 text-crypto-gold" />
-                          <span className="text-sm text-crypto-gold">Pool Achievements</span>
-                          {poolAchievements.map((achievement) => {
-                            const AchievementIcon = achievement.icon;
-                            return (
-                              <div 
-                                key={achievement.id}
-                                className={`w-8 h-8 rounded-full flex items-center justify-center border ${
-                                  achievement.earned
-                                    ? 'bg-green-500/20 border-green-500/50 text-green-300'
-                                    : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
-                                }`}
-                              >
-                                <AchievementIcon className="w-4 h-4" />
-                              </div>
-                            );
-                          })}
+                      <div className="flex items-center justify-between">
+                        {/* Center: Pool Achievements - Using same alignment logic as liquidity positions */}
+                        <div className="flex items-center space-x-6">
+                          <div className="text-center min-w-[280px]">
+                            {/* Empty spacer to push achievements to center */}
+                          </div>
+                          <div className="flex items-center space-x-3 min-w-[240px]">
+                            <Award className="w-4 h-4 text-crypto-gold" />
+                            <span className="text-sm text-crypto-gold">Pool Achievements</span>
+                            {poolAchievements.map((achievement) => {
+                              const AchievementIcon = achievement.icon;
+                              return (
+                                <div 
+                                  key={achievement.id}
+                                  className={`w-8 h-8 rounded-full flex items-center justify-center border ${
+                                    achievement.earned
+                                      ? 'bg-green-500/20 border-green-500/50 text-green-300'
+                                      : 'bg-gray-500/20 border-gray-500/50 text-gray-400'
+                                  }`}
+                                >
+                                  <AchievementIcon className="w-4 h-4" />
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                         
-                        {/* Right spacer and section */}
-                        <div className="flex-1 flex items-center justify-end space-x-4">
-                          <div className="text-right">
+                        {/* Right: Staked Amount + Expand */}
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right min-w-[120px]">
                             <div className="text-lg font-semibold">
                               {formatNumber(pool.userStaked)} {pool.tokenSymbol}
                             </div>
