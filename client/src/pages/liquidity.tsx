@@ -1014,18 +1014,8 @@ function LiquidityContent() {
                 </Card>
               </div>
 
-              {/* Filters and Search */}
-              <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="border-crypto-border text-gray-400 hover:text-white">
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filter
-                  </Button>
-                  <Badge variant="outline" className="border-crypto-border text-crypto-green">
-                    BSC Network
-                  </Badge>
-                </div>
-                
+              {/* Search */}
+              <div className="flex justify-end">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <Input
