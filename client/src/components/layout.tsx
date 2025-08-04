@@ -23,7 +23,8 @@ import {
   ExternalLink,
   Globe,
   BookOpen,
-  MoreHorizontal
+  MoreHorizontal,
+  Droplets
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -54,6 +55,10 @@ const pageInfo = {
   '/swap': {
     title: 'Token Swap',
     description: 'Trade tokens instantly on the Oeconomia ecosystem'
+  },
+  '/liquidity': {
+    title: 'Liquidity Pools',
+    description: 'Provide liquidity to earn fees and rewards'
   },
   '/governance': {
     title: 'Governance',
@@ -167,6 +172,7 @@ export function Layout({ children }: LayoutProps) {
     { icon: TrendingUp, label: 'Analytics', path: '/analytics', active: location === '/analytics' },
     { icon: Wallet, label: 'Portfolio', path: '/portfolio', active: location === '/portfolio' },
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
+    { icon: Droplets, label: 'Pools', path: '/liquidity', active: location === '/liquidity' },
     { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
