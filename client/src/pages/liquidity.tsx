@@ -996,8 +996,8 @@ function LiquidityContent() {
               </Card>
 
               {/* Pools Table */}
-              <div className="border overflow-hidden">
-                <div className="sticky top-20 z-20 bg-[#1a1b23] border-b border-crypto-border">
+              <div className="border rounded-lg overflow-hidden relative">
+                <div className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
                   <table className="w-full">
                     <thead>
                       <tr>
