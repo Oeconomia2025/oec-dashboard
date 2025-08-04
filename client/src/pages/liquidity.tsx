@@ -999,17 +999,17 @@ function LiquidityContent() {
               <Card className="crypto-card">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead>
+                    <thead className="sticky top-0 z-10 bg-crypto-card">
                       <tr className="border-b border-crypto-border">
-                        <th className="text-left p-6 font-medium text-gray-400">#</th>
-                        <th className="text-left p-6 font-medium text-gray-400">Pool</th>
-                        <th className="text-left p-6 font-medium text-gray-400">Fee</th>
-                        <th className="text-left p-6 font-medium text-gray-400">24H Volume</th>
-                        <th className="text-left p-6 font-medium text-gray-400">7D Volume</th>
-                        <th className="text-left p-6 font-medium text-gray-400">TVL</th>
-                        <th className="text-left p-6 font-medium text-gray-400">APR</th>
-                        <th className="text-left p-6 font-medium text-gray-400">24H %</th>
-                        <th className="text-right p-6 font-medium text-gray-400">Action</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">#</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">Pool</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">Fee</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">24H Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">7D Volume</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">TVL</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">APR</th>
+                        <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">24H %</th>
+                        <th className="text-right p-6 font-medium text-gray-400 bg-crypto-card">Action</th>
                       </tr>
                     </thead>
                     <tbody>
