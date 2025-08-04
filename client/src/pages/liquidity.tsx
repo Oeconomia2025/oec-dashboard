@@ -1039,9 +1039,6 @@ function LiquidityContent() {
                                 <div className="font-medium">
                                   {pool.tokenA.symbol}/{pool.tokenB.symbol}
                                 </div>
-                                <div className="text-sm text-gray-400">
-                                  {pool.tokenA.name} • {pool.tokenB.name}
-                                </div>
                               </div>
                             </div>
                           </td>
