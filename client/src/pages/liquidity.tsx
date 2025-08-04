@@ -997,9 +997,9 @@ function LiquidityContent() {
 
               {/* Pools Table */}
               <Card className="crypto-card">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto max-h-[calc(100vh-200px)] overflow-y-auto">
                   <table className="w-full">
-                    <thead className="sticky top-16 z-10 bg-crypto-card">
+                    <thead className="sticky top-0 z-20 bg-crypto-card">
                       <tr className="border-b border-crypto-border">
                         <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">#</th>
                         <th className="text-left p-6 font-medium text-gray-400 bg-crypto-card">Pool</th>
