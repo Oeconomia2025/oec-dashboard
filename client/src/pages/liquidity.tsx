@@ -421,21 +421,23 @@ function LiquidityContent() {
                               </div>
 
                               {/* Center: Key Values */}
-                              <div className="flex items-center space-x-8">
-                                <div className="text-center">
+                              <div className="flex items-center">
+                                <div className="text-center w-32">
                                   <p className="text-green-400 font-semibold">
                                     {formatPrice(parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price)}
                                   </p>
                                   <p className="text-xs text-gray-400">Uncollected Fees</p>
                                 </div>
-                                <div className="text-center">
+                                <div className="text-center w-32">
                                   <p className="text-white font-semibold">{formatPrice(position.value)}</p>
                                   <p className="text-xs text-gray-400">{position.liquidity} Liquidity</p>
                                 </div>
-                                <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
-                                  <ExternalLink className="w-4 h-4" />
-                                </Button>
-                                <div className="text-center">
+                                <div className="flex justify-center w-16">
+                                  <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                                    <ExternalLink className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                                <div className="text-center w-24">
                                   <p className="text-cyan-400 font-semibold">
                                     {((parseFloat(position.uncollectedFees0) * position.token0.price + parseFloat(position.uncollectedFees1) * position.token1.price) / position.value * 365 * 100).toFixed(2)}%
                                   </p>
