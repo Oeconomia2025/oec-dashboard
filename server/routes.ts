@@ -177,21 +177,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get network status - fallback to BSCScan since Alchemy needs network enabled
   app.get("/api/network-status", async (req, res) => {
     try {
-      // Try Moralis first, fallback to BSCScan
-      try {
-        const latestBlock = await moralisApiService.getLatestBlock();
-        const networkStatus = {
-          blockNumber: latestBlock?.number || 0,
-          gasPrice: 5, // Default BSC gas price in gwei
-          isHealthy: latestBlock ? true : false,
-          lastUpdated: new Date().toISOString()
-        };
-        res.json(networkStatus);
-      } catch (moralisError) {
-        console.log("Moralis failed, falling back to BSCScan for network status");
-        const networkStatus = await bscApiService.getNetworkStatus();
-        res.json(networkStatus);
-      }
+      // Use BSCScan for reliable network status data
+      const networkStatus = await bscApiService.getNetworkStatus();
+      res.json(networkStatus);
     } catch (error) {
       console.error("Error fetching network status:", error);
       res.status(500).json({ 

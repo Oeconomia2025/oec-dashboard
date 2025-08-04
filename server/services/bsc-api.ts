@@ -17,6 +17,12 @@ export class BSCApiService {
     }
 
     const data = await response.json();
+    
+    // Handle both BSCScan API format and JSON-RPC format
+    if (data.result !== undefined) {
+      return data.result; // JSON-RPC format (proxy endpoints)
+    }
+    
     if (data.status !== "1") {
       throw new Error(`BSCScan API error: ${data.message}`);
     }

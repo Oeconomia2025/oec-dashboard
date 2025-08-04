@@ -112,11 +112,16 @@ class MoralisApiService {
   // Get block information for network status
   async getLatestBlock(): Promise<any> {
     try {
-      const response = await this.makeRequest('/block/latest', {
+      // Use dateToBlock to get current block number
+      const response = await this.makeRequest('/dateToBlock', {
         chain: 'bsc',
+        date: new Date().toISOString()
       });
 
-      return response;
+      return {
+        number: response.block || 0,
+        timestamp: new Date().toISOString()
+      };
     } catch (error) {
       console.error('Error fetching latest block from Moralis:', error);
       return null;
