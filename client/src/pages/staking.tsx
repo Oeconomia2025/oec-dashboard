@@ -753,11 +753,12 @@ export function Staking() {
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between flex-1">
+                      <div className="flex items-center w-full">
+                        {/* Left spacer */}
                         <div className="flex-1"></div>
                         
-                        {/* Pool Achievements in Header - Consistent Column Layout */}
-                        <div className="flex items-center space-x-6 min-w-[300px]">
+                        {/* Pool Achievements - Centered */}
+                        <div className="flex items-center justify-center space-x-3">
                           <Award className="w-4 h-4 text-crypto-gold" />
                           <span className="text-sm text-crypto-gold">Pool Achievements</span>
                           <div className="flex space-x-2">
@@ -779,7 +780,8 @@ export function Staking() {
                           </div>
                         </div>
                         
-                        <div className="flex items-center space-x-4">
+                        {/* Right section */}
+                        <div className="flex-1 flex items-center justify-end space-x-4">
                           <div className="text-right">
                             <div className="text-lg font-semibold">
                               {formatNumber(pool.userStaked)} {pool.tokenSymbol}
