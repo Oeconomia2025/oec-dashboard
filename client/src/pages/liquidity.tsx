@@ -118,6 +118,66 @@ function LiquidityContent() {
       uncollectedFees1: "0.89",
       value: 1680.50,
       status: 'in-range'
+    },
+    {
+      id: "3",
+      token0: {
+        symbol: "BTC",
+        name: "Bitcoin",
+        address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+        decimals: 18,
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+        price: 97500.00,
+        balance: 0.1
+      },
+      token1: {
+        symbol: "WETH",
+        name: "Wrapped Ethereum",
+        address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+        decimals: 18,
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+        price: 3200.50,
+        balance: 2
+      },
+      liquidity: "18.7",
+      fee: 0.5,
+      minPrice: 28.5,
+      maxPrice: 32.8,
+      currentPrice: 30.46,
+      uncollectedFees0: "0.0045",
+      uncollectedFees1: "0.12",
+      value: 5250.00,
+      status: 'in-range'
+    },
+    {
+      id: "4",
+      token0: {
+        symbol: "BTC",
+        name: "Bitcoin",
+        address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+        decimals: 18,
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+        price: 97500.00,
+        balance: 0.1
+      },
+      token1: {
+        symbol: "USDC",
+        name: "USD Coin",
+        address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        decimals: 18,
+        logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+        price: 1.00,
+        balance: 1000
+      },
+      liquidity: "22.1",
+      fee: 0.05,
+      minPrice: 95000,
+      maxPrice: 102000,
+      currentPrice: 97500,
+      uncollectedFees0: "0.0012",
+      uncollectedFees1: "85.50",
+      value: 3800.00,
+      status: 'in-range'
     }
   ]);
 
@@ -157,6 +217,24 @@ function LiquidityContent() {
       logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
       price: 3200.50,
       balance: 2
+    },
+    {
+      symbol: "BTC",
+      name: "Bitcoin",
+      address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
+      decimals: 18,
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
+      price: 97500.00,
+      balance: 0.1
+    },
+    {
+      symbol: "USDC",
+      name: "USD Coin",
+      address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+      decimals: 18,
+      logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+      price: 1.00,
+      balance: 1000
     }
   ];
 
@@ -288,7 +366,7 @@ function LiquidityContent() {
                 <CardHeader>
                   <CardTitle className="text-white">Your Positions</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                   {positions.length === 0 ? (
                     <div className="text-center py-12">
                       <div className="w-16 h-16 bg-gradient-to-r from-crypto-blue/20 to-crypto-green/20 rounded-full flex items-center justify-center mx-auto mb-4">
