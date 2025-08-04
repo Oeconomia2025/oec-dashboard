@@ -89,6 +89,88 @@ export class CoinGeckoApiService {
       return null;
     }
   }
+
+  async getEthereumData(): Promise<Partial<TokenData> | null> {
+    try {
+      const url = `${this.COINGECKO_API_URL}/coins/ethereum`;
+      const headers: Record<string, string> = {
+        'accept': 'application/json',
+      };
+
+      if (this.API_KEY) {
+        headers['x-cg-demo-api-key'] = this.API_KEY;
+      }
+
+      const response = await fetch(url, { headers });
+      
+      if (!response.ok) {
+        throw new Error(`CoinGecko ETH API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.market_data) {
+        return null;
+      }
+
+      const marketData = data.market_data;
+
+      return {
+        name: data.name,
+        symbol: data.symbol?.toUpperCase(),
+        price: marketData.current_price?.usd || 0,
+        priceChange24h: marketData.price_change_24h || 0,
+        priceChangePercent24h: marketData.price_change_percentage_24h || 0,
+        marketCap: marketData.market_cap?.usd || 0,
+        volume24h: marketData.total_volume?.usd || 0,
+        totalSupply: marketData.total_supply || 0,
+        circulatingSupply: marketData.circulating_supply || 0,
+      };
+    } catch (error) {
+      console.error("Error fetching ETH data from CoinGecko:", error);
+      return null;
+    }
+  }
+
+  async getEthereumPriceHistory(days: number): Promise<any[]> {
+    try {
+      const url = `${this.COINGECKO_API_URL}/coins/ethereum/market_chart`;
+      const params = new URLSearchParams({
+        vs_currency: 'usd',
+        days: days.toString(),
+        interval: days <= 1 ? 'hourly' : 'daily'
+      });
+
+      const headers: Record<string, string> = {
+        'accept': 'application/json',
+      };
+
+      if (this.API_KEY) {
+        headers['x-cg-demo-api-key'] = this.API_KEY;
+      }
+
+      const response = await fetch(`${url}?${params}`, { headers });
+      
+      if (!response.ok) {
+        throw new Error(`CoinGecko ETH price history API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.prices || !Array.isArray(data.prices)) {
+        return [];
+      }
+
+      // Convert CoinGecko format to our format
+      return data.prices.map(([timestamp, price]: [number, number]) => ({
+        timestamp: new Date(timestamp).toISOString(),
+        price: price
+      }));
+    } catch (error) {
+      console.error("Error fetching ETH price history from CoinGecko:", error);
+      return [];
+    }
+  }
 }
 
 export const coinGeckoApiService = new CoinGeckoApiService();
