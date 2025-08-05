@@ -448,10 +448,10 @@ function LendContent() {
                     <Button
                       variant="outline"
                       onClick={() => openTokenModal('collateral')}
-                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-4 py-2 h-auto min-w-[140px]"
                     >
                       {collateralToken ? (
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center justify-center space-x-2">
                           <img 
                             src={collateralToken.logo} 
                             alt={collateralToken.symbol}
@@ -517,8 +517,8 @@ function LendContent() {
                         boxShadow: 'none'
                       }}
                     />
-                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
-                      <div className="flex items-center space-x-2">
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                         <span>ALUD</span>
                       </div>
@@ -733,8 +733,8 @@ function LendContent() {
                         boxShadow: 'none'
                       }}
                     />
-                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
-                      <div className="flex items-center space-x-2">
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                         <span>ALUD</span>
                       </div>
@@ -819,7 +819,7 @@ function LendContent() {
                         boxShadow: 'none'
                       }}
                     />
-                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 rounded-lg h-auto min-w-[140px] flex items-center space-x-2">
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg h-auto min-w-[140px] flex items-center justify-center space-x-2">
                       <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                       <span className="font-medium">ALUD</span>
                     </div>
@@ -864,9 +864,9 @@ function LendContent() {
                     <Button
                       variant="outline"
                       onClick={() => openTokenModal('redemption')}
-                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-4 py-2 h-auto min-w-[140px]"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center justify-center space-x-2">
                         {selectedRedemptionToken ? (
                           <>
                             <img src={selectedRedemptionToken.logo} alt={selectedRedemptionToken.symbol} className="w-6 h-6 rounded-full" />
@@ -974,7 +974,7 @@ function LendContent() {
                         placeholder="0.0"
                         className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
                       />
-                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                         <span>ALUD</span>
                       </div>
@@ -1041,7 +1041,7 @@ function LendContent() {
                         placeholder="0.0"
                         className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
                       />
-                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
                         <span>ALUR</span>
                       </div>
