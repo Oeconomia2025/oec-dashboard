@@ -114,6 +114,9 @@ export default function TokenDetail() {
     <Layout 
       pageTitle={tokenData.symbol}
       pageDescription={tokenData.name}
+      tokenLogo={tokenLogos[contractAddress.toLowerCase()]}
+      tokenWebsite={tokenWebsites[contractAddress.toLowerCase()]}
+      contractAddress={contractAddress}
     >
       <div className="p-8">
         <div className="max-w-7xl mx-auto space-y-6">
@@ -141,63 +144,7 @@ export default function TokenDetail() {
             </div>
           </div>
 
-          {/* Token Header */}
-          <Card className="crypto-card p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <img 
-                  src={tokenLogos[contractAddress.toLowerCase()] || "/oec-logo.png"} 
-                  alt={tokenData.symbol}
-                  className="w-16 h-16 rounded-full"
-                  onError={(e) => {
-                    e.currentTarget.src = '/oec-logo.png';
-                  }}
-                />
-                <div>
-                  <div className="flex items-center space-x-3">
-                    <h1 className="text-3xl font-bold text-white">{tokenData.symbol}</h1>
-                    <Badge variant="secondary" className="text-xs">{tokenData.name}</Badge>
-                  </div>
-                  <div className="flex items-center space-x-2 mt-2">
-                    <button
-                      onClick={() => copyToClipboard(contractAddress)}
-                      className="flex items-center space-x-1 text-gray-400 hover:text-white transition-colors text-sm"
-                    >
-                      <span className="font-mono">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
-                      {copied ? (
-                        <Check className="w-3 h-3 text-crypto-green" />
-                      ) : (
-                        <Copy className="w-3 h-3" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center space-x-3">
-                {tokenWebsites[contractAddress.toLowerCase()] && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => window.open(tokenWebsites[contractAddress.toLowerCase()], '_blank')}
-                    className="text-gray-400 hover:text-white border-gray-600 hover:border-crypto-blue"
-                  >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Website
-                  </Button>
-                )}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => window.open(`https://bscscan.com/token/${contractAddress}`, '_blank')}
-                  className="text-gray-400 hover:text-white border-gray-600 hover:border-crypto-blue"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  BSCScan
-                </Button>
-              </div>
-            </div>
-          </Card>
+
 
 
 

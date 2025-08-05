@@ -44,6 +44,9 @@ interface LayoutProps {
   pageDescription?: string;
   pageLogo?: string;
   pageWebsite?: string;
+  tokenLogo?: string;
+  tokenWebsite?: string;
+  contractAddress?: string;
 }
 
 // Page information for each route
@@ -86,7 +89,16 @@ const pageInfo = {
   }
 } as const;
 
-export function Layout({ children, pageTitle, pageDescription, pageLogo, pageWebsite }: LayoutProps) {
+export function Layout({ 
+  children, 
+  pageTitle, 
+  pageDescription, 
+  pageLogo, 
+  pageWebsite,
+  tokenLogo,
+  tokenWebsite,
+  contractAddress
+}: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -337,20 +349,23 @@ export function Layout({ children, pageTitle, pageDescription, pageLogo, pageWeb
               </Button>
               
               <div className="flex items-center space-x-3">
-                {pageLogo && (
+                {(tokenLogo || pageLogo) && (
                   <img 
-                    src={pageLogo} 
+                    src={tokenLogo || pageLogo} 
                     alt="Token logo" 
                     className="w-12 h-12 rounded-full"
                     style={{ border: '0.5px solid rgba(255, 255, 255, 0.3)' }}
+                    onError={(e) => {
+                      e.currentTarget.src = '/oec-logo.png';
+                    }}
                   />
                 )}
                 <div className="flex flex-col">
                   <div className="flex items-center space-x-2">
                     <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
-                    {pageWebsite && (
+                    {(tokenWebsite || pageWebsite) && (
                       <a 
-                        href={pageWebsite} 
+                        href={tokenWebsite || pageWebsite} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
