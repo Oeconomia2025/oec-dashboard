@@ -8,7 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import aludLogo from "@assets/image_1754382542106.png";
+// ALUD logo - will be loaded when image is available in repository
+const aludLogo = "/attached_assets/image_1754382542106.png";
 
 import { 
   DollarSign, 
