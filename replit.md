@@ -7,6 +7,7 @@ This project is a cryptocurrency token dashboard application for the "Oeconomia"
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
+UI/UX preferences: Values polished, professional appearance with attention to detail. Prefers centered, sticky elements for important features like alerts and notices.
 
 ## System Architecture
 
