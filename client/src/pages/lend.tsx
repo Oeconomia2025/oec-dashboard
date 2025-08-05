@@ -11,6 +11,9 @@ import { useToast } from "@/hooks/use-toast";
 // ALUD logo from hosted URL
 const aludLogo = "https://pub-37d61a7eb7ae45898b46702664710cb2.r2.dev/ALUD.png";
 
+// ALUR logo - distinct from ALUD
+const alurLogo = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='alur-gradient' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6b35'/%3E%3Cstop offset='100%25' style='stop-color:%23f7931e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='16' fill='url(%23alur-gradient)'/%3E%3Ctext x='16' y='21' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-size='12' font-weight='bold'%3EAR%3C/text%3E%3C/svg%3E";
+
 import { 
   DollarSign, 
   Settings, 
@@ -1034,7 +1037,7 @@ function LendContent() {
                         className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
-                        <img src="https://pub-37d61a7eb7ae45898b46702664710cb2.r2.dev/ALUD.png" alt="ALUR" className="w-6 h-6 rounded-full" />
+                        <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
                         <span>ALUR</span>
                       </div>
                     </div>
