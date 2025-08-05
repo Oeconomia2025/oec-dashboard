@@ -820,7 +820,10 @@ function LendContent() {
                           key={percentage}
                           variant="outline"
                           size="sm"
-                          onClick={() => setRedemptionAmount((1245.67 * percentage / 100).toString())}
+                          onClick={() => {
+                            const amount = (1245.67 * percentage / 100).toString();
+                            handleRedemptionAmountChange(amount);
+                          }}
                           className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
                         >
                           {percentage}%
