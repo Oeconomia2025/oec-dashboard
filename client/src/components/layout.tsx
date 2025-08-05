@@ -259,32 +259,32 @@ export function Layout({ children }: LayoutProps) {
         
         {/* Social Media Icons - Sticky at bottom */}
         <div className="sticky bottom-0 bg-gray-950 border-t border-gray-700 p-4">
-          <div className={`flex ${sidebarCollapsed ? 'flex-col space-y-3' : 'flex-wrap gap-3'} justify-center`}>
+          <div className={`flex ${sidebarCollapsed ? 'flex-col space-y-2' : 'flex-wrap gap-2'} justify-center`}>
             {/* Telegram - Placeholder */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center transition-all duration-200 opacity-50 cursor-not-allowed"
+              className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center transition-all duration-200 opacity-50 cursor-not-allowed"
               title="Telegram - Coming Soon"
               disabled
             >
-              <SiTelegram className="w-5 h-5 text-gray-400" />
+              <SiTelegram className="w-4 h-4 text-gray-400" />
             </button>
             
             {/* Twitter/X */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
               title="Twitter/X"
               onClick={() => window.open('https://x.com/Oeconomia2025', '_blank')}
             >
-              <SiX className="w-5 h-5 text-white group-hover:text-white" />
+              <SiX className="w-4 h-4 text-white group-hover:text-white" />
             </button>
             
             {/* Medium */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
               title="Medium"
               onClick={() => window.open('https://medium.com/@oeconomia2025', '_blank')}
             >
-              <svg className="w-8 h-8 text-white group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-6 h-6 text-white group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
                 <circle cx="6" cy="12" r="4"/>
                 <ellipse cx="15" cy="12" rx="2.5" ry="4"/>
                 <ellipse cx="21" cy="12" rx="1.5" ry="3"/>
@@ -293,29 +293,29 @@ export function Layout({ children }: LayoutProps) {
             
             {/* YouTube */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
               title="YouTube"
               onClick={() => window.open('https://www.youtube.com/@Oeconomia2025', '_blank')}
             >
-              <SiYoutube className="w-5 h-5 text-white group-hover:text-white" />
+              <SiYoutube className="w-4 h-4 text-white group-hover:text-white" />
             </button>
             
             {/* Discord */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
               title="Discord"
               onClick={() => window.open('https://discord.com/invite/XSgZgeVD', '_blank')}
             >
-              <SiDiscord className="w-5 h-5 text-white group-hover:text-white" />
+              <SiDiscord className="w-4 h-4 text-white group-hover:text-white" />
             </button>
             
             {/* GitHub */}
             <button
-              className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
+              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
               title="GitHub"
               onClick={() => window.open('https://github.com/Oeconomia2025', '_blank')}
             >
-              <SiGithub className="w-5 h-5 text-white group-hover:text-white" />
+              <SiGithub className="w-4 h-4 text-white group-hover:text-white" />
             </button>
           </div>
         </div>
