@@ -13,7 +13,21 @@ interface PriceChartProps {
 
 export function PriceChart({ contractAddress }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
-  const { data: priceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
+  const { data: rawPriceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
+
+  // Smooth the data by reducing data points for cleaner curves
+  const smoothPriceData = (data: PriceHistory[] | undefined): PriceHistory[] => {
+    if (!data || data.length === 0) return [];
+    
+    // For shorter timeframes, reduce data points more aggressively
+    const reductionFactor = timeframe === "1H" ? 3 : timeframe === "1D" ? 5 : 10;
+    
+    if (data.length <= 20) return data; // Don't reduce if we have few points
+    
+    return data.filter((_, index) => index % reductionFactor === 0 || index === data.length - 1);
+  };
+
+  const priceHistory = smoothPriceData(rawPriceHistory);
 
   const formatXAxis = (tickItem: any) => {
     // Handle both timestamp formats: Unix timestamp and ISO string
@@ -134,6 +148,7 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
                   fill="url(#areaGradientDashboard)"
                   dot={false}
                   activeDot={{ r: 4, fill: "var(--crypto-green)" }}
+                  connectNulls={true}
                 />
               </AreaChart>
             </ResponsiveContainer>
