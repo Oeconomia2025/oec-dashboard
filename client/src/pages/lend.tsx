@@ -74,6 +74,8 @@ function LendContent() {
   const [selectedRedemptionToken, setSelectedRedemptionToken] = useState<CollateralToken | null>(null);
   const [tokenModalType, setTokenModalType] = useState<'collateral' | 'redemption'>('collateral');
   const [calculatedRedemptionAmount, setCalculatedRedemptionAmount] = useState<number>(0);
+  const [stabilityPoolAmount, setStabilityPoolAmount] = useState("");
+  const [alurStakeAmount, setAlurStakeAmount] = useState("");
 
   // Available collateral tokens
   const collateralTokens: CollateralToken[] = [
@@ -324,6 +326,22 @@ function LendContent() {
       const amount = (selectedRepayPosition.borrowedAmount * percentage / 100).toString();
       setRepayAmount(amount);
     }
+  };
+
+  // Handle stability pool percentage button clicks
+  const handleStabilityPoolPercentageClick = (percentage: number) => {
+    // Assuming user has 1,000 ALUD available for deposit
+    const availableAmount = 1000;
+    const amount = (availableAmount * percentage / 100).toString();
+    setStabilityPoolAmount(amount);
+  };
+
+  // Handle ALUR stake percentage button clicks
+  const handleAlurStakePercentageClick = (percentage: number) => {
+    // Assuming user has 500 ALUR available for staking
+    const availableAmount = 500;
+    const amount = (availableAmount * percentage / 100).toString();
+    setAlurStakeAmount(amount);
   };
 
   // Handle position actions
@@ -974,7 +992,9 @@ function LendContent() {
                     <div className="flex items-center space-x-3">
                       <Input
                         placeholder="0.0"
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
+                        value={stabilityPoolAmount}
+                        onChange={(e) => setStabilityPoolAmount(e.target.value)}
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)]"
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
@@ -988,6 +1008,7 @@ function LendContent() {
                           key={percentage}
                           variant="outline"
                           size="sm"
+                          onClick={() => handleStabilityPoolPercentageClick(percentage)}
                           className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
                         >
                           {percentage}%
@@ -1044,7 +1065,9 @@ function LendContent() {
                     <div className="flex items-center space-x-3">
                       <Input
                         placeholder="0.0"
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
+                        value={alurStakeAmount}
+                        onChange={(e) => setAlurStakeAmount(e.target.value)}
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)]"
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
@@ -1058,6 +1081,7 @@ function LendContent() {
                           key={percentage}
                           variant="outline"
                           size="sm"
+                          onClick={() => handleAlurStakePercentageClick(percentage)}
                           className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
                         >
                           {percentage}%
