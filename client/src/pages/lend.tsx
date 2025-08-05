@@ -358,8 +358,8 @@ function LendContent() {
                         onClick={() => setActiveTab(tab)}
                         className={
                           activeTab === tab
-                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 flex-1"
-                            : "text-gray-400 hover:text-white px-6 py-2 flex-1"
+                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 min-w-[120px] flex-1"
+                            : "text-gray-400 hover:text-white px-6 py-2 min-w-[120px] flex-1"
                         }
                       >
                         {tab}
