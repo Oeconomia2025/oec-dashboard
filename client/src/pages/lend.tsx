@@ -515,12 +515,143 @@ function LendContent() {
               </CardContent>
             </Card>
 
-            {/* Repay and Withdraw tabs placeholder */}
-            {(activeTab === "Repay" || activeTab === "Withdraw") && (
+            {/* Repay Tab */}
+            {activeTab === "Repay" && (
+              <div className="space-y-0">
+                {/* Select Position Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Select Position</label>
+                    <span className="text-sm text-gray-400">
+                      {positions.length} active position{positions.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {positions.length > 0 ? (
+                      positions.map((position) => (
+                        <div 
+                          key={position.id}
+                          className="flex items-center justify-between p-3 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg hover:bg-[var(--crypto-dark)] cursor-pointer transition-colors"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <img 
+                              src={position.collateralToken.logo} 
+                              alt={position.collateralToken.symbol}
+                              className="w-8 h-8 rounded-full"
+                            />
+                            <div>
+                              <div className="font-medium text-white">
+                                {position.collateralAmount} {position.collateralToken.symbol}
+                              </div>
+                              <div className="text-sm text-gray-400">
+                                Borrowed: ${position.borrowedAmount.toFixed(2)} ALUD
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className={`text-sm font-bold ${getRatioColor(position.collateralizationRatio)}`}>
+                              {position.collateralizationRatio.toFixed(1)}%
+                            </div>
+                            <div className="text-xs text-gray-400">Health</div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-gray-400">
+                        No active positions to repay
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Repayment Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Repay Amount</label>
+                    <span className="text-sm text-gray-400">
+                      Available: $485.25 USDT
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value=""
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center space-x-2">
+                        <DollarSign className="w-6 h-6 text-green-400" />
+                        <span>ALUD</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Percentage Buttons for Repayment */}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      ≈ $0.00 USD
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repayment Impact */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-4">
+                  <h4 className="font-medium text-gray-300 mb-3">After Repayment</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Remaining Debt</span>
+                      <span className="text-gray-300">$0.00 ALUD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">New Health Factor</span>
+                      <span className="text-green-400">∞</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Interest Saved</span>
+                      <span className="text-gray-300">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Button 
+                  disabled={true}
+                  className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium opacity-50"
+                >
+                  Select Position to Repay
+                </Button>
+              </div>
+            )}
+
+            {/* Withdraw Tab */}
+            {activeTab === "Withdraw" && (
               <div className="bg-[var(--crypto-dark)] rounded-lg p-8 text-center border border-[var(--crypto-border)]">
                 <div className="space-y-2">
-                  <h3 className="text-lg font-medium text-gray-300">{activeTab} Position</h3>
-                  <p className="text-gray-400">Select a position from the sidebar to {activeTab.toLowerCase()}</p>
+                  <h3 className="text-lg font-medium text-gray-300">Withdraw Collateral</h3>
+                  <p className="text-gray-400">Select a position from the sidebar to withdraw collateral</p>
                 </div>
               </div>
             )}
