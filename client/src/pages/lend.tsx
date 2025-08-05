@@ -315,6 +315,14 @@ function LendContent() {
     calculateRedemptionAmount(redemptionAmount, token);
   };
 
+  // Handle repay percentage button clicks
+  const handleRepayPercentageClick = (percentage: number) => {
+    if (selectedRepayPosition) {
+      const amount = (selectedRepayPosition.borrowedAmount * percentage / 100).toString();
+      setRepayAmount(amount);
+    }
+  };
+
   // Handle position actions
   const handleRepayPosition = (position: LendingPosition) => {
     setSelectedRepayPosition(position);
@@ -738,6 +746,7 @@ function LendContent() {
                           key={percentage}
                           variant="outline"
                           size="sm"
+                          onClick={() => handleRepayPercentageClick(percentage)}
                           className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
                         >
                           {percentage}%
@@ -745,7 +754,7 @@ function LendContent() {
                       ))}
                     </div>
                     <div className="text-sm text-gray-500">
-                      ≈ $0.00 USD
+                      ≈ ${repayAmount ? (parseFloat(repayAmount) || 0).toFixed(2) : '0.00'} USD
                     </div>
                   </div>
                 </div>
