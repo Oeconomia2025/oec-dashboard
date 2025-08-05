@@ -24,7 +24,8 @@ import {
   Globe,
   BookOpen,
   MoreHorizontal,
-  Droplets
+  Droplets,
+  DollarSign
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -59,6 +60,10 @@ const pageInfo = {
   '/liquidity': {
     title: 'Liquidity Pools',
     description: 'Provide liquidity to earn fees and rewards'
+  },
+  '/lend': {
+    title: 'Lend',
+    description: 'Deposit collateral and borrow ALUD (Alluria USD) against your assets'
   },
   '/governance': {
     title: 'Governance',
@@ -173,6 +178,7 @@ export function Layout({ children }: LayoutProps) {
     { icon: Wallet, label: 'Portfolio', path: '/portfolio', active: location === '/portfolio' },
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
     { icon: Droplets, label: 'Pools', path: '/liquidity', active: location === '/liquidity' },
+    { icon: DollarSign, label: 'Lend', path: '/lend', active: location === '/lend' },
     { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
