@@ -275,6 +275,17 @@ function LendContent() {
     return "bg-green-500/20";
   };
 
+  // Handle position actions
+  const handleRepayPosition = (position: LendingPosition) => {
+    setSelectedRepayPosition(position);
+    setActiveTab("Repay");
+  };
+
+  const handleAddCollateral = (position: LendingPosition) => {
+    setCollateralToken(position.collateralToken);
+    setActiveTab("Deposit");
+  };
+
   return (
     <Layout>
       <div className="p-8">
@@ -912,10 +923,20 @@ function LendContent() {
                         </div>
                         
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm" className="flex-1">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => handleRepayPosition(position)}
+                          >
                             Repay
                           </Button>
-                          <Button variant="outline" size="sm" className="flex-1">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="flex-1"
+                            onClick={() => handleAddCollateral(position)}
+                          >
                             Add Collateral
                           </Button>
                         </div>
