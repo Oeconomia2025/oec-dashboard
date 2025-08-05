@@ -40,6 +40,8 @@ import {
 
 interface LayoutProps {
   children: ReactNode;
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
 // Page information for each route
@@ -82,7 +84,7 @@ const pageInfo = {
   }
 } as const;
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children, pageTitle, pageDescription }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -137,8 +139,12 @@ export function Layout({ children }: LayoutProps) {
     }
   ];
   
-  // Get current page info
-  const currentPageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
+  // Get current page info - use custom props if provided, otherwise use route-based info
+  const routePageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
+  const currentPageInfo = {
+    title: pageTitle || routePageInfo.title,
+    description: pageDescription || routePageInfo.description
+  };
 
   // Persist collapsed state to localStorage
   useEffect(() => {
