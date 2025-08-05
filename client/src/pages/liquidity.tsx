@@ -1314,7 +1314,7 @@ function LiquidityContent() {
                     {filteredPools.map((pool, index) => (
                         <tr 
                           key={pool.id} 
-                          className="border-b border-crypto-border hover:bg-gradient-to-r hover:from-crypto-blue/5 hover:to-crypto-purple/5 hover:border-crypto-blue/30 transition-all duration-200 cursor-pointer group"
+                          className="border-b border-crypto-border hover:bg-gray-800/40 hover:border-crypto-blue/60 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                           onClick={() => setActiveView('create')}
                         >
                           <td className="py-4 px-6">
@@ -1452,7 +1452,7 @@ function LiquidityContent() {
                     </thead>
                     <tbody>
                       {filteredTokens.map((token, index) => (
-                        <tr key={token.id} className="border-b border-crypto-border hover:bg-gradient-to-r hover:from-crypto-green/5 hover:to-crypto-blue/5 hover:border-crypto-green/30 transition-all duration-200 cursor-pointer group"
+                        <tr key={token.id} className="border-b border-crypto-border hover:bg-gray-800/40 hover:border-crypto-green/60 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                             onClick={() => setLocation(`/token/${token.id}`)}>
                           <td className="py-4 px-6">
                             <span className="text-gray-400 font-mono group-hover:text-white transition-colors duration-200">{index + 1}</span>
