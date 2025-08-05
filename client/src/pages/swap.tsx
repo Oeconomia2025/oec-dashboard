@@ -95,6 +95,7 @@ function SwapContent() {
   
   // Force chart re-creation when tokens change
   const [chartKey, setChartKey] = useState(0);
+  const [chartVisible, setChartVisible] = useState(false);
 
   // Helper functions for token selection
   const openTokenModal = (type?: 'from' | 'to' | 'priceCondition') => {
@@ -107,7 +108,11 @@ function SwapContent() {
 
   const selectToken = (token: Token) => {
     // Force chart recreation by incrementing key
-    setChartKey(prev => prev + 1);
+    setChartVisible(false);
+    setTimeout(() => {
+      setChartKey(prev => prev + 1);
+      setChartVisible(true);
+    }, 50);
     
     if (tokenSelectionFor === 'from') {
       setFromToken(token);
@@ -713,6 +718,7 @@ function SwapContent() {
                     onClick={() => {
                       setShowChart(!showChart);
                       setHideSidebar(!showChart);
+                      setChartVisible(!showChart);
                     }}
                     className={`text-gray-400 hover:text-white ${showChart ? 'text-crypto-blue' : ''}`}
                   >
@@ -1447,9 +1453,9 @@ function SwapContent() {
         </div>
 
         {/* Price Chart */}
-        {showChart && (
-          <div className={`${hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'} relative`} key={`chart-container-${chartKey}`}>
-            <Card className="crypto-card border h-full relative z-10">
+        {showChart && chartVisible && (
+          <div className={`${hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'} relative`} key={`chart-container-${chartKey}`} style={{ isolation: 'isolate' }}>
+            <Card className="crypto-card border h-full bg-[var(--crypto-card)] backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="text-white flex items-center justify-between">
                   <div className="flex items-center space-x-2">
