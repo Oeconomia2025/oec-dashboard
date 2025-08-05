@@ -173,8 +173,8 @@ export default function TokenDetail() {
 
   return (
     <Layout 
-      pageTitle={`${tokenData.name} (${tokenData.symbol})`}
-      pageDescription={`Detailed analytics and information for ${tokenData.name} token on BSC network`}
+      pageTitle={tokenData.symbol}
+      pageDescription={tokenData.name}
     >
       <div className="p-8">
         <div className="max-w-7xl mx-auto space-y-6">
