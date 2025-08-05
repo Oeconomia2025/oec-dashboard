@@ -205,57 +205,59 @@ export default function TokenDetail() {
           </div>
 
           {/* Token Header */}
-          <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <img 
-                src={tokenData.logo} 
-                alt={tokenData.symbol}
-                className="w-16 h-16 rounded-full"
-                onError={(e) => {
-                  e.currentTarget.src = '/oec-logo.png';
-                }}
-              />
-              <div>
-                <h1 className="text-3xl font-bold text-white">{tokenData.name}</h1>
-                <div className="flex items-center space-x-2 mt-1">
-                  <Badge variant="outline" className="border-crypto-border text-gray-400">
-                    {tokenData.symbol}
-                  </Badge>
-                  {tokenData.website && (
-                    <a 
-                      href={tokenData.website} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <div className="text-3xl font-bold text-white">
-                ${formatNumber(tokenData.price, 6)}
-              </div>
-              <div className={`flex items-center justify-end space-x-1 mt-1 ${
-                tokenData.change24h >= 0 ? 'text-crypto-green' : 'text-red-400'
-              }`}>
-                {tokenData.change24h >= 0 ? (
-                  <TrendingUp className="w-4 h-4" />
-                ) : (
-                  <TrendingDown className="w-4 h-4" />
+          <div className="flex items-center space-x-4">
+            <img 
+              src={tokenData.logo} 
+              alt={tokenData.symbol}
+              className="w-16 h-16 rounded-full"
+              onError={(e) => {
+                e.currentTarget.src = '/oec-logo.png';
+              }}
+            />
+            <div>
+              <h1 className="text-3xl font-bold text-white">{tokenData.name}</h1>
+              <div className="flex items-center space-x-2 mt-1">
+                <Badge variant="outline" className="border-crypto-border text-gray-400">
+                  {tokenData.symbol}
+                </Badge>
+                {tokenData.website && (
+                  <a 
+                    href={tokenData.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
                 )}
-                <span className="font-medium">
-                  {tokenData.change24h >= 0 ? '+' : ''}{tokenData.change24h}%
-                </span>
               </div>
             </div>
           </div>
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <Card className="crypto-card p-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-400 text-sm">Price</span>
+                <DollarSign className="w-4 h-4 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-white mb-1">
+                ${formatNumber(tokenData.price, 6)}
+              </div>
+              <div className={`flex items-center space-x-1 text-sm ${
+                tokenData.change24h >= 0 ? 'text-crypto-green' : 'text-red-400'
+              }`}>
+                {tokenData.change24h >= 0 ? (
+                  <TrendingUp className="w-3 h-3" />
+                ) : (
+                  <TrendingDown className="w-3 h-3" />
+                )}
+                <span className="font-medium">
+                  {tokenData.change24h >= 0 ? '+' : ''}{tokenData.change24h}%
+                </span>
+              </div>
+            </Card>
+            
             <Card className="crypto-card p-6">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400 text-sm">Market Cap</span>
