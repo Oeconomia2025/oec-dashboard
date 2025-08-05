@@ -18,35 +18,37 @@ import {
 
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Get comprehensive token data - now tracks ETH using real CoinGecko data
+  // Get comprehensive token data using Moralis for BSC tokens
   app.get("/api/token/:contractAddress", async (req, res) => {
     try {
       const { contractAddress } = req.params;
       
-      // Fetch real ETH data from CoinGecko instead of static values
-      const ethData = await coinGeckoApiService.getEthereumData();
+      // Get real token data from Moralis
+      const tokenMetadata = await moralisApiService.getTokenMetadata(contractAddress);
+      const tokenPrice = await moralisApiService.getTokenPrice(contractAddress);
       
-      if (!ethData) {
-        throw new Error('ETH data unavailable from CoinGecko');
+      if (!tokenMetadata) {
+        throw new Error('Token metadata unavailable from Moralis');
       }
 
-      // Use real ETH data from CoinGecko
+      // Build token data from real Moralis response
       const tokenData: TokenData = {
-        id: "ethereum",
-        name: ethData.name || "Ethereum",
-        symbol: ethData.symbol || "ETH",
-        contractAddress: "ethereum",
-        price: ethData.price || 3539,
-        priceChange24h: ethData.priceChange24h || 45.2,
-        priceChangePercent24h: ethData.priceChangePercent24h || 1.3,
-        marketCap: ethData.marketCap || 427240000000,
-        volume24h: ethData.volume24h || 22100000000,
-        totalSupply: ethData.totalSupply || 120426315,
-        circulatingSupply: ethData.circulatingSupply || 120426315,
+        id: contractAddress.toLowerCase(),
+        name: tokenMetadata.name || "Unknown Token",
+        symbol: tokenMetadata.symbol || "UNK",
+        contractAddress: contractAddress,
+        price: tokenPrice || 0,
+        priceChange24h: 0, // Moralis doesn't provide 24h change in metadata
+        priceChangePercent24h: 0,
+        marketCap: 0, // Would need total supply * price calculation
+        volume24h: 0, // Would need separate API call
+        totalSupply: tokenMetadata.total_supply ? parseFloat(tokenMetadata.total_supply) / Math.pow(10, tokenMetadata.decimals || 18) : 0,
+        circulatingSupply: tokenMetadata.total_supply ? parseFloat(tokenMetadata.total_supply) / Math.pow(10, tokenMetadata.decimals || 18) : 0,
         liquidity: 0,
         txCount24h: 0,
-        network: "Ethereum",
+        network: "BSC",
         lastUpdated: new Date().toISOString(),
+
       };
 
       res.json(tokenData);

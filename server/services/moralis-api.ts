@@ -145,6 +145,8 @@ class MoralisApiService {
       return 0;
     }
   }
+
+
 }
 
 export const moralisApiService = new MoralisApiService();
