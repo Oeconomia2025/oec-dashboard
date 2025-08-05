@@ -755,7 +755,7 @@ function LendContent() {
                       }}
                     />
                     <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 rounded-lg h-auto min-w-[140px] flex items-center space-x-2">
-                      <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="ALUD" className="w-6 h-6 rounded-full" />
+                      <img src="/attached_assets/image_1754382542106.png" alt="ALUD" className="w-6 h-6 rounded-full" />
                       <span className="font-medium">ALUD</span>
                     </div>
                   </div>
