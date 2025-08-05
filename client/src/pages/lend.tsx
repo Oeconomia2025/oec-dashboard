@@ -940,7 +940,10 @@ function LendContent() {
                 <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-xl font-bold text-white mb-2">Stability Pool</h3>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="text-xl font-bold text-white">Stability Pool</h3>
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
+                      </div>
                       <p className="text-gray-400 text-sm">Deposit ALUD to earn liquidation rewards and ALUR tokens</p>
                     </div>
                     <div className="text-right">
@@ -1007,7 +1010,10 @@ function LendContent() {
                 <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <h3 className="text-xl font-bold text-white mb-2">ALUR Token Staking</h3>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="text-xl font-bold text-white">ALUR Token Staking</h3>
+                        <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
+                      </div>
                       <p className="text-gray-400 text-sm">Stake ALUR tokens to earn protocol fees and governance power</p>
                     </div>
                     <div className="text-right">
