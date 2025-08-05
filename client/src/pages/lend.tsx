@@ -70,6 +70,7 @@ function LendContent() {
   const [redemptionAmount, setRedemptionAmount] = useState("");
   const [selectedRedemptionToken, setSelectedRedemptionToken] = useState<CollateralToken | null>(null);
   const [tokenModalType, setTokenModalType] = useState<'collateral' | 'redemption'>('collateral');
+  const [calculatedRedemptionAmount, setCalculatedRedemptionAmount] = useState<number>(0);
 
   // Available collateral tokens
   const collateralTokens: CollateralToken[] = [
@@ -254,6 +255,8 @@ function LendContent() {
       setCollateralToken(token);
     } else {
       setSelectedRedemptionToken(token);
+      // Recalculate redemption amount with new token
+      calculateRedemptionAmount(redemptionAmount, token);
     }
     setIsTokenModalOpen(false);
   };
@@ -273,6 +276,43 @@ function LendContent() {
     if (ratio < 120) return "bg-red-500/20";
     if (ratio < 150) return "bg-yellow-500/20";
     return "bg-green-500/20";
+  };
+
+  // Calculate redemption amount when ALUD amount changes
+  const calculateRedemptionAmount = (aludAmount: string, token: CollateralToken | null) => {
+    if (!aludAmount || !token || parseFloat(aludAmount) <= 0) {
+      setCalculatedRedemptionAmount(0);
+      return;
+    }
+    
+    const aludValue = parseFloat(aludAmount);
+    // Since 1 ALUD = $1.00 worth of any asset, divide by the token price
+    const assetAmount = aludValue / token.price;
+    setCalculatedRedemptionAmount(assetAmount);
+  };
+
+  // Handle redemption amount change
+  const handleRedemptionAmountChange = (value: string) => {
+    setRedemptionAmount(value);
+    const token = selectedRedemptionToken || collateralTokens.find(t => t.symbol === 'WETH') || null; // Default to ETH
+    calculateRedemptionAmount(value, token);
+  };
+
+  // Initialize default redemption token (ETH)
+  useEffect(() => {
+    if (!selectedRedemptionToken) {
+      const defaultToken = collateralTokens.find(t => t.symbol === 'WETH');
+      if (defaultToken) {
+        setSelectedRedemptionToken(defaultToken);
+        calculateRedemptionAmount(redemptionAmount, defaultToken);
+      }
+    }
+  }, []);
+
+  // Handle redemption token selection
+  const handleRedemptionTokenSelect = (token: CollateralToken) => {
+    setSelectedRedemptionToken(token);
+    calculateRedemptionAmount(redemptionAmount, token);
   };
 
   // Handle position actions
@@ -754,7 +794,7 @@ function LendContent() {
                     <Input
                       placeholder="0.0"
                       value={redemptionAmount}
-                      onChange={(e) => setRedemptionAmount(e.target.value)}
+                      onChange={(e) => handleRedemptionAmountChange(e.target.value)}
                       className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                       style={{ 
                         padding: 0, 
@@ -788,7 +828,7 @@ function LendContent() {
                       ))}
                     </div>
                     <div className="text-sm text-gray-500">
-                      ≈ $0.00 USD
+                      ≈ ${redemptionAmount ? (parseFloat(redemptionAmount) || 0).toFixed(2) : '0.00'} USD
                     </div>
                   </div>
                 </div>
@@ -804,7 +844,7 @@ function LendContent() {
                   
                   <div className="flex items-center space-x-3">
                     <div className="flex-1 font-bold text-white text-4xl">
-                      0.0
+                      {calculatedRedemptionAmount.toFixed(6)}
                     </div>
                     <Button
                       variant="outline"
@@ -830,10 +870,14 @@ function LendContent() {
                   
                   <div className="flex justify-between mt-3">
                     <div className="text-sm text-gray-500">
-                      Redemption Rate: 1 ALUD = 0.00031 ETH
+                      {selectedRedemptionToken ? (
+                        `Redemption Rate: 1 ALUD = ${(1 / selectedRedemptionToken.price).toFixed(6)} ${selectedRedemptionToken.symbol}`
+                      ) : (
+                        `Redemption Rate: 1 ALUD = ${(1 / 3200).toFixed(6)} ETH`
+                      )}
                     </div>
                     <div className="text-sm text-gray-500">
-                      ≈ $0.00 USD
+                      ≈ ${calculatedRedemptionAmount && selectedRedemptionToken ? (calculatedRedemptionAmount * selectedRedemptionToken.price).toFixed(2) : calculatedRedemptionAmount ? (calculatedRedemptionAmount * 3200).toFixed(2) : '0.00'} USD
                     </div>
                   </div>
                 </div>
@@ -848,11 +892,13 @@ function LendContent() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">You'll Pay</span>
-                      <span className="text-gray-300">0.00 ALUD</span>
+                      <span className="text-gray-300">{redemptionAmount || '0.00'} ALUD</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">You'll Receive</span>
-                      <span className="text-green-400">0.00 ETH</span>
+                      <span className="text-green-400">
+                        {calculatedRedemptionAmount.toFixed(6)} {selectedRedemptionToken?.symbol || 'ETH'}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-400">Price Impact</span>
@@ -862,10 +908,13 @@ function LendContent() {
                 </div>
 
                 <Button 
-                  disabled={true}
-                  className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium opacity-50"
+                  disabled={!redemptionAmount || parseFloat(redemptionAmount) <= 0}
+                  className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium disabled:opacity-50"
                 >
-                  Enter Amount to Redeem
+                  {!redemptionAmount || parseFloat(redemptionAmount) <= 0 
+                    ? "Enter Amount to Redeem" 
+                    : `Redeem ${redemptionAmount} ALUD`
+                  }
                 </Button>
               </div>
             )}
