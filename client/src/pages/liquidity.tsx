@@ -1314,11 +1314,11 @@ function LiquidityContent() {
                     {filteredPools.map((pool, index) => (
                         <tr 
                           key={pool.id} 
-                          className="border-b border-crypto-border hover:bg-crypto-surface/50 transition-colors cursor-pointer"
+                          className="border-b border-crypto-border hover:bg-gradient-to-r hover:from-crypto-blue/5 hover:to-crypto-purple/5 hover:border-crypto-blue/30 transition-all duration-200 cursor-pointer group"
                           onClick={() => setActiveView('create')}
                         >
                           <td className="py-4 px-6">
-                            <span className="text-gray-400 font-mono">{index + 1}</span>
+                            <span className="text-gray-400 font-mono group-hover:text-white transition-colors duration-200">{index + 1}</span>
                           </td>
                           <td className="py-4 px-6">
                             <div className="flex items-center space-x-3">
@@ -1335,7 +1335,7 @@ function LiquidityContent() {
                                 />
                               </div>
                               <div>
-                                <div className="font-medium">
+                                <div className="font-medium group-hover:text-white transition-colors duration-200">
                                   {pool.tokenA.symbol}/{pool.tokenB.symbol}
                                 </div>
                               </div>
@@ -1452,10 +1452,10 @@ function LiquidityContent() {
                     </thead>
                     <tbody>
                       {filteredTokens.map((token, index) => (
-                        <tr key={token.id} className="border-b border-crypto-border hover:bg-crypto-surface/20 transition-all duration-200 cursor-pointer"
+                        <tr key={token.id} className="border-b border-crypto-border hover:bg-gradient-to-r hover:from-crypto-green/5 hover:to-crypto-blue/5 hover:border-crypto-green/30 transition-all duration-200 cursor-pointer group"
                             onClick={() => setLocation(`/token/${token.id}`)}>
                           <td className="py-4 px-6">
-                            <span className="text-gray-400 font-mono">{index + 1}</span>
+                            <span className="text-gray-400 font-mono group-hover:text-white transition-colors duration-200">{index + 1}</span>
                           </td>
                           <td className="py-4 px-6">
                             <div className="flex items-center space-x-3">
@@ -1468,7 +1468,7 @@ function LiquidityContent() {
                                 }}
                               />
                               <div>
-                                <div className="font-medium">{token.symbol} <span className="text-sm text-gray-400 font-normal">{token.name}</span></div>
+                                <div className="font-medium group-hover:text-white transition-colors duration-200">{token.symbol} <span className="text-sm text-gray-400 font-normal group-hover:text-gray-300">{token.name}</span></div>
                               </div>
                             </div>
                           </td>
