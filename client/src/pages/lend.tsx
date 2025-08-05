@@ -994,7 +994,17 @@ function LendContent() {
                         placeholder="0.0"
                         value={stabilityPoolAmount}
                         onChange={(e) => setStabilityPoolAmount(e.target.value)}
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)] text-lg"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
@@ -1067,7 +1077,17 @@ function LendContent() {
                         placeholder="0.0"
                         value={alurStakeAmount}
                         onChange={(e) => setAlurStakeAmount(e.target.value)}
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)] text-lg"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
