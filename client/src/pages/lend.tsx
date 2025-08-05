@@ -65,6 +65,9 @@ function LendContent() {
   const [liquidationPrice, setLiquidationPrice] = useState(0);
   const [maxBorrowAmount, setMaxBorrowAmount] = useState(0);
   const [positions, setPositions] = useState<LendingPosition[]>([]);
+  const [redemptionAmount, setRedemptionAmount] = useState("");
+  const [selectedRedemptionToken, setSelectedRedemptionToken] = useState<CollateralToken | null>(null);
+  const [tokenModalType, setTokenModalType] = useState<'collateral' | 'redemption'>('collateral');
 
   // Available collateral tokens
   const collateralTokens: CollateralToken[] = [
@@ -102,6 +105,11 @@ function LendContent() {
     const wethToken = collateralTokens.find(token => token.symbol === 'WETH');
     if (wethToken && !collateralToken) {
       setCollateralToken(wethToken);
+    }
+    
+    // Set default redemption token to WETH
+    if (wethToken && !selectedRedemptionToken) {
+      setSelectedRedemptionToken(wethToken);
     }
   }, []);
 
@@ -233,13 +241,18 @@ function LendContent() {
     }, 2000);
   };
 
-  const openTokenModal = () => {
+  const openTokenModal = (type: 'collateral' | 'redemption' = 'collateral') => {
+    setTokenModalType(type);
     setTokenSearchQuery("");
     setIsTokenModalOpen(true);
   };
 
   const selectToken = (token: CollateralToken) => {
-    setCollateralToken(token);
+    if (tokenModalType === 'collateral') {
+      setCollateralToken(token);
+    } else {
+      setSelectedRedemptionToken(token);
+    }
     setIsTokenModalOpen(false);
   };
 
@@ -370,7 +383,7 @@ function LendContent() {
                     />
                     <Button
                       variant="outline"
-                      onClick={openTokenModal}
+                      onClick={() => openTokenModal('collateral')}
                       className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
                     >
                       {collateralToken ? (
@@ -727,8 +740,8 @@ function LendContent() {
                   <div className="flex items-center space-x-3">
                     <Input
                       placeholder="0.0"
-                      value={collateralAmount}
-                      onChange={(e) => handleCollateralAmountChange(e.target.value)}
+                      value={redemptionAmount}
+                      onChange={(e) => setRedemptionAmount(e.target.value)}
                       className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                       style={{ 
                         padding: 0, 
@@ -754,7 +767,7 @@ function LendContent() {
                           key={percentage}
                           variant="outline"
                           size="sm"
-                          onClick={() => handleCollateralAmountChange((1245.67 * percentage / 100).toString())}
+                          onClick={() => setRedemptionAmount((1245.67 * percentage / 100).toString())}
                           className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
                         >
                           {percentage}%
@@ -782,11 +795,21 @@ function LendContent() {
                     </div>
                     <Button
                       variant="outline"
+                      onClick={() => openTokenModal('redemption')}
                       className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
                     >
                       <div className="flex items-center space-x-2">
-                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" className="w-6 h-6 rounded-full" />
-                        <span className="font-medium">ETH</span>
+                        {selectedRedemptionToken ? (
+                          <>
+                            <img src={selectedRedemptionToken.logo} alt={selectedRedemptionToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span className="font-medium">{selectedRedemptionToken.symbol}</span>
+                          </>
+                        ) : (
+                          <>
+                            <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" className="w-6 h-6 rounded-full" />
+                            <span className="font-medium">ETH</span>
+                          </>
+                        )}
                         <ChevronDown className="w-4 h-4" />
                       </div>
                     </Button>
@@ -934,7 +957,9 @@ function LendContent() {
         <Dialog open={isTokenModalOpen} onOpenChange={setIsTokenModalOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Select Collateral Token</DialogTitle>
+              <DialogTitle>
+                {tokenModalType === 'collateral' ? 'Select Collateral Token' : 'Select Redemption Token'}
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <Input
