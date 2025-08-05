@@ -328,11 +328,11 @@ export function Layout({
         </div>
         
         {/* Alert/Caution Icon - Sticky at bottom of sidebar viewport */}
-        <div className="sticky bottom-0 bg-gray-950 p-4 border-t border-gray-700">
+        <div className="sticky bottom-0 bg-gray-950 p-4 border-t border-gray-700 flex justify-center">
           <Button
             variant="ghost"
             onClick={() => setDisclaimerOpen(true)}
-            className={`w-full ${sidebarCollapsed ? 'px-2 justify-center' : 'justify-start space-x-2'} py-2 text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
+            className={`${sidebarCollapsed ? 'px-2 justify-center' : 'px-3 justify-center space-x-2'} py-2 text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
             title={sidebarCollapsed ? "Development Notice" : undefined}
           >
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
