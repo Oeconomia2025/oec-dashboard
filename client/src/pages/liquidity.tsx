@@ -22,7 +22,8 @@ import {
   ChevronUp,
   ArrowUpRight,
   Search,
-  Filter
+  Filter,
+  ArrowLeftRight
 } from "lucide-react";
 
 interface Token {
@@ -699,7 +700,18 @@ function LiquidityContent() {
               {/* Positions List */}
               <Card className="crypto-card border">
                 <CardHeader>
-                  <CardTitle className="text-white">Your Positions</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-white">Your Positions</CardTitle>
+                    <Button
+                      onClick={() => setLocation('/swap')}
+                      variant="outline"
+                      size="sm"
+                      className="border-crypto-border text-crypto-blue hover:bg-crypto-blue/10"
+                    >
+                      <ArrowLeftRight className="w-4 h-4 mr-2" />
+                      Go to Swap
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-0.5">
                   {positions.length === 0 ? (
