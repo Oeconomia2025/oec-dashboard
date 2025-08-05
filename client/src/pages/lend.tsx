@@ -939,16 +939,16 @@ function LendContent() {
                 {/* Stability Pool Section */}
                 <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">Stability Pool</h3>
-                      <p className="text-gray-400 text-sm">Deposit ALUD to earn liquidation rewards and ALUR tokens</p>
+                    <div className="flex items-center space-x-4">
+                      <img src={aludLogo} alt="ALUD" className="w-12 h-12 rounded-full" />
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-2">Stability Pool</h3>
+                        <p className="text-gray-400 text-sm">Deposit ALUD to earn liquidation rewards and ALUR tokens</p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-white">12.5%</div>
-                      <div className="flex items-center justify-end space-x-2 text-sm text-gray-400">
-                        <img src={aludLogo} alt="ALUD" className="w-4 h-4 rounded-full" />
-                        <span>Current APY</span>
-                      </div>
+                      <div className="text-sm text-gray-400">Current APY</div>
                     </div>
                   </div>
                   
@@ -1009,16 +1009,16 @@ function LendContent() {
                 {/* ALUR Staking Section */}
                 <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h3 className="text-xl font-bold text-white mb-2">ALUR Token Staking</h3>
-                      <p className="text-gray-400 text-sm">Stake ALUR tokens to earn protocol fees and governance power</p>
+                    <div className="flex items-center space-x-4">
+                      <img src={alurLogo} alt="ALUR" className="w-12 h-12 rounded-full" />
+                      <div>
+                        <h3 className="text-xl font-bold text-white mb-2">ALUR Token Staking</h3>
+                        <p className="text-gray-400 text-sm">Stake ALUR tokens to earn protocol fees and governance power</p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-white">8.7%</div>
-                      <div className="flex items-center justify-end space-x-2 text-sm text-gray-400">
-                        <img src={alurLogo} alt="ALUR" className="w-4 h-4 rounded-full" />
-                        <span>Current APY</span>
-                      </div>
+                      <div className="text-sm text-gray-400">Current APY</div>
                     </div>
                   </div>
                   
