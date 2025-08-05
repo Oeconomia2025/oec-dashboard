@@ -23,6 +23,34 @@ export default function TokenDetail() {
   const contractAddress = params.id || "0x55d398326f99059fF775485246999027B3197955";
   const { data: tokenData, isLoading, error } = useTokenData(contractAddress);
 
+  // Token logos mapping
+  const tokenLogos: { [key: string]: string } = {
+    "0x55d398326f99059fF775485246999027B3197955": "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png", // USDT
+    "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": "https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png", // WBNB
+    "0x2170ed0880ac9a755fd29b2688956bd959f933f8": "https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png", // ETH
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": "https://s2.coinmarketcap.com/static/img/coins/32x32/3408.png", // USDC
+    "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": "https://s2.coinmarketcap.com/static/img/coins/32x32/1.png", // BTCB
+    "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": "https://s2.coinmarketcap.com/static/img/coins/32x32/7186.png", // CAKE
+    "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": "https://s2.coinmarketcap.com/static/img/coins/32x32/4943.png", // DAI
+    "0xe9e7cea3dedca5984780bafc599bd69add087d56": "https://s2.coinmarketcap.com/static/img/coins/32x32/4687.png", // BUSD
+    "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png", // LINK
+    "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png", // ADA
+  };
+
+  // Token website links mapping
+  const tokenWebsites: { [key: string]: string } = {
+    "0x55d398326f99059fF775485246999027B3197955": "https://tether.to/", // USDT
+    "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": "https://www.binance.com/en/bnb", // WBNB
+    "0x2170ed0880ac9a755fd29b2688956bd959f933f8": "https://ethereum.org/", // ETH
+    "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": "https://www.centre.io/usdc", // USDC
+    "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": "https://bitcoin.org/", // BTCB
+    "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": "https://pancakeswap.finance/", // CAKE
+    "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": "https://makerdao.com/", // DAI
+    "0xe9e7cea3dedca5984780bafc599bd69add087d56": "https://www.binance.com/en/busd", // BUSD
+    "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "https://chain.link/", // LINK
+    "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "https://cardano.org/", // ADA
+  };
+
   const formatNumber = (num: number, decimals: number = 2) => {
     return new Intl.NumberFormat('en-US', {
       minimumFractionDigits: decimals,
@@ -112,6 +140,64 @@ export default function TokenDetail() {
               </Button>
             </div>
           </div>
+
+          {/* Token Header */}
+          <Card className="crypto-card p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <img 
+                  src={tokenLogos[contractAddress.toLowerCase()] || "/oec-logo.png"} 
+                  alt={tokenData.symbol}
+                  className="w-16 h-16 rounded-full"
+                  onError={(e) => {
+                    e.currentTarget.src = '/oec-logo.png';
+                  }}
+                />
+                <div>
+                  <div className="flex items-center space-x-3">
+                    <h1 className="text-3xl font-bold text-white">{tokenData.symbol}</h1>
+                    <Badge variant="secondary" className="text-xs">{tokenData.name}</Badge>
+                  </div>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <button
+                      onClick={() => copyToClipboard(contractAddress)}
+                      className="flex items-center space-x-1 text-gray-400 hover:text-white transition-colors text-sm"
+                    >
+                      <span className="font-mono">{contractAddress.slice(0, 6)}...{contractAddress.slice(-4)}</span>
+                      {copied ? (
+                        <Check className="w-3 h-3 text-crypto-green" />
+                      ) : (
+                        <Copy className="w-3 h-3" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-3">
+                {tokenWebsites[contractAddress.toLowerCase()] && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open(tokenWebsites[contractAddress.toLowerCase()], '_blank')}
+                    className="text-gray-400 hover:text-white border-gray-600 hover:border-crypto-blue"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Website
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.open(`https://bscscan.com/token/${contractAddress}`, '_blank')}
+                  className="text-gray-400 hover:text-white border-gray-600 hover:border-crypto-blue"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  BSCScan
+                </Button>
+              </div>
+            </div>
+          </Card>
 
 
 
