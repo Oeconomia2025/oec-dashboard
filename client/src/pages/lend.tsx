@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import aludLogo from "@assets/image_1754382542106.png";
 
 import { 
   DollarSign, 
@@ -455,7 +456,7 @@ function LendContent() {
                     />
                     <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
                       <div className="flex items-center space-x-2">
-                        <DollarSign className="w-6 h-6 text-green-400" />
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                         <span>ALUD</span>
                       </div>
                     </div>
@@ -755,7 +756,7 @@ function LendContent() {
                       }}
                     />
                     <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 rounded-lg h-auto min-w-[140px] flex items-center space-x-2">
-                      <img src="/attached_assets/image_1754382542106.png" alt="ALUD" className="w-6 h-6 rounded-full" />
+                      <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                       <span className="font-medium">ALUD</span>
                     </div>
                   </div>
