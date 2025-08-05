@@ -355,7 +355,6 @@ export function Layout({ children }: LayoutProps) {
                     title="Social Media Links"
                   >
                     <Globe className="w-5 h-5 text-white" />
-                    <ChevronDown className="w-3 h-3 text-white ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
