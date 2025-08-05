@@ -92,6 +92,9 @@ function SwapContent() {
   // Sell mode specific state
   const [sellPercentage, setSellPercentage] = useState<number | null>(null);
   const [swapPercentage, setSwapPercentage] = useState<number | null>(null);
+  
+  // Force chart re-creation when tokens change
+  const [chartKey, setChartKey] = useState(0);
 
   // Helper functions for token selection
   const openTokenModal = (type?: 'from' | 'to' | 'priceCondition') => {
@@ -103,6 +106,9 @@ function SwapContent() {
   };
 
   const selectToken = (token: Token) => {
+    // Force chart recreation by incrementing key
+    setChartKey(prev => prev + 1);
+    
     if (tokenSelectionFor === 'from') {
       setFromToken(token);
       
@@ -1442,8 +1448,8 @@ function SwapContent() {
 
         {/* Price Chart */}
         {showChart && (
-          <div className={`${hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'} relative`}>
-            <Card className="crypto-card border h-full relative z-10" key={`chart-${fromToken?.symbol}-${toToken?.symbol}`}>
+          <div className={`${hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'} relative`} key={`chart-container-${chartKey}`}>
+            <Card className="crypto-card border h-full relative z-10">
               <CardHeader>
                 <CardTitle className="text-white flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -1510,7 +1516,7 @@ function SwapContent() {
                   </div>
                 ) : (
                   <div className="h-full relative">
-                    <ResponsiveContainer width="100%" height="100%" key={`${fromToken?.symbol}-${toToken?.symbol}-${chartTimeframe}`}>
+                    <ResponsiveContainer width="100%" height="100%" key={`chart-${chartKey}-${fromToken?.symbol}-${toToken?.symbol}-${chartTimeframe}`}>
                       <AreaChart data={chartPriceHistory}>
                         <defs>
                           <linearGradient id={`areaGradient-${fromToken?.symbol || 'default'}`} x1="0" y1="0" x2="0" y2="1">
