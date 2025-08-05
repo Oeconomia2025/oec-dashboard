@@ -316,9 +316,9 @@ function LendContent() {
 
             {/* Deposit Tab */}
             {activeTab === "Deposit" && (
-              <div className="space-y-4">
+              <div className="space-y-0">
                 {/* Collateral Section */}
-                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-3">
                     <label className="text-gray-400 text-sm">Collateral</label>
                     {collateralToken?.balance && (
@@ -392,7 +392,7 @@ function LendContent() {
                 </div>
 
                 {/* Borrow Section */}
-                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
                   <div className="flex items-center justify-between mb-3">
                     <label className="text-gray-400 text-sm">Borrow ALUD</label>
                     <span className="text-sm text-gray-400">
