@@ -436,8 +436,7 @@ function LendContent() {
                       </span>
                     </div>
                     <Progress 
-                      value={Math.min(collateralizationRatio, 300)} 
-                      max={300}
+                      value={Math.min((collateralizationRatio / 300) * 100, 100)} 
                       className="h-2"
                     />
                     <div className="grid grid-cols-3 gap-2 text-xs mt-3">
