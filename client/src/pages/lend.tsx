@@ -60,7 +60,7 @@ function LendContent() {
   const [lastEditedField, setLastEditedField] = useState<'collateral' | 'borrow'>('collateral');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [activeTab, setActiveTab] = useState("Deposit");
+  const [activeTab, setActiveTab] = useState<"Deposit" | "Repay" | "Redemptions" | "Pools">("Deposit");
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
   const [collateralizationRatio, setCollateralizationRatio] = useState(150);
@@ -347,7 +347,7 @@ function LendContent() {
                 {/* Tab Navigation */}
                 <div className="flex items-center justify-between mb-0">
                   <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
-                    {["Deposit", "Repay", "Redemptions"].map((tab) => (
+                    {(["Deposit", "Repay", "Redemptions", "Pools"] as const).map((tab) => (
                       <Button
                         key={tab}
                         variant={activeTab === tab ? "default" : "ghost"}
@@ -928,6 +928,140 @@ function LendContent() {
                     : `Redeem ${redemptionAmount} ALUD`
                   }
                 </Button>
+              </div>
+            )}
+
+            {/* Pools Tab */}
+            {activeTab === "Pools" && (
+              <div className="space-y-6">
+                {/* Stability Pool Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">Stability Pool</h3>
+                      <p className="text-gray-400 text-sm">Deposit ALUD to earn liquidation rewards and ALUR tokens</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">12.5%</div>
+                      <div className="text-sm text-gray-400">Current APY</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Total Deposited</div>
+                      <div className="text-lg font-bold text-white">$2,485,920</div>
+                      <div className="text-xs text-green-400">+5.2% this week</div>
+                    </div>
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Your Share</div>
+                      <div className="text-lg font-bold text-white">0.00%</div>
+                      <div className="text-xs text-gray-400">No deposit yet</div>
+                    </div>
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Pending Rewards</div>
+                      <div className="text-lg font-bold text-white">0 ALUR</div>
+                      <div className="text-xs text-gray-400">$0.00</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        placeholder="0.0"
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
+                      />
+                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
+                        <span>ALUD</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+
+                    <Button className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium">
+                      Deposit to Stability Pool
+                    </Button>
+                  </div>
+                </div>
+
+                {/* ALUR Staking Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-6 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">ALUR Token Staking</h3>
+                      <p className="text-gray-400 text-sm">Stake ALUR tokens to earn protocol fees and governance power</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-white">8.7%</div>
+                      <div className="text-sm text-gray-400">Current APY</div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Total Staked</div>
+                      <div className="text-lg font-bold text-white">1,245,680 ALUR</div>
+                      <div className="text-xs text-green-400">$1,867,020</div>
+                    </div>
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Your Stake</div>
+                      <div className="text-lg font-bold text-white">0 ALUR</div>
+                      <div className="text-xs text-gray-400">$0.00</div>
+                    </div>
+                    <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                      <div className="text-sm text-gray-400 mb-1">Claimable Fees</div>
+                      <div className="text-lg font-bold text-white">0.00 ALUD</div>
+                      <div className="text-xs text-gray-400">$0.00</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        placeholder="0.0"
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500"
+                      />
+                      <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg flex items-center space-x-2">
+                        <img src="https://pub-37d61a7eb7ae45898b46702664710cb2.r2.dev/ALUD.png" alt="ALUR" className="w-6 h-6 rounded-full" />
+                        <span>ALUR</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button className="h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium">
+                        Stake ALUR
+                      </Button>
+                      <Button variant="outline" className="h-12 text-lg border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]">
+                        Claim Fees
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
