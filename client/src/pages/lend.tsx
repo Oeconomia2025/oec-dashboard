@@ -370,26 +370,27 @@ function LendContent() {
                   </div>
 
                   
-                  {/* Percentage Buttons */}
+                  {/* Percentage Buttons and USD Value */}
                   {collateralToken?.balance && (
-                    <div className="flex space-x-2 mt-3">
-                      {[25, 50, 75, 100].map((percentage) => (
-                        <Button
-                          key={percentage}
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handlePercentageClick(percentage)}
-                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
-                        >
-                          {percentage}%
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-
-                  {collateralToken && collateralAmount && (
-                    <div className="text-sm text-gray-500 mt-2">
-                      ≈ ${(parseFloat(collateralAmount) * collateralToken.price).toFixed(2)} USD
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex space-x-2">
+                        {[25, 50, 75, 100].map((percentage) => (
+                          <Button
+                            key={percentage}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePercentageClick(percentage)}
+                            className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                          >
+                            {percentage}%
+                          </Button>
+                        ))}
+                      </div>
+                      {collateralToken && collateralAmount && (
+                        <div className="text-sm text-gray-500">
+                          ≈ ${(parseFloat(collateralAmount) * collateralToken.price).toFixed(2)} USD
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
