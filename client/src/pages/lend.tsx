@@ -394,13 +394,6 @@ function LendContent() {
                   )}
                 </div>
 
-                {/* Swap Arrow */}
-                <div className="flex justify-center py-2">
-                  <div className="w-10 h-10 rounded-full bg-[var(--crypto-dark)] border border-[var(--crypto-border)] flex items-center justify-center">
-                    <ArrowUpDown className="w-4 h-4 text-gray-400" />
-                  </div>
-                </div>
-
                 {/* Borrow Section */}
                 <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                   <div className="flex items-center justify-between mb-3">
