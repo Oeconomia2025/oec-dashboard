@@ -327,8 +327,8 @@ export function Layout({
           {/* Content area - social media moved to header dropdown */}
         </div>
         
-        {/* Alert/Caution Icon at bottom of sidebar */}
-        <div className="p-4 border-t border-gray-700">
+        {/* Alert/Caution Icon - Sticky at bottom of sidebar viewport */}
+        <div className="sticky bottom-0 bg-gray-950 p-4 border-t border-gray-700">
           <Button
             variant="ghost"
             onClick={() => setDisclaimerOpen(true)}
