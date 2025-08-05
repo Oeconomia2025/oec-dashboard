@@ -19,8 +19,8 @@ export default function TokenDetail() {
   // Copy to clipboard state
   const [copied, setCopied] = useState(false);
   
-  // Get real token data from API - use contract address instead of token ID
-  const contractAddress = params.contractAddress || "0x55d398326f99059fF775485246999027B3197955";
+  // Get real token data from API - use the ID from URL params which is the contract address
+  const contractAddress = params.id || "0x55d398326f99059fF775485246999027B3197955";
   const { data: tokenData, isLoading, error } = useTokenData(contractAddress);
 
   const formatNumber = (num: number, decimals: number = 2) => {
