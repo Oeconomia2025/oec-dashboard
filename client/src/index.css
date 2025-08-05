@@ -182,3 +182,8 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Custom 0.5px border for token logos */
+.border-half {
+  border: 0.5px solid white;
+}
