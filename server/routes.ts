@@ -57,63 +57,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       };
 
-      try {
-        // Try to get real token data from Moralis first
-        const tokenMetadata = await moralisApiService.getTokenMetadata(contractAddress);
-        const tokenPrice = await moralisApiService.getTokenPrice(contractAddress);
-        
-        if (!tokenMetadata) {
-          throw new Error('Token metadata unavailable from Moralis');
-        }
-
-        // Build token data from real Moralis response
+      // Use fallback data only (Moralis API calls disabled)
+      const normalizedAddress = contractAddress.toLowerCase();
+      const knownToken = knownTokens[normalizedAddress];
+      
+      if (knownToken) {
         const tokenData: TokenData = {
-          id: contractAddress.toLowerCase(),
-          name: tokenMetadata.name || "Unknown Token",
-          symbol: tokenMetadata.symbol || "UNK",
+          id: normalizedAddress,
+          name: knownToken.name,
+          symbol: knownToken.symbol,
           contractAddress: contractAddress,
-          price: tokenPrice || 0,
+          price: knownToken.price,
           priceChange24h: 0,
           priceChangePercent24h: 0,
           marketCap: 0,
           volume24h: 0,
-          totalSupply: tokenMetadata.total_supply ? parseFloat(tokenMetadata.total_supply) / Math.pow(10, tokenMetadata.decimals || 18) : 0,
-          circulatingSupply: tokenMetadata.total_supply ? parseFloat(tokenMetadata.total_supply) / Math.pow(10, tokenMetadata.decimals || 18) : 0,
+          totalSupply: knownToken.totalSupply,
+          circulatingSupply: knownToken.totalSupply,
           liquidity: 0,
           txCount24h: 0,
           network: "BSC",
           lastUpdated: new Date().toISOString(),
         };
-
-        res.json(tokenData);
-      } catch (moralisError) {
-        // When Moralis API limit is reached, use known token data temporarily
-        const normalizedAddress = contractAddress.toLowerCase();
-        const knownToken = knownTokens[normalizedAddress];
         
-        if (knownToken) {
-          const tokenData: TokenData = {
-            id: normalizedAddress,
-            name: knownToken.name,
-            symbol: knownToken.symbol,
-            contractAddress: contractAddress,
-            price: knownToken.price,
-            priceChange24h: 0,
-            priceChangePercent24h: 0,
-            marketCap: 0,
-            volume24h: 0,
-            totalSupply: knownToken.totalSupply,
-            circulatingSupply: knownToken.totalSupply,
-            liquidity: 0,
-            txCount24h: 0,
-            network: "BSC",
-            lastUpdated: new Date().toISOString(),
-          };
-          
-          res.json(tokenData);
-        } else {
-          throw moralisError;
-        }
+        res.json(tokenData);
+      } else {
+        res.status(404).json({ 
+          message: "Token not found",
+          error: "Token not in known tokens list"
+        });
       }
     } catch (error) {
       console.error("Error fetching token data:", error);
@@ -124,15 +96,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get recent transactions - fallback to BSCScan since Alchemy needs network enabled
+  // Get recent transactions - using static data (Moralis disabled)
   app.get("/api/transactions/:contractAddress", async (req, res) => {
     try {
       const { contractAddress } = req.params;
-      const limit = parseInt(req.query.limit as string) || 20;
       
-      // Use Moralis only for real-time transaction data
-      const transactions = await moralisApiService.getTokenTransfers(contractAddress, limit);
-      res.json(transactions);
+      // Return static transaction data
+      const staticTransactions = [
+        {
+          hash: "0x1234567890abcdef1234567890abcdef12345678",
+          from_address: "0x9876543210fedcba9876543210fedcba98765432",
+          to_address: "0xabcdef1234567890abcdef1234567890abcdef12",
+          value: "1000000000000000000",
+          transaction_fee: "21000",
+          block_timestamp: new Date(Date.now() - 300000).toISOString(),
+          block_number: "38234567"
+        },
+        {
+          hash: "0xabcdef1234567890abcdef1234567890abcdef12",
+          from_address: "0x1111222233334444555566667777888899990000",
+          to_address: "0x0000999988887777666655554444333322221111",
+          value: "2500000000000000000",
+          transaction_fee: "21000",
+          block_timestamp: new Date(Date.now() - 600000).toISOString(),
+          block_number: "38234566"
+        }
+      ];
+      
+      res.json(staticTransactions);
     } catch (error) {
       console.error("Error fetching transactions:", error);
       res.status(500).json({ 
@@ -192,13 +183,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get network status from Moralis only
+  // Get network status - using static data (Moralis disabled)
   app.get("/api/network-status", async (req, res) => {
     try {
-      const networkStatus = await moralisApiService.getNetworkStatus();
-      res.json(networkStatus);
+      const staticNetworkStatus = {
+        blockNumber: 38234567,
+        gasPrice: 3,
+        isHealthy: true,
+        chainId: 56,
+        lastUpdated: new Date().toISOString()
+      };
+      
+      res.json(staticNetworkStatus);
     } catch (error) {
-      console.error("Error fetching network status from Moralis:", error);
+      console.error("Error fetching network status:", error);
       res.status(500).json({ 
         message: "Network status unavailable",
         error: error instanceof Error ? error.message : "Unknown error"
@@ -353,13 +351,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get price history - now tracks real ETH price history from CoinGecko
+  // Get price history - using static data (Moralis disabled)
   app.get("/api/price-history/:contractAddress/:timeframe", async (req, res) => {
     try {
       const { contractAddress, timeframe } = req.params;
       
-      // Get current authentic price from Moralis
-      const currentPrice = await moralisApiService.getTokenPrice(contractAddress);
+      // Use fallback price from known tokens
+      const normalizedAddress = contractAddress.toLowerCase();
+      const knownTokens: Record<string, any> = {
+        "0x55d398326f99059fF775485246999027B3197955": { price: 1.00 },
+        "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": { price: 612.45 },
+        "0x2170ed0880ac9a755fd29b2688956bd959f933f8": { price: 3602.42 },
+        "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": { price: 0.9992 },
+        "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": { price: 88400.00 },
+        "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": { price: 2.57 },
+        "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": { price: 1.00 },
+        "0xe9e7cea3dedca5984780bafc599bd69add087d56": { price: 1.00 },
+        "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": { price: 18.45 },
+        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": { price: 0.85 }
+      };
+      
+      const currentPrice = knownTokens[normalizedAddress]?.price || 100;
       
       // Generate historical data points based on current price for chart visualization
       let dataPoints = 24; // Default for 1H/1D
