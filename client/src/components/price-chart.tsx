@@ -52,7 +52,6 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             <h2 className="text-xl font-semibold">Price Chart</h2>
-            <span className="text-sm text-gray-400 bg-gray-800/50 px-2 py-1 rounded">ETH</span>
           </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (
