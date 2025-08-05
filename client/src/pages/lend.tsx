@@ -672,7 +672,7 @@ function LendContent() {
                     />
                     <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
                       <div className="flex items-center space-x-2">
-                        <DollarSign className="w-6 h-6 text-green-400" />
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
                         <span>ALUD</span>
                       </div>
                     </div>
