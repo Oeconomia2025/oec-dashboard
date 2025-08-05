@@ -21,7 +21,8 @@ import {
   Lock,
   Unlock,
   Coins,
-  ArrowUpDown
+  ArrowUpDown,
+  ChevronDown
 } from "lucide-react";
 
 interface CollateralToken {
@@ -52,6 +53,8 @@ function LendContent() {
   const [collateralAmount, setCollateralAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
   const [repayAmount, setRepayAmount] = useState("");
+  const [selectedRepayPosition, setSelectedRepayPosition] = useState<LendingPosition | null>(null);
+  const [showAllPositions, setShowAllPositions] = useState(false);
   const [lastEditedField, setLastEditedField] = useState<'collateral' | 'borrow'>('collateral');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -104,7 +107,7 @@ function LendContent() {
 
   // Mock existing positions
   useEffect(() => {
-    setPositions([
+    const mockPositions = [
       {
         id: "1",
         collateralToken: collateralTokens[0], // WBTC
@@ -127,7 +130,14 @@ function LendContent() {
         interestRate: 3.1,
         isActive: true
       }
-    ]);
+    ];
+    setPositions(mockPositions);
+    
+    // Set default selected position to lowest health factor (lowest collateralization ratio)
+    const lowestHealthPosition = mockPositions.reduce((lowest, current) => 
+      current.collateralizationRatio < lowest.collateralizationRatio ? current : lowest
+    );
+    setSelectedRepayPosition(lowestHealthPosition);
   }, []);
 
   // Calculate values when inputs change
@@ -538,39 +548,83 @@ function LendContent() {
                   </div>
                   
                   <div className="space-y-2">
-                    {positions.length > 0 ? (
-                      positions.map((position) => (
+                    {!showAllPositions ? (
+                      // Show only selected position by default
+                      selectedRepayPosition && (
                         <div 
-                          key={position.id}
+                          onClick={() => setShowAllPositions(true)}
                           className="flex items-center justify-between p-3 bg-[var(--crypto-card)] border border-[var(--crypto-border)] rounded-lg hover:bg-[var(--crypto-dark)] cursor-pointer transition-colors"
                         >
                           <div className="flex items-center space-x-3">
                             <img 
-                              src={position.collateralToken.logo} 
-                              alt={position.collateralToken.symbol}
+                              src={selectedRepayPosition.collateralToken.logo} 
+                              alt={selectedRepayPosition.collateralToken.symbol}
                               className="w-8 h-8 rounded-full"
                             />
                             <div>
                               <div className="font-medium text-white">
-                                {position.collateralAmount} {position.collateralToken.symbol}
+                                {selectedRepayPosition.collateralAmount} {selectedRepayPosition.collateralToken.symbol}
                               </div>
                               <div className="text-sm text-gray-400">
-                                Borrowed: ${position.borrowedAmount.toFixed(2)} ALUD
+                                Borrowed: ${selectedRepayPosition.borrowedAmount.toFixed(2)} ALUD
                               </div>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <div className={`text-sm font-bold ${getRatioColor(position.collateralizationRatio)}`}>
-                              {position.collateralizationRatio.toFixed(1)}%
+                          <div className="flex items-center space-x-2">
+                            <div className="text-right">
+                              <div className={`text-sm font-bold ${getRatioColor(selectedRepayPosition.collateralizationRatio)}`}>
+                                {selectedRepayPosition.collateralizationRatio.toFixed(1)}%
+                              </div>
+                              <div className="text-xs text-gray-400">Health</div>
                             </div>
-                            <div className="text-xs text-gray-400">Health</div>
+                            <ChevronDown className="w-4 h-4 text-gray-400" />
                           </div>
                         </div>
-                      ))
+                      )
                     ) : (
-                      <div className="text-center py-8 text-gray-400">
-                        No active positions to repay
-                      </div>
+                      // Show all positions when expanded
+                      positions.length > 0 ? (
+                        positions.map((position) => (
+                          <div 
+                            key={position.id}
+                            onClick={() => {
+                              setSelectedRepayPosition(position);
+                              setShowAllPositions(false);
+                            }}
+                            className={`flex items-center justify-between p-3 border rounded-lg cursor-pointer transition-colors ${
+                              selectedRepayPosition?.id === position.id 
+                                ? 'bg-[var(--crypto-dark)] border-crypto-blue/50' 
+                                : 'bg-[var(--crypto-card)] border-[var(--crypto-border)] hover:bg-[var(--crypto-dark)]'
+                            }`}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={position.collateralToken.logo} 
+                                alt={position.collateralToken.symbol}
+                                className="w-8 h-8 rounded-full"
+                              />
+                              <div>
+                                <div className="font-medium text-white">
+                                  {position.collateralAmount} {position.collateralToken.symbol}
+                                </div>
+                                <div className="text-sm text-gray-400">
+                                  Borrowed: ${position.borrowedAmount.toFixed(2)} ALUD
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className={`text-sm font-bold ${getRatioColor(position.collateralizationRatio)}`}>
+                                {position.collateralizationRatio.toFixed(1)}%
+                              </div>
+                              <div className="text-xs text-gray-400">Health</div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-400">
+                          No active positions to repay
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
