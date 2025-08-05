@@ -175,6 +175,7 @@ export default function TokenDetail() {
     <Layout 
       pageTitle={tokenData.symbol}
       pageDescription={tokenData.name}
+      pageLogo={tokenData.logo}
     >
       <div className="p-8">
         <div className="max-w-7xl mx-auto space-y-6">

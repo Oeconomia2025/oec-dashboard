@@ -42,6 +42,7 @@ interface LayoutProps {
   children: ReactNode;
   pageTitle?: string;
   pageDescription?: string;
+  pageLogo?: string;
 }
 
 // Page information for each route
@@ -84,7 +85,7 @@ const pageInfo = {
   }
 } as const;
 
-export function Layout({ children, pageTitle, pageDescription }: LayoutProps) {
+export function Layout({ children, pageTitle, pageDescription, pageLogo }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -334,9 +335,19 @@ export function Layout({ children, pageTitle, pageDescription }: LayoutProps) {
                 <Menu className="w-5 h-5" />
               </Button>
               
-              <div className="flex flex-col">
-                <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
-                <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+              <div className="flex items-center space-x-3">
+                {pageLogo && (
+                  <img 
+                    src={pageLogo} 
+                    alt="Token logo" 
+                    className="w-8 h-8 rounded-full"
+                    style={{ border: '0.5px solid rgba(255, 255, 255, 0.3)' }}
+                  />
+                )}
+                <div className="flex flex-col">
+                  <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
+                  <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+                </div>
               </div>
             </div>
             
