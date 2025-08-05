@@ -317,7 +317,7 @@ export default function TokenDetail() {
                         {copied ? (
                           <Check className="w-3 h-3 text-green-500" />
                         ) : (
-                          <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <Copy className="w-3 h-3 text-gray-400 group-hover:text-crypto-blue transition-colors" />
                         )}
                       </button>
                     ) : (
