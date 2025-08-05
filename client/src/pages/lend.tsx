@@ -107,13 +107,24 @@ function LendContent() {
     setPositions([
       {
         id: "1",
-        collateralToken: collateralTokens[0],
+        collateralToken: collateralTokens[0], // WBTC
         collateralAmount: 0.05,
         collateralValue: 3367.00,
         borrowedAmount: 2450.00,
         collateralizationRatio: 137.5,
         liquidationPrice: 59000.00,
         interestRate: 3.2,
+        isActive: true
+      },
+      {
+        id: "2",
+        collateralToken: collateralTokens[2], // WETH
+        collateralAmount: 1.25,
+        collateralValue: 4275.63,
+        borrowedAmount: 3200.00,
+        collateralizationRatio: 133.6,
+        liquidationPrice: 2816.00,
+        interestRate: 3.1,
         isActive: true
       }
     ]);
