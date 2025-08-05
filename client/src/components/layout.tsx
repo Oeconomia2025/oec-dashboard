@@ -25,11 +25,18 @@ import {
   BookOpen,
   MoreHorizontal,
   Droplets,
-  DollarSign
+  DollarSign,
+  ChevronDown
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
 import { useTheme } from "@/components/theme-provider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface LayoutProps {
   children: ReactNode;
@@ -89,6 +96,52 @@ export function Layout({ children }: LayoutProps) {
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
+
+  // Social media links data
+  const socialLinks = [
+    {
+      name: 'Twitter/X',
+      icon: SiX,
+      url: 'https://x.com/Oeconomia2025',
+      enabled: true
+    },
+    {
+      name: 'Medium',
+      icon: () => (
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="6" cy="12" r="4"/>
+          <ellipse cx="15" cy="12" rx="2.5" ry="4"/>
+          <ellipse cx="21" cy="12" rx="1.5" ry="3"/>
+        </svg>
+      ),
+      url: 'https://medium.com/@oeconomia2025',
+      enabled: true
+    },
+    {
+      name: 'YouTube',
+      icon: SiYoutube,
+      url: 'https://www.youtube.com/@Oeconomia2025',
+      enabled: true
+    },
+    {
+      name: 'Discord',
+      icon: SiDiscord,
+      url: 'https://discord.com/invite/XSgZgeVD',
+      enabled: true
+    },
+    {
+      name: 'GitHub',
+      icon: SiGithub,
+      url: 'https://github.com/Oeconomia2025',
+      enabled: true
+    },
+    {
+      name: 'Telegram',
+      icon: SiTelegram,
+      url: '#',
+      enabled: false
+    }
+  ];
   
   // Get current page info
   const currentPageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
@@ -254,70 +307,7 @@ export function Layout({ children }: LayoutProps) {
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* Wallet moved to sticky header */}
-        </div>
-        
-        {/* Social Media Icons - Sticky at bottom */}
-        <div className="sticky bottom-0 bg-gray-950 border-t border-gray-700 p-4">
-          <div className={`flex ${sidebarCollapsed ? 'flex-col space-y-2' : 'flex-wrap gap-2'} justify-center`}>
-            {/* Telegram - Placeholder */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center transition-all duration-200 opacity-50 cursor-not-allowed"
-              title="Telegram - Coming Soon"
-              disabled
-            >
-              <SiTelegram className="w-4 h-4 text-gray-400" />
-            </button>
-            
-            {/* Twitter/X */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-              title="Twitter/X"
-              onClick={() => window.open('https://x.com/Oeconomia2025', '_blank')}
-            >
-              <SiX className="w-4 h-4 text-white group-hover:text-white" />
-            </button>
-            
-            {/* Medium */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-              title="Medium"
-              onClick={() => window.open('https://medium.com/@oeconomia2025', '_blank')}
-            >
-              <svg className="w-6 h-6 text-white group-hover:text-white" viewBox="0 0 24 24" fill="currentColor">
-                <circle cx="6" cy="12" r="4"/>
-                <ellipse cx="15" cy="12" rx="2.5" ry="4"/>
-                <ellipse cx="21" cy="12" rx="1.5" ry="3"/>
-              </svg>
-            </button>
-            
-            {/* YouTube */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-              title="YouTube"
-              onClick={() => window.open('https://www.youtube.com/@Oeconomia2025', '_blank')}
-            >
-              <SiYoutube className="w-4 h-4 text-white group-hover:text-white" />
-            </button>
-            
-            {/* Discord */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-              title="Discord"
-              onClick={() => window.open('https://discord.com/invite/XSgZgeVD', '_blank')}
-            >
-              <SiDiscord className="w-4 h-4 text-white group-hover:text-white" />
-            </button>
-            
-            {/* GitHub */}
-            <button
-              className="w-8 h-8 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-              title="GitHub"
-              onClick={() => window.open('https://github.com/Oeconomia2025', '_blank')}
-            >
-              <SiGithub className="w-4 h-4 text-white group-hover:text-white" />
-            </button>
-          </div>
+          {/* Content area - social media moved to header dropdown */}
         </div>
       </aside>
 
@@ -354,13 +344,43 @@ export function Layout({ children }: LayoutProps) {
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
-              <button
-                className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 flex items-center justify-center transition-all duration-200 group"
-                onClick={() => window.open('https://oeconomia.tech/', '_blank')}
-                title="Visit Oeconomia Website"
-              >
-                <Globe className="w-5 h-5 text-white group-hover:text-white" />
-              </button>
+              
+              {/* Social Media Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 transition-all duration-200"
+                    title="Social Media Links"
+                  >
+                    <Globe className="w-5 h-5 text-white" />
+                    <ChevronDown className="w-3 h-3 text-white ml-1" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem 
+                    onClick={() => window.open('https://oeconomia.tech/', '_blank')}
+                    className="cursor-pointer"
+                  >
+                    <Globe className="w-4 h-4 mr-2" />
+                    Oeconomia Website
+                  </DropdownMenuItem>
+                  {socialLinks.map((link) => (
+                    <DropdownMenuItem
+                      key={link.name}
+                      onClick={() => link.enabled && window.open(link.url, '_blank')}
+                      className={`cursor-pointer ${!link.enabled ? 'opacity-50' : ''}`}
+                      disabled={!link.enabled}
+                    >
+                      <link.icon className="w-4 h-4 mr-2" />
+                      {link.name}
+                      {!link.enabled && <span className="ml-auto text-xs text-muted-foreground">Soon</span>}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
               <Button
                 variant="ghost"
                 size="sm"
