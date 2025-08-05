@@ -994,7 +994,7 @@ function LendContent() {
                         placeholder="0.0"
                         value={stabilityPoolAmount}
                         onChange={(e) => setStabilityPoolAmount(e.target.value)}
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)]"
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)] text-lg"
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
@@ -1067,7 +1067,7 @@ function LendContent() {
                         placeholder="0.0"
                         value={alurStakeAmount}
                         onChange={(e) => setAlurStakeAmount(e.target.value)}
-                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)]"
+                        className="flex-1 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white placeholder-gray-500 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-[var(--crypto-border)] text-lg"
                       />
                       <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-4 py-2 rounded-lg min-w-[140px] flex items-center justify-center space-x-2">
                         <img src={alurLogo} alt="ALUR" className="w-6 h-6 rounded-full" />
