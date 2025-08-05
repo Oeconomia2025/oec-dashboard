@@ -345,7 +345,7 @@ export function Layout({ children }: LayoutProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 transition-all duration-200"
+                    className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 transition-all duration-200 focus:ring-0 focus:ring-offset-0"
                     title="Social Media Links"
                   >
                     <Globe className="w-5 h-5 text-white" />
@@ -354,7 +354,7 @@ export function Layout({ children }: LayoutProps) {
                 <DropdownMenuContent align="center" className="w-36">
                   <DropdownMenuItem 
                     onClick={() => window.open('https://oeconomia.tech/', '_blank')}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-purple-600/20 transition-all duration-200"
                   >
                     <Globe className="w-4 h-4 mr-2" />
                     Website
@@ -363,7 +363,7 @@ export function Layout({ children }: LayoutProps) {
                     <DropdownMenuItem
                       key={link.name}
                       onClick={() => link.enabled && window.open(link.url, '_blank')}
-                      className={`cursor-pointer ${!link.enabled ? 'opacity-50' : ''}`}
+                      className={`cursor-pointer hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-purple-600/20 transition-all duration-200 ${!link.enabled ? 'opacity-50' : ''}`}
                       disabled={!link.enabled}
                     >
                       <link.icon className="w-4 h-4 mr-2" />
