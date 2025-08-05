@@ -26,7 +26,8 @@ import {
   MoreHorizontal,
   Droplets,
   DollarSign,
-  ChevronDown
+  ChevronDown,
+  AlertTriangle
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -37,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
 
 interface LayoutProps {
   children: ReactNode;
@@ -109,6 +111,7 @@ export function Layout({
     }
     return false;
   });
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
@@ -323,6 +326,24 @@ export function Layout({
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Content area - social media moved to header dropdown */}
         </div>
+        
+        {/* Alert/Caution Icon at bottom of sidebar */}
+        <div className="p-4 border-t border-gray-700">
+          <Button
+            variant="ghost"
+            onClick={() => setDisclaimerOpen(true)}
+            className={`w-full ${sidebarCollapsed ? 'px-2 justify-center' : 'justify-start space-x-2'} py-2 text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
+            title={sidebarCollapsed ? "Development Notice" : undefined}
+          >
+            <AlertTriangle className="w-5 h-5 flex-shrink-0" />
+            {!sidebarCollapsed && <span className="text-sm font-medium">Development Notice</span>}
+            {sidebarCollapsed && (
+              <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                Development Notice
+              </div>
+            )}
+          </Button>
+        </div>
       </aside>
 
       {/* Overlay for mobile */}
@@ -444,6 +465,53 @@ export function Layout({
           </footer>
         </main>
       </div>
+      
+      {/* Disclaimer Modal */}
+      {disclaimerOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="max-w-md w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative">
+            <button 
+              onClick={() => setDisclaimerOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-crypto-gold/20 flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-crypto-gold" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Development Notice</h2>
+                <p className="text-sm text-gray-400">Oeconomia DApp</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <p className="text-gray-300">
+                Please note that this DApp is currently in active development and is not yet ready for production use.
+              </p>
+              
+              <p className="text-gray-300">
+                This dashboard serves as a preview and testing environment. All data, transactions, and features are for demonstration purposes only.
+              </p>
+
+              <div className="bg-crypto-gold/10 border border-crypto-gold/30 rounded-lg p-3">
+                <p className="text-sm text-crypto-gold">
+                  <strong>Important:</strong> Do not use real funds or make actual transactions through this interface.
+                </p>
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => setDisclaimerOpen(false)}
+              className="w-full bg-crypto-blue hover:bg-crypto-blue/80 text-white"
+            >
+              I Understand
+            </Button>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
