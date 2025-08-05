@@ -368,7 +368,6 @@ export function Layout({ children }: LayoutProps) {
                     >
                       <link.icon className="w-4 h-4 mr-2" />
                       {link.name}
-                      {!link.enabled && <span className="ml-auto text-xs text-muted-foreground">Soon</span>}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
