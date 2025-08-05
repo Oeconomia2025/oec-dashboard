@@ -1292,8 +1292,7 @@ function LiquidityContent() {
                                 }}
                               />
                               <div>
-                                <div className="font-medium">{token.symbol}</div>
-                                <div className="text-sm text-gray-400">{token.name}</div>
+                                <div className="font-medium">{token.symbol} <span className="text-sm text-gray-400 font-normal">{token.name}</span></div>
                               </div>
                             </div>
                           </td>
