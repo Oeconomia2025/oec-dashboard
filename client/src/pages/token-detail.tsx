@@ -235,22 +235,22 @@ export default function TokenDetail() {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card className="crypto-card p-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-400 text-sm">Price</span>
-                <DollarSign className="w-4 h-4 text-white" />
+                <span className="text-gray-400 text-xs">Price</span>
+                <DollarSign className="w-3 h-3 text-white" />
               </div>
-              <div className="text-2xl font-bold text-white mb-1">
-                ${formatNumber(tokenData.price, 6)}
+              <div className="text-lg font-bold text-white mb-1">
+                ${formatNumber(tokenData.price, 4)}
               </div>
-              <div className={`flex items-center space-x-1 text-sm ${
+              <div className={`flex items-center space-x-1 text-xs ${
                 tokenData.change24h >= 0 ? 'text-crypto-green' : 'text-red-400'
               }`}>
                 {tokenData.change24h >= 0 ? (
-                  <TrendingUp className="w-3 h-3" />
+                  <TrendingUp className="w-2 h-2" />
                 ) : (
-                  <TrendingDown className="w-3 h-3" />
+                  <TrendingDown className="w-2 h-2" />
                 )}
                 <span className="font-medium">
                   {tokenData.change24h >= 0 ? '+' : ''}{tokenData.change24h}%
@@ -258,42 +258,42 @@ export default function TokenDetail() {
               </div>
             </Card>
             
-            <Card className="crypto-card p-6">
+            <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-400 text-sm">Market Cap</span>
-                <BarChart3 className="w-4 h-4 text-crypto-blue" />
+                <span className="text-gray-400 text-xs">Market Cap</span>
+                <BarChart3 className="w-3 h-3 text-crypto-blue" />
               </div>
-              <div className="text-2xl font-bold text-crypto-blue">
+              <div className="text-lg font-bold text-crypto-blue">
                 ${formatLargeNumber(tokenData.marketCap)}
               </div>
             </Card>
             
-            <Card className="crypto-card p-6">
+            <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-400 text-sm">24H Volume</span>
-                <Activity className="w-4 h-4 text-crypto-green" />
+                <span className="text-gray-400 text-xs">24H Volume</span>
+                <Activity className="w-3 h-3 text-crypto-green" />
               </div>
-              <div className="text-2xl font-bold text-crypto-green">
+              <div className="text-lg font-bold text-crypto-green">
                 ${formatLargeNumber(tokenData.volume24h)}
               </div>
             </Card>
             
-            <Card className="crypto-card p-6">
+            <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-400 text-sm">Holders</span>
-                <Users className="w-4 h-4 text-crypto-purple" />
+                <span className="text-gray-400 text-xs">Holders</span>
+                <Users className="w-3 h-3 text-crypto-purple" />
               </div>
-              <div className="text-2xl font-bold text-crypto-purple">
+              <div className="text-lg font-bold text-crypto-purple">
                 {formatLargeNumber(tokenData.holders)}
               </div>
             </Card>
             
-            <Card className="crypto-card p-6">
+            <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-gray-400 text-sm">Circulating Supply</span>
-                <DollarSign className="w-4 h-4 text-gray-400" />
+                <span className="text-gray-400 text-xs">Circulating Supply</span>
+                <DollarSign className="w-3 h-3 text-gray-400" />
               </div>
-              <div className="text-2xl font-bold text-white">
+              <div className="text-lg font-bold text-white">
                 {tokenData.circulatingSupply ? formatLargeNumber(tokenData.circulatingSupply) : 'N/A'}
               </div>
             </Card>
