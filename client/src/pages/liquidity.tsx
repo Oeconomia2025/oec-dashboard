@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,7 @@ interface Position {
 }
 
 function LiquidityContent() {
+  const [, setLocation] = useLocation();
   const [activeView, setActiveView] = useState<'positions' | 'create' | 'pools'>('positions');
   const [selectedToken0, setSelectedToken0] = useState<Token | null>(null);
   const [selectedToken1, setSelectedToken1] = useState<Token | null>(null);
@@ -1277,7 +1279,8 @@ function LiquidityContent() {
                     </thead>
                     <tbody>
                       {filteredTokens.map((token, index) => (
-                        <tr key={token.id} className="border-b border-crypto-border hover:bg-crypto-surface/20 transition-all duration-200">
+                        <tr key={token.id} className="border-b border-crypto-border hover:bg-crypto-surface/20 transition-all duration-200 cursor-pointer"
+                            onClick={() => setLocation(`/token/${token.id}`)}>
                           <td className="py-4 px-6">
                             <span className="text-gray-400 font-mono">{index + 1}</span>
                           </td>
