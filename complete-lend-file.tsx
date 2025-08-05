@@ -1,0 +1,1059 @@
+import { useState, useEffect } from "react";
+import { Layout } from "@/components/layout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
+import aludLogo from "@assets/image_1754382542106.png";
+
+import { 
+  DollarSign, 
+  Settings, 
+  Info, 
+  Shield,
+  AlertTriangle,
+  TrendingUp,
+  TrendingDown,
+  Calculator,
+  Lock,
+  Unlock,
+  Coins,
+  ArrowUpDown,
+  ChevronDown
+} from "lucide-react";
+
+interface CollateralToken {
+  symbol: string;
+  name: string;
+  address: string;
+  decimals: number;
+  logo: string;
+  price: number;
+  balance?: number;
+}
+
+interface LendingPosition {
+  id: string;
+  collateralToken: CollateralToken;
+  collateralAmount: number;
+  collateralValue: number;
+  borrowedAmount: number;
+  collateralizationRatio: number;
+  liquidationPrice: number;
+  interestRate: number;
+  isActive: boolean;
+}
+
+function LendContent() {
+  const { toast } = useToast();
+  const [collateralToken, setCollateralToken] = useState<CollateralToken | null>(null);
+  const [collateralAmount, setCollateralAmount] = useState("");
+  const [borrowAmount, setBorrowAmount] = useState("");
+  const [repayAmount, setRepayAmount] = useState("");
+  const [selectedRepayPosition, setSelectedRepayPosition] = useState<LendingPosition | null>(null);
+  const [showAllPositions, setShowAllPositions] = useState(false);
+  const [lastEditedField, setLastEditedField] = useState<'collateral' | 'borrow'>('collateral');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [activeTab, setActiveTab] = useState("Deposit");
+  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [tokenSearchQuery, setTokenSearchQuery] = useState("");
+  const [collateralizationRatio, setCollateralizationRatio] = useState(150);
+  const [liquidationPrice, setLiquidationPrice] = useState(0);
+  const [maxBorrowAmount, setMaxBorrowAmount] = useState(0);
+  const [positions, setPositions] = useState<LendingPosition[]>([]);
+  const [redemptionAmount, setRedemptionAmount] = useState("");
+  const [selectedRedemptionToken, setSelectedRedemptionToken] = useState<CollateralToken | null>(null);
+  const [tokenModalType, setTokenModalType] = useState<'collateral' | 'redemption'>('collateral');
+
+  // Available collateral tokens
+  const collateralTokens: CollateralToken[] = [
+    {
+      symbol: "WBTC",
+      name: "Wrapped Bitcoin",
+      address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      decimals: 8,
+      logo: "https://tokens.1inch.io/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png",
+      price: 67340.00,
+      balance: 0.15234
+    },
+    {
+      symbol: "WBNB",
+      name: "Wrapped BNB",
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      decimals: 18,
+      logo: "https://tokens.1inch.io/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c.png",
+      price: 645.20,
+      balance: 5.432
+    },
+    {
+      symbol: "WETH",
+      name: "Wrapped Ethereum",
+      address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",
+      decimals: 18,
+      logo: "https://tokens.1inch.io/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png",
+      price: 3420.50,
+      balance: 2.847
+    }
+  ];
+
+  // Set WETH as default collateral token on component mount
+  useEffect(() => {
+    const wethToken = collateralTokens.find(token => token.symbol === 'WETH');
+    if (wethToken && !collateralToken) {
+      setCollateralToken(wethToken);
+    }
+    
+    // Set default redemption token to WETH
+    if (wethToken && !selectedRedemptionToken) {
+      setSelectedRedemptionToken(wethToken);
+    }
+  }, []);
+
+  // Mock existing positions
+  useEffect(() => {
+    const mockPositions = [
+      {
+        id: "1",
+        collateralToken: collateralTokens[0], // WBTC
+        collateralAmount: 0.05,
+        collateralValue: 3367.00,
+        borrowedAmount: 2450.00,
+        collateralizationRatio: 137.5,
+        liquidationPrice: 59000.00,
+        interestRate: 3.2,
+        isActive: true
+      },
+      {
+        id: "2",
+        collateralToken: collateralTokens[2], // WETH
+        collateralAmount: 1.25,
+        collateralValue: 4275.63,
+        borrowedAmount: 3200.00,
+        collateralizationRatio: 133.6,
+        liquidationPrice: 2816.00,
+        interestRate: 3.1,
+        isActive: true
+      }
+    ];
+    setPositions(mockPositions);
+    
+    // Set default selected position to lowest health factor (lowest collateralization ratio)
+    const lowestHealthPosition = mockPositions.reduce((lowest, current) => 
+      current.collateralizationRatio < lowest.collateralizationRatio ? current : lowest
+    );
+    setSelectedRepayPosition(lowestHealthPosition);
+  }, []);
+
+  // Calculate values when inputs change
+  useEffect(() => {
+    if (collateralToken && collateralAmount) {
+      const collateralValue = parseFloat(collateralAmount) * collateralToken.price;
+      const maxBorrow = collateralValue / 1.10; // 110% collateralization minimum
+      setMaxBorrowAmount(maxBorrow);
+      
+      if (lastEditedField === 'collateral') {
+        const borrowValue = collateralValue / (collateralizationRatio / 100);
+        setBorrowAmount(borrowValue > 0 ? borrowValue.toFixed(2) : "");
+      } else if (lastEditedField === 'borrow' && borrowAmount) {
+        const borrowValue = parseFloat(borrowAmount);
+        const requiredRatio = (collateralValue / borrowValue) * 100;
+        setCollateralizationRatio(Math.max(110, requiredRatio));
+      }
+      
+      // Calculate liquidation price
+      if (borrowAmount) {
+        const liquidationPrice = (parseFloat(borrowAmount) * 1.10) / parseFloat(collateralAmount);
+        setLiquidationPrice(liquidationPrice);
+      }
+    }
+  }, [collateralAmount, borrowAmount, collateralToken, lastEditedField, collateralizationRatio]);
+
+  const handleCollateralAmountChange = (value: string) => {
+    setCollateralAmount(value);
+    setLastEditedField('collateral');
+  };
+
+  const handleBorrowAmountChange = (value: string) => {
+    setBorrowAmount(value);
+    setLastEditedField('borrow');
+  };
+
+  const handlePercentageClick = (percentage: number) => {
+    if (collateralToken?.balance) {
+      const amount = (collateralToken.balance * percentage / 100).toFixed(6);
+      setCollateralAmount(amount);
+      setLastEditedField('collateral');
+    }
+  };
+
+  const handleDeposit = async () => {
+    if (!collateralToken || !collateralAmount || !borrowAmount) {
+      toast({
+        title: "Missing Information",
+        description: "Please select collateral token and enter amounts.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (collateralizationRatio < 110) {
+      toast({
+        title: "Insufficient Collateralization",
+        description: "Collateralization ratio must be at least 110%.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate transaction
+    setTimeout(() => {
+      setIsLoading(false);
+      toast({
+        title: "Position Created",
+        description: `Successfully deposited ${collateralAmount} ${collateralToken.symbol} and borrowed ${borrowAmount} ALUD.`,
+      });
+      
+      // Add to positions
+      const newPosition: LendingPosition = {
+        id: Date.now().toString(),
+        collateralToken,
+        collateralAmount: parseFloat(collateralAmount),
+        collateralValue: parseFloat(collateralAmount) * collateralToken.price,
+        borrowedAmount: parseFloat(borrowAmount),
+        collateralizationRatio,
+        liquidationPrice,
+        interestRate: 3.2,
+        isActive: true
+      };
+      
+      setPositions(prev => [...prev, newPosition]);
+      
+      // Reset form
+      setCollateralAmount("");
+      setBorrowAmount("");
+      setCollateralizationRatio(150);
+    }, 2000);
+  };
+
+  const openTokenModal = (type: 'collateral' | 'redemption' = 'collateral') => {
+    setTokenModalType(type);
+    setTokenSearchQuery("");
+    setIsTokenModalOpen(true);
+  };
+
+  const selectToken = (token: CollateralToken) => {
+    if (tokenModalType === 'collateral') {
+      setCollateralToken(token);
+    } else {
+      setSelectedRedemptionToken(token);
+    }
+    setIsTokenModalOpen(false);
+  };
+
+  const filteredTokens = collateralTokens.filter(token =>
+    token.symbol.toLowerCase().includes(tokenSearchQuery.toLowerCase()) ||
+    token.name.toLowerCase().includes(tokenSearchQuery.toLowerCase())
+  );
+
+  const getRatioColor = (ratio: number) => {
+    if (ratio < 120) return "text-red-400";
+    if (ratio < 150) return "text-yellow-400";
+    return "text-green-400";
+  };
+
+  const getRatioBackground = (ratio: number) => {
+    if (ratio < 120) return "bg-red-500/20";
+    if (ratio < 150) return "bg-yellow-500/20";
+    return "bg-green-500/20";
+  };
+
+  return (
+    <Layout>
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main Lending Interface */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Main Lending Card */}
+            <Card className="crypto-card border h-full">
+              <CardHeader className="pb-0">
+                {/* Tab Navigation */}
+                <div className="flex items-center justify-between mb-0">
+                  <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
+                    {["Deposit", "Repay", "Redemptions"].map((tab) => (
+                      <Button
+                        key={tab}
+                        variant={activeTab === tab ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setActiveTab(tab)}
+                        className={
+                          activeTab === tab
+                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 flex-1"
+                            : "text-gray-400 hover:text-white px-6 py-2 flex-1"
+                        }
+                      >
+                        {tab}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowSettings(!showSettings)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-0 relative">
+                {/* Settings Panel */}
+                {showSettings && (
+                  <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] mb-4">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Minimum Collateralization Ratio</label>
+                        <Select value="110">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="110">110% (Minimum)</SelectItem>
+                            <SelectItem value="120">120% (Conservative)</SelectItem>
+                            <SelectItem value="150">150% (Safe)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Auto-Repay Threshold</label>
+                        <Select value="disabled">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="disabled">Disabled</SelectItem>
+                            <SelectItem value="115">115%</SelectItem>
+                            <SelectItem value="120">120%</SelectItem>
+                            <SelectItem value="125">125%</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+            {/* Deposit Tab */}
+            {activeTab === "Deposit" && (
+              <div className="space-y-0">
+                {/* Collateral Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Collateral</label>
+                    {collateralToken?.balance && (
+                      <span className="text-sm text-gray-400">
+                        Balance: {collateralToken.balance.toFixed(6)}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={collateralAmount}
+                      onChange={(e) => handleCollateralAmountChange(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={() => openTokenModal('collateral')}
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                    >
+                      {collateralToken ? (
+                        <div className="flex items-center space-x-2">
+                          <img 
+                            src={collateralToken.logo} 
+                            alt={collateralToken.symbol}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <span>{collateralToken.symbol}</span>
+                        </div>
+                      ) : (
+                        "Select Token"
+                      )}
+                    </Button>
+                  </div>
+
+                  
+                  {/* Percentage Buttons and USD Value */}
+                  {collateralToken?.balance && (
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex space-x-2">
+                        {[25, 50, 75, 100].map((percentage) => (
+                          <Button
+                            key={percentage}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handlePercentageClick(percentage)}
+                            className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                          >
+                            {percentage}%
+                          </Button>
+                        ))}
+                      </div>
+                      {collateralToken && collateralAmount && (
+                        <div className="text-sm text-gray-500">
+                          ≈ ${(parseFloat(collateralAmount) * collateralToken.price).toFixed(2)} USD
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Borrow Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Borrow ALUD</label>
+                    <span className="text-sm text-gray-400">
+                      Max: ${maxBorrowAmount.toFixed(2)}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={borrowAmount}
+                      onChange={(e) => handleBorrowAmountChange(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center space-x-2">
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
+                        <span>ALUD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Collateralization Ratio */}
+                {collateralAmount && borrowAmount && (
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">Collateralization Ratio</span>
+                      <span className={`text-sm font-bold ${getRatioColor(collateralizationRatio)}`}>
+                        {collateralizationRatio.toFixed(1)}%
+                      </span>
+                    </div>
+                    <Progress 
+                      value={Math.max(0, Math.min(((collateralizationRatio - 110) / (200 - 110)) * 100, 100))} 
+                      className="h-2"
+                    />
+                    <div className="grid grid-cols-3 gap-2 text-xs mt-3">
+                      <div className="text-red-400">
+                        <div>Danger</div>
+                        <div>&lt;120%</div>
+                      </div>
+                      <div className="text-yellow-400">
+                        <div>Warning</div>
+                        <div>120-150%</div>
+                      </div>
+                      <div className="text-green-400">
+                        <div>Safe</div>
+                        <div>&gt;150%</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Liquidation Price */}
+                {liquidationPrice > 0 && (
+                  <div className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <AlertTriangle className="w-4 h-4 text-red-400" />
+                      <span className="text-sm font-medium text-gray-300">Liquidation Price</span>
+                    </div>
+                    <span className="text-sm font-bold text-red-400">
+                      ${liquidationPrice.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Transaction Summary */}
+                {collateralToken && collateralAmount && borrowAmount && (
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <h4 className="font-medium text-gray-300 mb-3">Transaction Summary</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Depositing</span>
+                        <span className="text-gray-300">{collateralAmount} {collateralToken.symbol}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Borrowing</span>
+                        <span className="text-gray-300">{borrowAmount} ALUD</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Interest Rate</span>
+                        <span className="text-gray-300">3.2% APR</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Health Factor</span>
+                        <span className={getRatioColor(collateralizationRatio)}>
+                          {(collateralizationRatio / 100).toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Create Position Button */}
+                <Button 
+                  onClick={handleDeposit}
+                  disabled={isLoading || !collateralToken || !collateralAmount || !borrowAmount || collateralizationRatio < 110}
+                  className="w-full bg-crypto-blue hover:bg-crypto-blue/80 text-white font-medium py-3 rounded-lg"
+                >
+                  {isLoading ? "Creating Position..." : "Create Lending Position"}
+                </Button>
+              </div>
+            )}
+
+          {/* Repay Tab */}
+          {activeTab === "Repay" && (
+            <div className="space-y-0">
+              {/* Position Selection */}
+              <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-gray-400 text-sm">Select Position to Repay</label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAllPositions(!showAllPositions)}
+                    className="text-gray-400 hover:text-white text-xs"
+                  >
+                    {showAllPositions ? "Show Active Only" : "Show All Positions"}
+                  </Button>
+                </div>
+                
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {positions.length > 0 ? (
+                    positions
+                      .filter(position => showAllPositions || position.isActive)
+                      .sort((a, b) => a.collateralizationRatio - b.collateralizationRatio) // Show lowest health first
+                      .map((position) => (
+                        <div
+                          key={position.id}
+                          onClick={() => setSelectedRepayPosition(position)}
+                          className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                            selectedRepayPosition?.id === position.id
+                              ? "border-crypto-blue bg-crypto-blue/10"
+                              : "border-[var(--crypto-border)] bg-[var(--crypto-card)] hover:border-crypto-blue/50"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <img 
+                                src={position.collateralToken.logo} 
+                                alt={position.collateralToken.symbol}
+                                className="w-8 h-8 rounded-full"
+                              />
+                              <div>
+                                <div className="font-medium text-white">
+                                  {position.collateralAmount} {position.collateralToken.symbol}
+                                </div>
+                                <div className="text-sm text-gray-400">
+                                  Borrowed: ${position.borrowedAmount.toFixed(2)} ALUD
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className={`text-sm font-bold ${getRatioColor(position.collateralizationRatio)}`}>
+                                {position.collateralizationRatio.toFixed(1)}%
+                              </div>
+                              <div className="text-xs text-gray-400">Health</div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-400">
+                          No active positions to repay
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                {/* Repayment Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Repay Amount</label>
+                    <span className="text-sm text-gray-400">
+                      Available: $485.25 USDT
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={repayAmount}
+                      onChange={(e) => setRepayAmount(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center space-x-2">
+                        <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
+                        <span>ALUD</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Percentage Buttons for Repayment */}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      ≈ $0.00 USD
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repayment Impact */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-4">
+                  <h4 className="font-medium text-gray-300 mb-3">After Repayment</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Remaining Debt</span>
+                      <span className="text-gray-300">$0.00 ALUD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">New Health Factor</span>
+                      <span className="text-green-400">∞</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Interest Saved</span>
+                      <span className="text-gray-300">$0.00</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Repay Button */}
+                <Button 
+                  disabled={!selectedRepayPosition || !repayAmount}
+                  className="w-full bg-crypto-blue hover:bg-crypto-blue/80 text-white font-medium py-3 rounded-lg"
+                >
+                  Repay ALUD
+                </Button>
+              </div>
+            )}
+
+            {/* Redemptions Tab */}
+            {activeTab === "Redemptions" && (
+              <div className="space-y-0">
+                {/* ALUD Redemption Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">ALUD to Redeem</label>
+                    <span className="text-sm text-gray-400">
+                      Available: 1,250.50 ALUD
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={redemptionAmount}
+                      onChange={(e) => setRedemptionAmount(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 rounded-lg h-auto min-w-[140px] flex items-center space-x-2">
+                      <img src={aludLogo} alt="ALUD" className="w-6 h-6 rounded-full" />
+                      <span className="font-medium">ALUD</span>
+                    </div>
+                  </div>
+                  
+                  {/* Percentage Buttons for Redemption */}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      ≈ ${redemptionAmount ? (parseFloat(redemptionAmount) * 1.00).toFixed(2) : "0.00"} USD
+                    </div>
+                  </div>
+                </div>
+
+                {/* Collateral Selection Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Receive Collateral As</label>
+                    <span className="text-sm text-gray-400">
+                      Rate: 1 ALUD = $1.00
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 flex items-center"
+                         style={{ 
+                           fontSize: '2.25rem',
+                           lineHeight: '1',
+                           fontWeight: 'bold',
+                         }}
+                    >
+                      {redemptionAmount && selectedRedemptionToken ? 
+                        (parseFloat(redemptionAmount) / selectedRedemptionToken.price).toFixed(6) : 
+                        "0.0"
+                      }
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => openTokenModal('redemption')}
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                    >
+                      {selectedRedemptionToken ? (
+                        <div className="flex items-center space-x-2">
+                          <img 
+                            src={selectedRedemptionToken.logo} 
+                            alt={selectedRedemptionToken.symbol}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <span>{selectedRedemptionToken.symbol}</span>
+                        </div>
+                      ) : (
+                        "Select Token"
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Redemption Summary */}
+                {redemptionAmount && selectedRedemptionToken && (
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-4">
+                    <h4 className="font-medium text-gray-300 mb-3">Redemption Summary</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Redeeming</span>
+                        <span className="text-gray-300">{redemptionAmount} ALUD</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Receiving</span>
+                        <span className="text-gray-300">
+                          {(parseFloat(redemptionAmount) / selectedRedemptionToken.price).toFixed(6)} {selectedRedemptionToken.symbol}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Exchange Rate</span>
+                        <span className="text-gray-300">
+                          1 ALUD = {(1 / selectedRedemptionToken.price).toFixed(8)} {selectedRedemptionToken.symbol}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Redemption Fee</span>
+                        <span className="text-gray-300">0.5%</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Redeem Button */}
+                <Button 
+                  disabled={!redemptionAmount || !selectedRedemptionToken}
+                  className="w-full bg-crypto-blue hover:bg-crypto-blue/80 text-white font-medium py-3 rounded-lg"
+                >
+                  Redeem ALUD
+                </Button>
+              </div>
+            )}
+            </CardContent>
+          </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Position Overview */}
+            <Card className="crypto-card">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Your Positions</span>
+                  <Badge variant="secondary" className="bg-crypto-blue/20 text-crypto-blue">
+                    {positions.filter(p => p.isActive).length} Active
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {positions.filter(p => p.isActive).map((position) => (
+                  <div
+                    key={position.id}
+                    className={`p-3 rounded-lg border ${getRatioBackground(position.collateralizationRatio)} ${
+                      position.collateralizationRatio < 120 ? "border-red-500/30" : 
+                      position.collateralizationRatio < 150 ? "border-yellow-500/30" : 
+                      "border-green-500/30"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <img 
+                          src={position.collateralToken.logo} 
+                          alt={position.collateralToken.symbol}
+                          className="w-6 h-6 rounded-full"
+                        />
+                        <span className="font-medium text-white">{position.collateralToken.symbol}</span>
+                      </div>
+                      <div className={`text-sm font-bold ${getRatioColor(position.collateralizationRatio)}`}>
+                        {position.collateralizationRatio.toFixed(1)}%
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-400 space-y-1">
+                      <div className="flex justify-between">
+                        <span>Collateral:</span>
+                        <span>{position.collateralAmount} {position.collateralToken.symbol}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Borrowed:</span>
+                        <span>${position.borrowedAmount.toFixed(2)} ALUD</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Interest:</span>
+                        <span>{position.interestRate}% APR</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {positions.filter(p => p.isActive).length === 0 && (
+                  <div className="text-center py-6 text-gray-400">
+                    <Shield className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No active positions</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Market Information */}
+            <Card className="crypto-card">
+              <CardHeader>
+                <CardTitle>Market Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">ALUD Price</span>
+                    <span className="font-bold text-white">$1.00</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Total Supplied</span>
+                    <span className="font-bold text-white">$2.4M</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Total Borrowed</span>
+                    <span className="font-bold text-white">$1.8M</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Utilization Rate</span>
+                    <span className="font-bold text-green-400">75.0%</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-400 text-sm">Borrow Rate</span>
+                    <span className="font-bold text-crypto-blue">3.2%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risk Metrics */}
+            <Card className="crypto-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Calculator className="w-4 h-4" />
+                  <span>Risk Calculator</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-400">Portfolio Health</span>
+                      <span className="text-green-400">Safe</span>
+                    </div>
+                    <Progress value={75} className="h-2" />
+                  </div>
+                  
+                  <div className="pt-2 border-t border-[var(--crypto-border)]">
+                    <div className="text-xs text-gray-500 space-y-2">
+                      <div className="flex justify-between">
+                        <span>Liquidation Risk:</span>
+                        <span className="text-green-400">Low</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Diversification:</span>
+                        <span className="text-yellow-400">Medium</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Interest Rate Risk:</span>
+                        <span className="text-green-400">Low</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          </div>
+        </div>
+        
+        {/* Token Selection Modal */}
+        <Dialog open={isTokenModalOpen} onOpenChange={setIsTokenModalOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {tokenModalType === 'collateral' ? 'Select Collateral Token' : 'Select Redemption Token'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Input
+                placeholder="Search tokens..."
+                value={tokenSearchQuery}
+                onChange={(e) => setTokenSearchQuery(e.target.value)}
+                className="bg-[var(--crypto-dark)] border-[var(--crypto-border)]"
+              />
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {filteredTokens.map((token) => (
+                  <div
+                    key={token.address}
+                    onClick={() => selectToken(token)}
+                    className="flex items-center justify-between p-3 rounded-lg border border-[var(--crypto-border)] cursor-pointer hover:border-crypto-blue/50 bg-[var(--crypto-card)] hover:bg-[var(--crypto-dark)]"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <img 
+                        src={token.logo} 
+                        alt={token.symbol}
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <div>
+                        <div className="font-medium text-white">{token.symbol}</div>
+                        <div className="text-sm text-gray-400">{token.name}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-medium text-white">${token.price.toFixed(2)}</div>
+                      {token.balance && (
+                        <div className="text-sm text-gray-400">{token.balance.toFixed(4)}</div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Settings Modal */}
+        <Dialog open={showSettings} onOpenChange={setShowSettings}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Lending Settings</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Minimum Collateralization Ratio</label>
+                <Select defaultValue="110">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="110">110% (Minimum)</SelectItem>
+                    <SelectItem value="120">120% (Conservative)</SelectItem>
+                    <SelectItem value="150">150% (Safe)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Auto-Repay Threshold</label>
+                <Select defaultValue="disabled">
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="disabled">Disabled</SelectItem>
+                    <SelectItem value="115">115%</SelectItem>
+                    <SelectItem value="120">120%</SelectItem>
+                    <SelectItem value="125">125%</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        </div>
+      </div>
+    </Layout>
+  );
+}
+
+export default function Lend() {
+  return <LendContent />;
+}
