@@ -93,6 +93,14 @@ function LendContent() {
     }
   ];
 
+  // Set WETH as default collateral token on component mount
+  useEffect(() => {
+    const wethToken = collateralTokens.find(token => token.symbol === 'WETH');
+    if (wethToken && !collateralToken) {
+      setCollateralToken(wethToken);
+    }
+  }, []);
+
   // Mock existing positions
   useEffect(() => {
     setPositions([
