@@ -51,6 +51,7 @@ function LendContent() {
   const [collateralToken, setCollateralToken] = useState<CollateralToken | null>(null);
   const [collateralAmount, setCollateralAmount] = useState("");
   const [borrowAmount, setBorrowAmount] = useState("");
+  const [repayAmount, setRepayAmount] = useState("");
   const [lastEditedField, setLastEditedField] = useState<'collateral' | 'borrow'>('collateral');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -512,8 +513,6 @@ function LendContent() {
                 </Button>
               </div>
             )}
-              </CardContent>
-            </Card>
 
             {/* Repay Tab */}
             {activeTab === "Repay" && (
@@ -577,7 +576,8 @@ function LendContent() {
                   <div className="flex items-center space-x-3">
                     <Input
                       placeholder="0.0"
-                      value=""
+                      value={repayAmount}
+                      onChange={(e) => setRepayAmount(e.target.value)}
                       className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                       style={{ 
                         padding: 0, 
@@ -655,6 +655,8 @@ function LendContent() {
                 </div>
               </div>
             )}
+              </CardContent>
+            </Card>
           </div>
 
           {/* Sidebar - Positions */}
