@@ -204,35 +204,7 @@ export default function TokenDetail() {
             </div>
           </div>
 
-          {/* Token Header */}
-          <div className="flex items-center space-x-4">
-            <img 
-              src={tokenData.logo} 
-              alt={tokenData.symbol}
-              className="w-16 h-16 rounded-full"
-              onError={(e) => {
-                e.currentTarget.src = '/oec-logo.png';
-              }}
-            />
-            <div>
-              <h1 className="text-3xl font-bold text-white">{tokenData.name}</h1>
-              <div className="flex items-center space-x-2 mt-1">
-                <Badge variant="outline" className="border-crypto-border text-gray-400">
-                  {tokenData.symbol}
-                </Badge>
-                {tokenData.website && (
-                  <a 
-                    href={tokenData.website} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
