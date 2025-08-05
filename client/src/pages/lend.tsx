@@ -273,7 +273,7 @@ function LendContent() {
                 {/* Tab Navigation */}
                 <div className="flex items-center justify-between mb-0">
                   <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
-                    {["Deposit", "Repay"].map((tab) => (
+                    {["Deposit", "Repay", "Redemptions"].map((tab) => (
                       <Button
                         key={tab}
                         variant={activeTab === tab ? "default" : "ghost"}
@@ -712,6 +712,127 @@ function LendContent() {
               </div>
             )}
 
+            {/* Redemptions Tab */}
+            {activeTab === "Redemptions" && (
+              <div className="space-y-0">
+                {/* ALUD to Redeem Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-t-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">ALUD to Redeem</label>
+                    <span className="text-sm text-gray-400">
+                      Available: 1,245.67 ALUD
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={collateralAmount}
+                      onChange={(e) => handleCollateralAmountChange(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 rounded-lg h-auto min-w-[140px] flex items-center space-x-2">
+                      <img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="ALUD" className="w-6 h-6 rounded-full" />
+                      <span className="font-medium">ALUD</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between mt-3">
+                    <div className="flex space-x-2">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleCollateralAmountChange((1245.67 * percentage / 100).toString())}
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      ≈ $0.00 USD
+                    </div>
+                  </div>
+                </div>
+
+                {/* Collateral to Receive Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-b-lg p-4 border-l border-r border-b border-[var(--crypto-border)] -mt-px">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Collateral to Receive</label>
+                    <span className="text-sm text-gray-400">
+                      Est. from system
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <div className="flex-1 font-bold text-white text-4xl">
+                      0.0
+                    </div>
+                    <Button
+                      variant="outline"
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="ETH" className="w-6 h-6 rounded-full" />
+                        <span className="font-medium">ETH</span>
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    </Button>
+                  </div>
+                  
+                  <div className="flex justify-between mt-3">
+                    <div className="text-sm text-gray-500">
+                      Redemption Rate: 1 ALUD = 0.00031 ETH
+                    </div>
+                    <div className="text-sm text-gray-500">
+                      ≈ $0.00 USD
+                    </div>
+                  </div>
+                </div>
+
+                {/* Redemption Impact */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)] mt-4">
+                  <h4 className="font-medium text-gray-300 mb-3">Redemption Details</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Redemption Fee</span>
+                      <span className="text-gray-300">0.5%</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">You'll Pay</span>
+                      <span className="text-gray-300">0.00 ALUD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">You'll Receive</span>
+                      <span className="text-green-400">0.00 ETH</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Price Impact</span>
+                      <span className="text-gray-300">&lt; 0.01%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Button 
+                  disabled={true}
+                  className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium opacity-50"
+                >
+                  Enter Amount to Redeem
+                </Button>
+              </div>
+            )}
 
               </CardContent>
             </Card>
