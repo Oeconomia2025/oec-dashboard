@@ -351,7 +351,7 @@ export function Layout({ children }: LayoutProps) {
                     <Globe className="w-5 h-5 text-white" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="w-48">
+                <DropdownMenuContent align="center" className="w-36">
                   <DropdownMenuItem 
                     onClick={() => window.open('https://oeconomia.tech/', '_blank')}
                     className="cursor-pointer"
