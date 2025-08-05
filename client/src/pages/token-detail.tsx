@@ -176,6 +176,7 @@ export default function TokenDetail() {
       pageTitle={tokenData.symbol}
       pageDescription={tokenData.name}
       pageLogo={tokenData.logo}
+      pageWebsite={tokenData.website}
     >
       <div className="p-8">
         <div className="max-w-7xl mx-auto space-y-6">

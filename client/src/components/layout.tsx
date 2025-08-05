@@ -43,6 +43,7 @@ interface LayoutProps {
   pageTitle?: string;
   pageDescription?: string;
   pageLogo?: string;
+  pageWebsite?: string;
 }
 
 // Page information for each route
@@ -85,7 +86,7 @@ const pageInfo = {
   }
 } as const;
 
-export function Layout({ children, pageTitle, pageDescription, pageLogo }: LayoutProps) {
+export function Layout({ children, pageTitle, pageDescription, pageLogo, pageWebsite }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -345,7 +346,20 @@ export function Layout({ children, pageTitle, pageDescription, pageLogo }: Layou
                   />
                 )}
                 <div className="flex flex-col">
-                  <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
+                  <div className="flex items-center space-x-2">
+                    <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
+                    {pageWebsite && (
+                      <a 
+                        href={pageWebsite} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
+                        title="Visit official website"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
                 </div>
               </div>
