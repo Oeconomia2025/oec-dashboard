@@ -333,7 +333,27 @@ function LiquidityContent() {
     "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", // WBNB
     "0x2170Ed0880ac9A755fd29B2688956BD959F933F8", // ETH
     "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", // USDC
+    "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // BTCB (Bitcoin BEP20)
+    "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82", // CAKE (PancakeSwap)
+    "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3", // DAI
+    "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", // BUSD
+    "0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD", // LINK
+    "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47", // ADA
   ];
+
+  // Token logos mapping
+  const tokenLogos: { [key: string]: string } = {
+    "0x55d398326f99059fF775485246999027B3197955": "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png", // USDT
+    "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": "https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png", // WBNB
+    "0x2170Ed0880ac9A755fd29B2688956BD959F933F8": "https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png", // ETH
+    "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d": "https://s2.coinmarketcap.com/static/img/coins/32x32/3408.png", // USDC
+    "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c": "https://s2.coinmarketcap.com/static/img/coins/32x32/1.png", // BTCB
+    "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82": "https://s2.coinmarketcap.com/static/img/coins/32x32/7186.png", // CAKE
+    "0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3": "https://s2.coinmarketcap.com/static/img/coins/32x32/4943.png", // DAI
+    "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56": "https://s2.coinmarketcap.com/static/img/coins/32x32/4687.png", // BUSD
+    "0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD": "https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png", // LINK
+    "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47": "https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png", // ADA
+  };
 
   // Fetch real token data for each address
   const tokenQueries = tokenAddresses.map(address => 
@@ -345,11 +365,12 @@ function LiquidityContent() {
     .map((query, index) => {
       if (!query.data) return null;
       const data = query.data;
+      const contractAddress = tokenAddresses[index];
       return {
-        id: tokenAddresses[index],
+        id: contractAddress,
         name: data.name,
         symbol: data.symbol,
-        logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png", // Use placeholder for now
+        logo: tokenLogos[contractAddress] || "/oec-logo.png", // Use specific logo for each token
         price: data.price,
         change24h: data.priceChangePercent24h,
         volume24h: data.volume24h,
@@ -1473,18 +1494,19 @@ function LiquidityContent() {
                                 <TrendingDown className="w-4 h-4" />
                               )}
                               <span className="font-medium">
-                                {token.change24h >= 0 ? '+' : ''}{token.change24h}%
+                                {token.change24h >= 0 ? '+' : ''}{token.change24h.toFixed(2)}%
                               </span>
                             </div>
                           </td>
                           <td className="py-4 px-6 font-mono">
-                            ${(token.volume24h / 1000000).toFixed(1)}M
+                            {token.volume24h > 0 ? `$${(token.volume24h / 1000000).toFixed(1)}M` : 'N/A'}
                           </td>
                           <td className="py-4 px-6 font-mono">
-                            ${token.marketCap > 1000000000 ? 
-                              (token.marketCap / 1000000000).toFixed(1) + 'B' : 
-                              (token.marketCap / 1000000).toFixed(0) + 'M'
-                            }
+                            {token.marketCap > 0 ? (
+                              token.marketCap > 1000000000 ? 
+                                `$${(token.marketCap / 1000000000).toFixed(1)}B` : 
+                                `$${(token.marketCap / 1000000).toFixed(0)}M`
+                            ) : 'N/A'}
                           </td>
                           <td className="py-4 px-6 font-mono">
                             {token.holders.toLocaleString()}
