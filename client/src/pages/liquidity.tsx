@@ -25,6 +25,7 @@ import {
   Filter,
   ArrowLeftRight
 } from "lucide-react";
+import { useTokenData } from "@/hooks/use-token-data";
 
 interface Token {
   symbol: string;
@@ -91,7 +92,7 @@ function LiquidityContent() {
       // Pre-select token if specified
       if (tokenParam) {
         // Find the token from our tokens list by ID
-        const tokenData = tokens.find(token => token.id === tokenParam);
+        const tokenData = tokens.find(token => token?.id === tokenParam);
         if (tokenData) {
           // Convert to Token interface format for the form
           const token: Token = {
@@ -326,52 +327,37 @@ function LiquidityContent() {
   ];
 
   // Sample tokens data for the tokens tab  
-  const tokens = [
-    {
-      id: "1",
-      name: "Tether USD",
-      symbol: "USDT", 
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png",
-      price: 1.0001,
-      change24h: 0.01,
-      volume24h: 28500000,
-      marketCap: 73200000000,
-      holders: 1250000
-    },
-    {
-      id: "2", 
-      name: "Binance Coin",
-      symbol: "BNB",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png", 
-      price: 612.45,
-      change24h: 2.8,
-      volume24h: 890000000,
-      marketCap: 88400000000,
-      holders: 850000
-    },
-    {
-      id: "3",
-      name: "Wrapped BNB", 
-      symbol: "WBNB",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/7192.png",
-      price: 612.45,
-      change24h: 2.8, 
-      volume24h: 450000000,
-      marketCap: 12300000000,
-      holders: 420000
-    },
-    {
-      id: "4",
-      name: "Binance USD",
-      symbol: "BUSD", 
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/4687.png",
-      price: 1.0002,
-      change24h: -0.02,
-      volume24h: 125000000, 
-      marketCap: 8900000000,
-      holders: 320000
-    }
+  // Real token data from API with known BSC contract addresses
+  const tokenAddresses = [
+    "0x55d398326f99059fF775485246999027B3197955", // USDT
+    "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", // WBNB
+    "0x2170Ed0880ac9A755fd29B2688956BD959F933F8", // ETH
+    "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", // USDC
   ];
+
+  // Fetch real token data for each address
+  const tokenQueries = tokenAddresses.map(address => 
+    useTokenData(address)
+  );
+
+  // Transform API data into the format expected by the UI
+  const tokens = tokenQueries
+    .map((query, index) => {
+      if (!query.data) return null;
+      const data = query.data;
+      return {
+        id: tokenAddresses[index],
+        name: data.name,
+        symbol: data.symbol,
+        logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/825.png", // Use placeholder for now
+        price: data.price,
+        change24h: data.priceChangePercent24h,
+        volume24h: data.volume24h,
+        marketCap: data.marketCap,
+        holders: 0 // API doesn't provide this data
+      };
+    })
+    .filter((token): token is NonNullable<typeof token> => token !== null); // Type-safe filter
 
   // Mock pool data for pools view
   const mockPools = [
@@ -532,7 +518,7 @@ function LiquidityContent() {
 
   // Sort tokens data
   const sortedTokens = [...tokens].sort((a, b) => {
-    if (!tokensSortField) return 0;
+    if (!tokensSortField || !a || !b) return 0;
     
     let aValue: any = a[tokensSortField as keyof typeof a];
     let bValue: any = b[tokensSortField as keyof typeof b];
@@ -558,8 +544,10 @@ function LiquidityContent() {
   );
 
   const filteredTokens = sortedTokens.filter(token =>
-    token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    token.name.toLowerCase().includes(searchTerm.toLowerCase())
+    token && (
+      token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      token.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
   );
 
   const timeframes = [
