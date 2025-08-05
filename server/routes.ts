@@ -23,9 +23,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { contractAddress } = req.params;
       
-      // Known token data for when API limits are reached
+      // Known token data for when API limits are reached (all lowercase keys)
       const knownTokens: Record<string, any> = {
-        "0x55d398326f99059fF775485246999027B3197955": {
+        "0x55d398326f99059ff775485246999027b3197955": {
           name: "Tether USD", symbol: "USDT", price: 1.00, totalSupply: 65000000000
         },
         "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": {
@@ -91,6 +91,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching token data:", error);
       res.status(500).json({ 
         message: "Failed to fetch token data",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Get all tokens - using static data (Moralis disabled)
+  app.get("/api/tokens", async (req, res) => {
+    try {
+      const allTokens = [
+        {
+          id: "0x55d398326f99059fF775485246999027B3197955",
+          name: "Tether USD",
+          symbol: "USDT",
+          contractAddress: "0x55d398326f99059fF775485246999027B3197955",
+          price: 1.00,
+          priceChange24h: 0,
+          priceChangePercent24h: 0,
+          marketCap: 65000000000,
+          volume24h: 1200000000,
+          totalSupply: 65000000000,
+          circulatingSupply: 65000000000,
+          liquidity: 850000000,
+          txCount24h: 45000,
+          network: "BSC",
+          lastUpdated: new Date().toISOString(),
+        },
+        {
+          id: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+          name: "Wrapped BNB",
+          symbol: "WBNB",
+          contractAddress: "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+          price: 612.45,
+          priceChange24h: 15.30,
+          priceChangePercent24h: 2.56,
+          marketCap: 116587654321,
+          volume24h: 890000000,
+          totalSupply: 190427991,
+          circulatingSupply: 190427991,
+          liquidity: 450000000,
+          txCount24h: 32000,
+          network: "BSC",
+          lastUpdated: new Date().toISOString(),
+        },
+        {
+          id: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+          name: "Ethereum Token",
+          symbol: "ETH",
+          contractAddress: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+          price: 3602.42,
+          priceChange24h: 87.50,
+          priceChangePercent24h: 2.49,
+          marketCap: 433345821654,
+          volume24h: 2100000000,
+          totalSupply: 120277546,
+          circulatingSupply: 120277546,
+          liquidity: 890000000,
+          txCount24h: 78000,
+          network: "BSC",
+          lastUpdated: new Date().toISOString(),
+        }
+      ];
+      
+      res.json(allTokens);
+    } catch (error) {
+      console.error("Error fetching tokens:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch tokens",
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
@@ -356,10 +423,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { contractAddress, timeframe } = req.params;
       
-      // Use fallback price from known tokens
+      // Use fallback price from known tokens (all lowercase keys)
       const normalizedAddress = contractAddress.toLowerCase();
       const knownTokens: Record<string, any> = {
-        "0x55d398326f99059fF775485246999027B3197955": { price: 1.00 },
+        "0x55d398326f99059ff775485246999027b3197955": { price: 1.00 },
         "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": { price: 612.45 },
         "0x2170ed0880ac9a755fd29b2688956bd959f933f8": { price: 3602.42 },
         "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": { price: 0.9992 },
