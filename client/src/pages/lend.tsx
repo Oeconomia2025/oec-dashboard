@@ -20,7 +20,8 @@ import {
   Calculator,
   Lock,
   Unlock,
-  Coins
+  Coins,
+  ArrowUpDown
 } from "lucide-react";
 
 interface CollateralToken {
@@ -247,223 +248,292 @@ function LendContent() {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Lending Interface */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Tab Navigation */}
-            <div className="flex space-x-1 p-1 bg-muted rounded-lg">
-              {["Deposit", "Repay", "Withdraw"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`flex-1 py-2 text-sm font-medium rounded-md transition-all ${
-                    activeTab === tab
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
+            {/* Main Lending Card */}
+            <Card className="crypto-card border h-full">
+              <CardHeader className="pb-0">
+                {/* Tab Navigation */}
+                <div className="flex items-center justify-between mb-0">
+                  <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
+                    {["Deposit", "Repay", "Withdraw"].map((tab) => (
+                      <Button
+                        key={tab}
+                        variant={activeTab === tab ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setActiveTab(tab)}
+                        className={
+                          activeTab === tab
+                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
+                            : "text-gray-400 hover:text-white px-4 py-2"
+                        }
+                      >
+                        {tab}
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowSettings(!showSettings)}
+                      className="text-gray-400 hover:text-white"
+                    >
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-0 relative">
+                {/* Settings Panel */}
+                {showSettings && (
+                  <Card className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] mb-4">
+                    <CardContent className="p-4 space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Minimum Collateralization Ratio</label>
+                        <Select value="110">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="110">110% (Minimum)</SelectItem>
+                            <SelectItem value="120">120% (Conservative)</SelectItem>
+                            <SelectItem value="150">150% (Safe)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Auto-Repay Threshold</label>
+                        <Select value="disabled">
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="disabled">Disabled</SelectItem>
+                            <SelectItem value="115">115%</SelectItem>
+                            <SelectItem value="120">120%</SelectItem>
+                            <SelectItem value="125">125%</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
             {/* Deposit Tab */}
             {activeTab === "Deposit" && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    Create Lending Position
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  {/* Collateral Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Collateral</label>
-                      {collateralToken?.balance && (
-                        <span className="text-sm text-muted-foreground">
-                          Balance: {collateralToken.balance.toFixed(6)} {collateralToken.symbol}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div className="flex space-x-2">
-                      <div className="flex-1">
-                        <Input
-                          placeholder="0.0"
-                          value={collateralAmount}
-                          onChange={(e) => handleCollateralAmountChange(e.target.value)}
-                          className="text-lg h-12"
-                        />
-                      </div>
-                      <Button
-                        variant="outline"
-                        onClick={openTokenModal}
-                        className="h-12 px-4 min-w-[140px]"
-                      >
-                        {collateralToken ? (
-                          <div className="flex items-center space-x-2">
-                            <img 
-                              src={collateralToken.logo} 
-                              alt={collateralToken.symbol}
-                              className="w-6 h-6 rounded-full"
-                            />
-                            <span>{collateralToken.symbol}</span>
-                          </div>
-                        ) : (
-                          "Select Token"
-                        )}
-                      </Button>
-                    </div>
-
-                    {/* Percentage Buttons */}
+              <div className="space-y-4">
+                {/* Collateral Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Collateral</label>
                     {collateralToken?.balance && (
-                      <div className="flex space-x-2">
-                        {[25, 50, 75, 100].map((percentage) => (
-                          <Button
-                            key={percentage}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handlePercentageClick(percentage)}
-                            className="text-xs"
-                          >
-                            {percentage}%
-                          </Button>
-                        ))}
-                      </div>
-                    )}
-
-                    {collateralToken && collateralAmount && (
-                      <div className="text-sm text-muted-foreground">
-                        ≈ ${(parseFloat(collateralAmount) * collateralToken.price).toFixed(2)} USD
-                      </div>
+                      <span className="text-sm text-gray-400">
+                        Balance: {collateralToken.balance.toFixed(6)}
+                      </span>
                     )}
                   </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={collateralAmount}
+                      onChange={(e) => handleCollateralAmountChange(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <Button
+                      variant="outline"
+                      onClick={openTokenModal}
+                      className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto min-w-[140px]"
+                    >
+                      {collateralToken ? (
+                        <div className="flex items-center space-x-2">
+                          <img 
+                            src={collateralToken.logo} 
+                            alt={collateralToken.symbol}
+                            className="w-6 h-6 rounded-full"
+                          />
+                          <span>{collateralToken.symbol}</span>
+                        </div>
+                      ) : (
+                        "Select Token"
+                      )}
+                    </Button>
+                  </div>
 
-                  {/* Borrow Section */}
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <label className="text-sm font-medium">Borrow ALUD</label>
-                      <span className="text-sm text-muted-foreground">
-                        Max: ${maxBorrowAmount.toFixed(2)}
+                  
+                  {/* Percentage Buttons */}
+                  {collateralToken?.balance && (
+                    <div className="flex space-x-2 mt-3">
+                      {[25, 50, 75, 100].map((percentage) => (
+                        <Button
+                          key={percentage}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handlePercentageClick(percentage)}
+                          className="text-xs bg-[var(--crypto-card)] border-[var(--crypto-border)] text-gray-400 hover:text-white hover:bg-[var(--crypto-dark)]"
+                        >
+                          {percentage}%
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+
+                  {collateralToken && collateralAmount && (
+                    <div className="text-sm text-gray-500 mt-2">
+                      ≈ ${(parseFloat(collateralAmount) * collateralToken.price).toFixed(2)} USD
+                    </div>
+                  )}
+                </div>
+
+                {/* Swap Arrow */}
+                <div className="flex justify-center py-2">
+                  <div className="w-10 h-10 rounded-full bg-[var(--crypto-dark)] border border-[var(--crypto-border)] flex items-center justify-center">
+                    <ArrowUpDown className="w-4 h-4 text-gray-400" />
+                  </div>
+                </div>
+
+                {/* Borrow Section */}
+                <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="text-gray-400 text-sm">Borrow ALUD</label>
+                    <span className="text-sm text-gray-400">
+                      Max: ${maxBorrowAmount.toFixed(2)}
+                    </span>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Input
+                      placeholder="0.0"
+                      value={borrowAmount}
+                      onChange={(e) => handleBorrowAmountChange(e.target.value)}
+                      className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                      style={{ 
+                        padding: 0, 
+                        margin: 0, 
+                        fontSize: '2.25rem',
+                        lineHeight: '1',
+                        fontWeight: 'bold',
+                        outline: 'none',
+                        border: 'none',
+                        boxShadow: 'none'
+                      }}
+                    />
+                    <div className="bg-[var(--crypto-card)] border border-[var(--crypto-border)] text-white px-3 py-2 h-auto min-w-[140px] rounded-md">
+                      <div className="flex items-center space-x-2">
+                        <DollarSign className="w-6 h-6 text-green-400" />
+                        <span>ALUD</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Collateralization Ratio */}
+                {collateralAmount && borrowAmount && (
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">Collateralization Ratio</span>
+                      <span className={`text-sm font-bold ${getRatioColor(collateralizationRatio)}`}>
+                        {collateralizationRatio.toFixed(1)}%
                       </span>
                     </div>
-                    
-                    <div className="flex space-x-2">
-                      <div className="flex-1">
-                        <Input
-                          placeholder="0.0"
-                          value={borrowAmount}
-                          onChange={(e) => handleBorrowAmountChange(e.target.value)}
-                          className="text-lg h-12"
-                        />
+                    <Progress 
+                      value={Math.min(collateralizationRatio, 300)} 
+                      max={300}
+                      className="h-2"
+                    />
+                    <div className="grid grid-cols-3 gap-2 text-xs mt-3">
+                      <div className="text-red-400">
+                        <div>Danger</div>
+                        <div>&lt;120%</div>
                       </div>
-                      <div className="flex items-center h-12 px-4 bg-muted rounded-md min-w-[140px]">
-                        <div className="flex items-center space-x-2">
-                          <DollarSign className="w-6 h-6 text-green-400" />
-                          <span>ALUD</span>
-                        </div>
+                      <div className="text-yellow-400">
+                        <div>Warning</div>
+                        <div>120-150%</div>
+                      </div>
+                      <div className="text-green-400">
+                        <div>Safe</div>
+                        <div>&gt;150%</div>
                       </div>
                     </div>
                   </div>
+                )}
 
-                  {/* Collateralization Ratio */}
-                  {collateralAmount && borrowAmount && (
-                    <div className="space-y-4 p-4 bg-muted rounded-lg">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Collateralization Ratio</span>
-                        <span className={`text-sm font-bold ${getRatioColor(collateralizationRatio)}`}>
-                          {collateralizationRatio.toFixed(1)}%
+                {/* Liquidation Price */}
+                {liquidationPrice > 0 && (
+                  <div className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <AlertTriangle className="w-4 h-4 text-red-400" />
+                      <span className="text-sm font-medium text-gray-300">Liquidation Price</span>
+                    </div>
+                    <span className="text-sm font-bold text-red-400">
+                      ${liquidationPrice.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+
+                {/* Transaction Details */}
+                {collateralAmount && borrowAmount && (
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <h4 className="font-medium text-gray-300 mb-3">Transaction Summary</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Interest Rate</span>
+                        <span className="text-gray-300">3.2% APR</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Collateral Value</span>
+                        <span className="text-gray-300">${collateralToken ? (parseFloat(collateralAmount) * collateralToken.price).toFixed(2) : '0.00'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Borrowing</span>
+                        <span className="text-gray-300">{borrowAmount} ALUD</span>
+                      </div>
+                      <div className="flex justify-between font-medium">
+                        <span className="text-gray-400">Health Factor</span>
+                        <span className={getRatioColor(collateralizationRatio)}>
+                          {(collateralizationRatio / 110).toFixed(2)}
                         </span>
                       </div>
-                      <Progress 
-                        value={Math.min(collateralizationRatio, 300)} 
-                        max={300}
-                        className="h-2"
-                      />
-                      <div className="grid grid-cols-3 gap-2 text-xs">
-                        <div className="text-red-400">
-                          <div>Danger</div>
-                          <div>&lt;120%</div>
-                        </div>
-                        <div className="text-yellow-400">
-                          <div>Warning</div>
-                          <div>120-150%</div>
-                        </div>
-                        <div className="text-green-400">
-                          <div>Safe</div>
-                          <div>&gt;150%</div>
-                        </div>
-                      </div>
                     </div>
-                  )}
+                  </div>
+                )}
 
-                  {/* Liquidation Price */}
-                  {liquidationPrice > 0 && (
-                    <div className="flex items-center justify-between p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <AlertTriangle className="w-4 h-4 text-red-400" />
-                        <span className="text-sm font-medium">Liquidation Price</span>
-                      </div>
-                      <span className="text-sm font-bold text-red-400">
-                        ${liquidationPrice.toFixed(2)}
-                      </span>
+                <Button 
+                  onClick={handleDeposit}
+                  disabled={!collateralToken || !collateralAmount || !borrowAmount || collateralizationRatio < 110 || isLoading}
+                  className="w-full h-12 text-lg bg-gradient-to-r from-crypto-blue to-crypto-purple hover:from-crypto-blue/80 hover:to-crypto-purple/80 text-white font-medium"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                      <span>Creating Position...</span>
                     </div>
+                  ) : (
+                    "Create Lending Position"
                   )}
-
-                  {/* Transaction Details */}
-                  {collateralAmount && borrowAmount && (
-                    <div className="space-y-3 p-4 bg-muted rounded-lg">
-                      <h4 className="font-medium">Transaction Summary</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Interest Rate</span>
-                          <span>3.2% APR</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Collateral Value</span>
-                          <span>${collateralToken ? (parseFloat(collateralAmount) * collateralToken.price).toFixed(2) : '0.00'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Borrowing</span>
-                          <span>{borrowAmount} ALUD</span>
-                        </div>
-                        <div className="flex justify-between font-medium">
-                          <span>Health Factor</span>
-                          <span className={getRatioColor(collateralizationRatio)}>
-                            {(collateralizationRatio / 110).toFixed(2)}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <Button 
-                    onClick={handleDeposit}
-                    disabled={!collateralToken || !collateralAmount || !borrowAmount || collateralizationRatio < 110 || isLoading}
-                    className="w-full h-12 text-lg"
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                        <span>Creating Position...</span>
-                      </div>
-                    ) : (
-                      "Create Lending Position"
-                    )}
-                  </Button>
-                </CardContent>
-              </Card>
+                </Button>
+              </div>
             )}
+              </CardContent>
+            </Card>
 
             {/* Repay and Withdraw tabs placeholder */}
             {(activeTab === "Repay" || activeTab === "Withdraw") && (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-medium">{activeTab} Position</h3>
-                    <p className="text-muted-foreground">Select a position from the sidebar to {activeTab.toLowerCase()}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-8 text-center border border-[var(--crypto-border)]">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-medium text-gray-300">{activeTab} Position</h3>
+                  <p className="text-gray-400">Select a position from the sidebar to {activeTab.toLowerCase()}</p>
+                </div>
+              </div>
             )}
           </div>
 
