@@ -107,13 +107,7 @@ export function Layout({ children }: LayoutProps) {
     },
     {
       name: 'Medium',
-      icon: () => (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="6" cy="12" r="4"/>
-          <ellipse cx="15" cy="12" rx="2.5" ry="4"/>
-          <ellipse cx="21" cy="12" rx="1.5" ry="3"/>
-        </svg>
-      ),
+      icon: SiMedium,
       url: 'https://medium.com/@oeconomia2025',
       enabled: true
     },
@@ -363,7 +357,7 @@ export function Layout({ children }: LayoutProps) {
                     className="cursor-pointer"
                   >
                     <Globe className="w-4 h-4 mr-2" />
-                    Oeconomia Website
+                    Website
                   </DropdownMenuItem>
                   {socialLinks.map((link) => (
                     <DropdownMenuItem
