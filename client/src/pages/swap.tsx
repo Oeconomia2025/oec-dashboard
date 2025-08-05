@@ -1442,8 +1442,8 @@ function SwapContent() {
 
         {/* Price Chart */}
         {showChart && (
-          <div className={hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'}>
-            <Card className="crypto-card border h-full">
+          <div className={`${hideSidebar ? 'lg:col-span-1' : 'xl:col-span-2'} relative`}>
+            <Card className="crypto-card border h-full relative z-10" key={`chart-${fromToken?.symbol}-${toToken?.symbol}`}>
               <CardHeader>
                 <CardTitle className="text-white flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -1510,10 +1510,10 @@ function SwapContent() {
                   </div>
                 ) : (
                   <div className="h-full relative">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer width="100%" height="100%" key={`${fromToken?.symbol}-${toToken?.symbol}-${chartTimeframe}`}>
                       <AreaChart data={chartPriceHistory}>
                         <defs>
-                          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                          <linearGradient id={`areaGradient-${fromToken?.symbol || 'default'}`} x1="0" y1="0" x2="0" y2="1">
                             <stop offset="0%" stopColor={getTokenColor(fromToken)} stopOpacity={1.0}/>
                             <stop offset="25%" stopColor={getTokenColor(fromToken)} stopOpacity={1.0}/>
                             <stop offset="75%" stopColor={getTokenColor(fromToken)} stopOpacity={0.5}/>
@@ -1548,7 +1548,7 @@ function SwapContent() {
                           dataKey="price" 
                           stroke={getTokenColor(fromToken)}
                           strokeWidth={2}
-                          fill="url(#areaGradient)"
+                          fill={`url(#areaGradient-${fromToken?.symbol || 'default'})`}
                           dot={false}
                           activeDot={{ r: 4, stroke: getTokenColor(fromToken), strokeWidth: 2 }}
                         />
