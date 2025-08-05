@@ -66,6 +66,16 @@ function LiquidityContent() {
   const [maxPrice, setMaxPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Handle URL parameters to switch to tokens tab when returning from token detail
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab === 'tokens') {
+      setActiveTab('tokens');
+      setActiveView('pools'); // Ensure we're in the pools view which contains the tabs
+    }
+  }, []);
+
   // Sample positions data
   const [positions] = useState<Position[]>([
     {

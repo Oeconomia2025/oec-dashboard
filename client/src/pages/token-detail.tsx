@@ -148,8 +148,8 @@ export default function TokenDetail() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center py-12">
               <div className="text-gray-400 mb-2">Token not found</div>
-              <Button onClick={() => setLocation("/liquidity")} variant="outline">
-                Back to Liquidity
+              <Button onClick={() => setLocation("/liquidity?tab=tokens")} variant="outline">
+                Back to Tokens
               </Button>
             </div>
           </div>
@@ -169,11 +169,11 @@ export default function TokenDetail() {
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={() => setLocation("/liquidity")}
+                onClick={() => setLocation("/liquidity?tab=tokens")}
                 className="text-gray-400 hover:text-white"
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Liquidity
+                Back to Tokens
               </Button>
             </div>
           </div>
