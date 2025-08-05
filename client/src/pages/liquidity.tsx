@@ -65,6 +65,12 @@ function LiquidityContent() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Sorting state
+  const [poolsSortField, setPoolsSortField] = useState<string | null>(null);
+  const [poolsSortDirection, setPoolsSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [tokensSortField, setTokensSortField] = useState<string | null>(null);
+  const [tokensSortDirection, setTokensSortDirection] = useState<'asc' | 'desc'>('asc');
 
   // Handle URL parameters to switch to tokens tab when returning from token detail
   useEffect(() => {
@@ -75,6 +81,34 @@ function LiquidityContent() {
       setActiveView('pools'); // Ensure we're in the pools view which contains the tabs
     }
   }, []);
+
+  // Sorting functions
+  const handlePoolsSort = (field: string) => {
+    if (poolsSortField === field) {
+      setPoolsSortDirection(poolsSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setPoolsSortField(field);
+      setPoolsSortDirection('asc');
+    }
+  };
+
+  const handleTokensSort = (field: string) => {
+    if (tokensSortField === field) {
+      setTokensSortDirection(tokensSortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setTokensSortField(field);
+      setTokensSortDirection('asc');
+    }
+  };
+
+  const getSortIcon = (field: string, currentField: string | null, direction: 'asc' | 'desc') => {
+    if (field !== currentField) {
+      return <ChevronUp className="w-4 h-4 opacity-30" />;
+    }
+    return direction === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />;
+  };
+
+
 
   // Sample positions data
   const [positions] = useState<Position[]>([
@@ -502,14 +536,67 @@ function LiquidityContent() {
     }
   ];
 
-  const filteredPools = mockPools.filter(pool => 
+  // Sort pools data  
+  const sortedPools = [...mockPools].sort((a, b) => {
+    if (!poolsSortField) return 0;
+    
+    let aValue: any = a;
+    let bValue: any = b;
+    
+    // Handle nested properties
+    const fieldParts = poolsSortField.split('.');
+    for (const part of fieldParts) {
+      aValue = aValue?.[part];
+      bValue = bValue?.[part];
+    }
+    
+    // Handle different data types
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      // Remove currency symbols and convert to numbers for volume/TVL
+      if (aValue.includes('$') || aValue.includes('%')) {
+        aValue = parseFloat(aValue.replace(/[$%,]/g, ''));
+        bValue = parseFloat(bValue.replace(/[$%,]/g, ''));
+      } else {
+        aValue = aValue.toLowerCase();
+        bValue = bValue.toLowerCase();
+      }
+    }
+    
+    if (poolsSortDirection === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
+
+  // Sort tokens data
+  const sortedTokens = [...tokens].sort((a, b) => {
+    if (!tokensSortField) return 0;
+    
+    let aValue: any = a[tokensSortField as keyof typeof a];
+    let bValue: any = b[tokensSortField as keyof typeof b];
+    
+    // Handle string sorting
+    if (typeof aValue === 'string' && typeof bValue === 'string') {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+    
+    if (tokensSortDirection === 'asc') {
+      return aValue > bValue ? 1 : -1;
+    } else {
+      return aValue < bValue ? 1 : -1;
+    }
+  });
+
+  const filteredPools = sortedPools.filter(pool => 
     pool.tokenA.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pool.tokenB.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pool.tokenA.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pool.tokenB.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const filteredTokens = tokens.filter(token =>
+  const filteredTokens = sortedTokens.filter(token =>
     token.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
     token.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -1186,13 +1273,69 @@ function LiquidityContent() {
                     <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
                       <tr>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Pool</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Fee</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Vol</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">7D Vol</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">TVL</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">APR</th>
-                      <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H %</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('tokenA.symbol')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Pool</span>
+                            {getSortIcon('tokenA.symbol', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('fee')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Fee</span>
+                            {getSortIcon('fee', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('volume24h')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>24H Vol</span>
+                            {getSortIcon('volume24h', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('volume7d')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>7D Vol</span>
+                            {getSortIcon('volume7d', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('tvl')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>TVL</span>
+                            {getSortIcon('tvl', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('apr')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>APR</span>
+                            {getSortIcon('apr', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handlePoolsSort('priceChange24h')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>24H %</span>
+                            {getSortIcon('priceChange24h', poolsSortField, poolsSortDirection)}
+                          </button>
+                        </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1279,12 +1422,60 @@ function LiquidityContent() {
                     <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
                       <tr>
                         <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">#</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Token</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Price</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Change</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">24H Volume</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Market Cap</th>
-                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">Holders</th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('symbol')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Token</span>
+                            {getSortIcon('symbol', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('price')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Price</span>
+                            {getSortIcon('price', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('change24h')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>24H Change</span>
+                            {getSortIcon('change24h', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('volume24h')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>24H Volume</span>
+                            {getSortIcon('volume24h', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('marketCap')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Market Cap</span>
+                            {getSortIcon('marketCap', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
+                        <th className="text-left py-4 px-6 font-medium text-gray-400 bg-[#1a1b23]">
+                          <button 
+                            onClick={() => handleTokensSort('holders')}
+                            className="flex items-center space-x-1 hover:text-white transition-colors"
+                          >
+                            <span>Holders</span>
+                            {getSortIcon('holders', tokensSortField, tokensSortDirection)}
+                          </button>
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
