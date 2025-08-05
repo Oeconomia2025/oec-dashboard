@@ -878,7 +878,6 @@ function LendContent() {
                             <span className="font-medium">ETH</span>
                           </>
                         )}
-                        <ChevronDown className="w-4 h-4" />
                       </div>
                     </Button>
                   </div>
