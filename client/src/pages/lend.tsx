@@ -262,8 +262,9 @@ function LendContent() {
 
   return (
     <Layout>
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="grid lg:grid-cols-3 gap-6">
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Lending Interface */}
           <div className="lg:col-span-2 space-y-6">
             {/* Main Lending Card */}
@@ -280,8 +281,8 @@ function LendContent() {
                         onClick={() => setActiveTab(tab)}
                         className={
                           activeTab === tab
-                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
-                            : "text-gray-400 hover:text-white px-4 py-2"
+                            ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 min-w-[80px]"
+                            : "text-gray-400 hover:text-white px-6 py-2 min-w-[80px]"
                         }
                       >
                         {tab}
@@ -888,6 +889,7 @@ function LendContent() {
             </div>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
     </Layout>
   );

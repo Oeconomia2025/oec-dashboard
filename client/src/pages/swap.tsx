@@ -692,8 +692,8 @@ function SwapContent() {
                       onClick={() => handleTabChange(tab)}
                       className={
                         activeTab === tab
-                          ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-4 py-2"
-                          : "text-gray-400 hover:text-white px-4 py-2"
+                          ? "bg-crypto-blue hover:bg-crypto-blue/80 text-white px-6 py-2 min-w-[80px]"
+                          : "text-gray-400 hover:text-white px-6 py-2 min-w-[80px]"
                       }
                     >
                       {tab}
