@@ -233,18 +233,6 @@ function LendContent() {
   return (
     <Layout>
       <div className="container mx-auto p-6 space-y-6">
-        {/* Header */}
-        <div className="flex justify-end">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowSettings(true)}
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </Button>
-        </div>
-
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Main Lending Interface */}
           <div className="lg:col-span-2 space-y-6">
