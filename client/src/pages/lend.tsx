@@ -272,7 +272,7 @@ function LendContent() {
                 {/* Tab Navigation */}
                 <div className="flex items-center justify-between mb-0">
                   <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
-                    {["Deposit", "Repay", "Withdraw"].map((tab) => (
+                    {["Deposit", "Repay"].map((tab) => (
                       <Button
                         key={tab}
                         variant={activeTab === tab ? "default" : "ghost"}
@@ -711,15 +711,7 @@ function LendContent() {
               </div>
             )}
 
-            {/* Withdraw Tab */}
-            {activeTab === "Withdraw" && (
-              <div className="bg-[var(--crypto-dark)] rounded-lg p-8 text-center border border-[var(--crypto-border)]">
-                <div className="space-y-2">
-                  <h3 className="text-lg font-medium text-gray-300">Withdraw Collateral</h3>
-                  <p className="text-gray-400">Select a position from the sidebar to withdraw collateral</p>
-                </div>
-              </div>
-            )}
+
               </CardContent>
             </Card>
           </div>
