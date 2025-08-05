@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout";
 import { PriceChart } from "@/components/price-chart";
-import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus } from "lucide-react";
+import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check } from "lucide-react";
 
 interface TokenData {
   id: string;
@@ -28,6 +28,9 @@ export default function TokenDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const tokenId = params.id as string;
+  
+  // Copy to clipboard state
+  const [copied, setCopied] = useState(false);
   
   // Mock token data - in real app this would come from API
   const [tokenData, setTokenData] = useState<TokenData | null>(null);
@@ -139,6 +142,16 @@ export default function TokenDetail() {
       return (num / 1000).toFixed(0) + 'K';
     }
     return num.toString();
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
   };
 
   if (!tokenData) {
@@ -292,11 +305,24 @@ export default function TokenDetail() {
                   <CardTitle className="text-white text-lg">Token Information</CardTitle>
                 </CardHeader>
                 <div className="space-y-3">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <span className="text-gray-400">Contract</span>
-                    <span className="text-white font-mono text-sm">
-                      {tokenData.address ? `${tokenData.address.slice(0, 6)}...${tokenData.address.slice(-4)}` : 'N/A'}
-                    </span>
+                    {tokenData.address ? (
+                      <button
+                        onClick={() => copyToClipboard(tokenData.address!)}
+                        className="flex items-center space-x-2 text-white font-mono text-sm hover:text-crypto-blue transition-colors cursor-pointer group"
+                        title="Click to copy full contract address"
+                      >
+                        <span>{`${tokenData.address.slice(0, 6)}...${tokenData.address.slice(-4)}`}</span>
+                        {copied ? (
+                          <Check className="w-3 h-3 text-green-500" />
+                        ) : (
+                          <Copy className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </button>
+                    ) : (
+                      <span className="text-white font-mono text-sm">N/A</span>
+                    )}
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total Supply</span>
