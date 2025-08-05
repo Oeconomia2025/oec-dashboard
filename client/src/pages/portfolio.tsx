@@ -6,6 +6,7 @@ import { Wallet, TrendingUp, DollarSign, PieChart, Plus, ExternalLink, Droplets,
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { WalletConnect } from "@/components/wallet-connect"
+import { WalletSetupGuide } from "@/components/wallet-setup-guide"
 import { Layout } from "@/components/layout"
 
 interface TokenBalance {
@@ -178,6 +179,7 @@ export function Portfolio() {
               <p className="text-gray-400 mb-8">Connect your wallet to view your token portfolio</p>
               <div className="max-w-xs mx-auto">
                 <WalletConnect />
+                <WalletSetupGuide />
               </div>
             </div>
           </div>

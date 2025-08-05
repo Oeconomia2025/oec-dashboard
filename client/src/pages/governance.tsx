@@ -42,7 +42,8 @@ import {
   Zap
 } from "lucide-react";
 import { useAccount } from "wagmi";
-import { WalletConnect } from "@/components/wallet-connect";
+import { WalletConnect } from "@/components/wallet-connect"
+import { WalletSetupGuide } from "@/components/wallet-setup-guide";
 
 interface Proposal {
   id: string;
@@ -283,6 +284,7 @@ export function Governance() {
               <p className="text-gray-400 mb-8">Connect your wallet to participate in Oeconomia governance</p>
               <div className="max-w-xs mx-auto">
                 <WalletConnect />
+                <WalletSetupGuide />
               </div>
             </div>
           </div>

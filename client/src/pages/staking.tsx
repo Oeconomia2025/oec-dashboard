@@ -39,7 +39,8 @@ import {
   ChevronDown,
   ChevronUp
 } from "lucide-react";
-import { WalletConnect } from "@/components/wallet-connect";
+import { WalletConnect } from "@/components/wallet-connect"
+import { WalletSetupGuide } from "@/components/wallet-setup-guide";
 import { useAccount } from "wagmi";
 
 // Mock data for development - replace with smart contract integration
@@ -336,6 +337,7 @@ export function Staking() {
               <p className="text-gray-400 mb-8">Connect your wallet to start earning rewards through staking</p>
               <div className="max-w-xs mx-auto">
                 <WalletConnect />
+                <WalletSetupGuide />
               </div>
             </div>
           </div>
