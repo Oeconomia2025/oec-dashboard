@@ -76,9 +76,35 @@ function LiquidityContent() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tab = urlParams.get('tab');
+    const create = urlParams.get('create');
+    const tokenParam = urlParams.get('token');
+    
     if (tab === 'tokens') {
       setActiveTab('tokens');
       setActiveView('pools'); // Ensure we're in the pools view which contains the tabs
+    }
+    
+    if (create === 'true') {
+      setActiveView('create');
+      
+      // Pre-select token if specified
+      if (tokenParam) {
+        // Find the token from our tokens list by ID
+        const tokenData = tokens.find(token => token.id === tokenParam);
+        if (tokenData) {
+          // Convert to Token interface format for the form
+          const token: Token = {
+            symbol: tokenData.symbol,
+            name: tokenData.name,
+            address: `0x${tokenData.id}`, // Mock address using ID
+            decimals: 18,
+            logo: tokenData.logo,
+            price: tokenData.price,
+            balance: 1000 // Default balance
+          };
+          setSelectedToken0(token);
+        }
+      }
     }
   }, []);
 
@@ -298,7 +324,7 @@ function LiquidityContent() {
     { value: 1.0, label: "1.0%", description: "Best for very exotic pairs" }
   ];
 
-  // Sample tokens data
+  // Sample tokens data for the tokens tab  
   const tokens = [
     {
       id: "1",
@@ -343,72 +369,6 @@ function LiquidityContent() {
       volume24h: 125000000, 
       marketCap: 8900000000,
       holders: 320000
-    },
-    {
-      id: "5",
-      name: "PancakeSwap",
-      symbol: "CAKE",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/7186.png",
-      price: 3.24,
-      change24h: 5.2,
-      volume24h: 42000000,
-      marketCap: 890000000, 
-      holders: 185000
-    },
-    {
-      id: "6", 
-      name: "Ethereum",
-      symbol: "ETH",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png",
-      price: 3415.67,
-      change24h: 1.8,
-      volume24h: 1200000000,
-      marketCap: 410000000000,
-      holders: 95000
-    },
-    {
-      id: "7",
-      name: "Bitcoin",
-      symbol: "BTCB", 
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1.png",
-      price: 67890.23,
-      change24h: 3.1,
-      volume24h: 890000000,
-      marketCap: 1340000000000,
-      holders: 75000
-    },
-    {
-      id: "8",
-      name: "Cardano",
-      symbol: "ADA",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png", 
-      price: 0.89,
-      change24h: -1.2,
-      volume24h: 185000000,
-      marketCap: 31200000000,
-      holders: 45000
-    },
-    {
-      id: "9",
-      name: "Polkadot",
-      symbol: "DOT",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/6636.png",
-      price: 7.45,
-      change24h: 4.6,
-      volume24h: 67000000,
-      marketCap: 9800000000,
-      holders: 28000
-    },
-    {
-      id: "10",
-      name: "Chainlink", 
-      symbol: "LINK",
-      logo: "https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png",
-      price: 18.92,
-      change24h: 2.4, 
-      volume24h: 125000000,
-      marketCap: 11200000000,
-      holders: 35000
     }
   ];
 

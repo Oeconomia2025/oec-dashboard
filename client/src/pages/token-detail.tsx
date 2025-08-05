@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout";
 import { PriceChart } from "@/components/price-chart";
-import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity } from "lucide-react";
+import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus } from "lucide-react";
 
 interface TokenData {
   id: string;
@@ -165,7 +165,7 @@ export default function TokenDetail() {
           
           {/* Header */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between w-full">
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -174,6 +174,14 @@ export default function TokenDetail() {
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to Tokens
+              </Button>
+              
+              <Button 
+                onClick={() => setLocation(`/liquidity?create=true&token=${tokenId}`)}
+                className="bg-crypto-blue hover:bg-crypto-blue/80 text-white"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Liquidity
               </Button>
             </div>
           </div>
