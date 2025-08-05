@@ -233,21 +233,15 @@ function LendContent() {
     <Layout>
       <div className="container mx-auto p-6 space-y-6">
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Lend</h1>
-            <p className="text-muted-foreground">Deposit collateral and borrow ALUD (Alluria USD)</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowSettings(true)}
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
-          </div>
+        <div className="flex justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowSettings(true)}
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
