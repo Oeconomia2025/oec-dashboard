@@ -282,14 +282,7 @@ export default function TokenDetail() {
           {/* Chart Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <Card className="crypto-card h-[400px]">
-                <CardHeader>
-                  <CardTitle className="text-white">Price Chart</CardTitle>
-                </CardHeader>
-                <CardContent className="h-full">
-                  <PriceChart contractAddress={tokenData.address || "0x55d398326f99059fF775485246999027B3197955"} />
-                </CardContent>
-              </Card>
+              <PriceChart contractAddress={tokenData.address || "0x55d398326f99059fF775485246999027B3197955"} />
             </div>
             
             <div className="space-y-6">
