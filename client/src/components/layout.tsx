@@ -340,7 +340,7 @@ export function Layout({ children, pageTitle, pageDescription, pageLogo }: Layou
                   <img 
                     src={pageLogo} 
                     alt="Token logo" 
-                    className="w-8 h-8 rounded-full"
+                    className="w-12 h-12 rounded-full"
                     style={{ border: '0.5px solid rgba(255, 255, 255, 0.3)' }}
                   />
                 )}
