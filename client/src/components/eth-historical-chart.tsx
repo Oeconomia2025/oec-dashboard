@@ -111,13 +111,12 @@ export function ETHHistoricalChart() {
     return (
       <div className="bg-crypto-card p-8 rounded-lg border border-crypto-border">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center">
             <img 
               src="https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png" 
               alt="ETH"
               className="w-8 h-8"
             />
-            <span className="text-gray-400 text-sm font-medium">ETH</span>
           </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (
@@ -150,13 +149,12 @@ export function ETHHistoricalChart() {
   return (
     <div className="bg-crypto-card p-8 rounded-lg border border-crypto-border">
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center">
           <img 
             src="https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png" 
             alt="ETH"
             className="w-8 h-8"
           />
-          <span className="text-gray-400 text-sm font-medium">ETH</span>
         </div>
         <div className="flex space-x-2">
           {timeframes.map((tf) => (
