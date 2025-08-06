@@ -12,8 +12,9 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const baseUrl = getApiBaseUrl();
-  const fullUrl = url.startsWith('http') ? url : baseUrl + url;
+  // FORCE NETLIFY FUNCTIONS: Convert all API calls to use Netlify functions
+  const fullUrl = url.startsWith('http') ? url : 
+    url.startsWith('/api/') ? `/.netlify/functions/${url.replace('/api/', '')}` : url;
   
   const res = await fetch(fullUrl, {
     method,
@@ -36,8 +37,9 @@ export const getQueryFn: <T>(options: {
   async ({ queryKey }) => {
     try {
       const apiPath = queryKey.join("/") as string;
-      const baseUrl = getApiBaseUrl();
-      const url = baseUrl + apiPath;
+      // FORCE NETLIFY FUNCTIONS: Convert all API calls to use Netlify functions
+      const url = apiPath.startsWith('/api/') ? 
+        `/.netlify/functions/${apiPath.replace('/api/', '')}` : apiPath;
       
       const res = await fetch(url, {
         credentials: "include",

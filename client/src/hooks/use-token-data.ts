@@ -41,10 +41,8 @@ export function useNetworkStatus() {
 }
 
 export function usePriceHistory(contractAddress: string, timeframe: string = "1D") {
-  // Use the correct API endpoint based on environment
-  const apiEndpoint = window.location.hostname === 'localhost' 
-    ? `/api/price-history/${contractAddress}/${timeframe}`
-    : `/.netlify/functions/price-history/${contractAddress}/${timeframe}`;
+  // FORCE NETLIFY FUNCTIONS: Always use Netlify functions, never connect to Replit
+  const apiEndpoint = `/.netlify/functions/price-history/${contractAddress}/${timeframe}`;
 
   return useQuery<PriceHistory[]>({
     queryKey: ["price-history", contractAddress, timeframe],

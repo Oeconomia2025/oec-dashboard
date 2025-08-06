@@ -2,25 +2,18 @@ import { useMemo } from 'react';
 
 export function useEnvironment() {
   const isProduction = useMemo(() => {
-    // Check if we're in Netlify production environment
-    return window.location.hostname === 'oeconomia.io' || 
-           window.location.hostname.includes('netlify.app') ||
-           import.meta.env.PROD;
+    // FORCE PRODUCTION MODE: Always return true to use Netlify functions
+    return true;
   }, []);
 
   const apiBaseUrl = useMemo(() => {
-    if (isProduction) {
-      // In production, use relative URLs that will be handled by Netlify redirects
-      return '';
-    } else {
-      // In development, use the local Express server
-      return 'http://localhost:5000';
-    }
+    // FORCE NETLIFY FUNCTIONS: Always use relative URLs to avoid Replit connection
+    return '';
   }, [isProduction]);
 
   return {
-    isProduction,
-    isDevelopment: !isProduction,
-    apiBaseUrl,
+    isProduction: true,
+    isDevelopment: false,
+    apiBaseUrl: '',
   };
 }

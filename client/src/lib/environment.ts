@@ -6,16 +6,17 @@ export function isProduction(): boolean {
 }
 
 export function getApiBaseUrl(): string {
-  return isProduction() ? '' : 'http://localhost:5000';
+  // FORCE PRODUCTION MODE: Always use Netlify functions, never connect to Replit
+  // This ensures the website works independently without Replit connection
+  return '';
 }
 
 export function getEnvironmentInfo() {
-  const prod = isProduction();
   return {
-    isProduction: prod,
-    isDevelopment: !prod,
+    isProduction: true,
+    isDevelopment: false,
     apiBaseUrl: getApiBaseUrl(),
     hostname: window.location.hostname,
-    nodeEnv: import.meta.env.PROD ? 'production' : 'development'
+    nodeEnv: 'production'
   };
 }

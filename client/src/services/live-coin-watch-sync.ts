@@ -13,12 +13,11 @@ class LiveCoinWatchSyncService {
   private syncTimer?: NodeJS.Timeout;
 
   async initializeProductionSync(): Promise<void> {
-    // Only initialize sync in production environment
-    const isProduction = window.location.hostname === 'oeconomia.io' || 
-                        window.location.hostname.includes('netlify.app');
+    // FORCE NETLIFY FUNCTIONS: Always initialize sync, never depend on Replit
+    const isProduction = true; // Force production mode to ensure Netlify function usage
     
-    if (!isProduction || this.isInitialized) {
-      console.log(`Environment: ${isProduction ? 'Production' : 'Development'} - ${isProduction ? 'Sync will start' : 'Using local development API'}`);
+    if (this.isInitialized) {
+      console.log('Environment: Production (Forced) - Sync already initialized');
       return;
     }
 
