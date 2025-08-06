@@ -182,8 +182,12 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                     <stop offset="25%" stopColor={tokenColor} stopOpacity={1.0}/>
                     <stop offset="100%" stopColor={tokenColor} stopOpacity={0.0}/>
                   </linearGradient>
+                  <linearGradient id="chartBackground" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#374151" stopOpacity={0.3}/>
+                    <stop offset="100%" stopColor="#1F2937" stopOpacity={0.1}/>
+                  </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
+                <rect x="0" y="0" width="100%" height="100%" fill="url(#chartBackground)" />
                 <XAxis 
                   dataKey="timestamp" 
                   tickFormatter={formatXAxis}
@@ -202,6 +206,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                   }}
                   stroke="#9CA3AF"
                   fontSize={12}
+                  tickMargin={12}
                 />
                 <Tooltip 
                   formatter={formatTooltip}
