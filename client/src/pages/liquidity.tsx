@@ -74,8 +74,8 @@ function LiquidityContent() {
   // Sorting state
   const [poolsSortField, setPoolsSortField] = useState<string | null>(null);
   const [poolsSortDirection, setPoolsSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [tokensSortField, setTokensSortField] = useState<string | null>(null);
-  const [tokensSortDirection, setTokensSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [tokensSortField, setTokensSortField] = useState<string | null>('marketCap');
+  const [tokensSortDirection, setTokensSortDirection] = useState<'asc' | 'desc'>('desc');
 
   // Handle URL parameters to switch to tokens tab when returning from token detail
   useEffect(() => {
@@ -511,7 +511,10 @@ function LiquidityContent() {
 
   // Sort tokens data
   const sortedTokens = [...tokens].sort((a, b) => {
-    if (!tokensSortField || !a || !b) return 0;
+    if (!tokensSortField || !a || !b) {
+      // Default fallback: sort by market cap descending (largest first)
+      return (b.marketCap || 0) - (a.marketCap || 0);
+    }
     
     let aValue: any = a[tokensSortField as keyof typeof a];
     let bValue: any = b[tokensSortField as keyof typeof b];

@@ -1,6 +1,7 @@
 import type { Handler } from '@netlify/functions';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
+import { desc } from 'drizzle-orm';
 import * as schema from '../../shared/schema.js';
 import ws from "ws";
 
@@ -35,11 +36,11 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    // Fetch all coins from database
+    // Fetch all coins from database - order by cap descending, nulls last
     const coins = await db
       .select()
       .from(schema.liveCoinWatchCoins)
-      .orderBy(schema.liveCoinWatchCoins.cap, { direction: 'desc' })
+      .orderBy(desc(schema.liveCoinWatchCoins.cap))
       .limit(100);
 
     // Transform database data to match expected API format
