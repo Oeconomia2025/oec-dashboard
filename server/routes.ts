@@ -465,18 +465,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         "0x2859e4544c4bb03966803b044a93563bd2d0dd4d": "SHIB",
         "0x947950bcc74888a40ffa2593c5798f11fc9124c4": "SUSHI",
         "0xba2ae424d960c26247dd6c32edc70b295c744c43": "DOGE",
-        "0x7083609fce4d1d8dc0c979aab8c869ea2c873402": "DOT"
+        "0x7083609fce4d1d8dc0c979aab8c869ea2c873402": "DOT",
+        "0x85eac5ac2f758618dfa09b24877528ed53bc59d2": "TRX"
       };
       
       const tokenCode = contractToCodeMap[normalizedAddress];
       
       if (tokenCode) {
-        // Get real current price from Live Coin Watch
+        // Get real current price from Live Coin Watch database directly
         try {
-          const response = await fetch(`http://localhost:5000/api/live-coin-watch/token/${tokenCode}`);
-          if (response.ok) {
-            const tokenInfo = await response.json();
-            currentPrice = tokenInfo.price;
+          const liveCoinData = await db.select()
+            .from(liveCoinWatchCoins)
+            .where(eq(liveCoinWatchCoins.code, tokenCode))
+            .limit(1);
+            
+          if (liveCoinData.length > 0) {
+            currentPrice = liveCoinData[0].rate;
             console.log(`Using Live Coin Watch price for ${tokenCode}: $${currentPrice}`);
           }
         } catch (error) {
@@ -515,26 +519,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const totalDurationHours = totalDurationMinutes / 60;
       console.log(`Timeframe ${timeframe}: ${dataPoints} points, ${intervalMinutes}min intervals = ${totalDurationHours}h total`);
       
-      // Generate historical data points with realistic price variations
+      // Create realistic crypto price movements with proper volatility
+      let basePrice = currentPrice;
+      
       for (let i = dataPoints - 1; i >= 0; i--) {
         const timestamp = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
         
-        // Create realistic price variations (±2% from current price)
-        const variation = (Math.random() - 0.5) * 0.04; // ±2%
-        const timeDecay = Math.random() * 0.02 * (i / dataPoints); // Slight historical decay
-        const price = currentPrice * (1 + variation - timeDecay);
+        // Create realistic volatility based on timeframe
+        let volatilityFactor = 0.05; // Default 5% variation per point
+        switch (timeframe) {
+          case "1H":
+            volatilityFactor = 0.02; // 2% for short-term
+            break;
+          case "1D":
+            volatilityFactor = 0.04; // 4% for daily
+            break;
+          case "7D":
+            volatilityFactor = 0.08; // 8% for weekly
+            break;
+          case "30D":
+            volatilityFactor = 0.12; // 12% for monthly (creates bigger swings)
+            break;
+        }
+        
+        // Create trending movements (not just random noise)
+        const trend = Math.sin(i / dataPoints * Math.PI * 2 + Math.random() * Math.PI) * 0.3;
+        const randomWalk = (Math.random() - 0.5) * volatilityFactor;
+        const totalVariation = trend + randomWalk;
+        
+        // Apply variation to base price and update base for next iteration
+        basePrice = basePrice * (1 + totalVariation);
+        
+        // Ensure we end up close to current price in final point
+        if (i === 0) {
+          basePrice = currentPrice;
+        }
         
         priceHistory.push({
           timestamp: timestamp.toISOString(),
-          price: Math.max(price, currentPrice * 0.95) // Ensure minimum 95% of current price
+          price: Math.max(basePrice, currentPrice * 0.3) // Prevent prices going below 30% of current
         });
       }
-      
-      // Ensure the last data point is the current authentic price
-      priceHistory[priceHistory.length - 1] = {
-        timestamp: now.toISOString(),
-        price: currentPrice
-      };
       
       res.json(priceHistory);
     } catch (error) {
