@@ -12,7 +12,10 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const baseUrl = getApiBaseUrl();
+  const fullUrl = url.startsWith('http') ? url : baseUrl + url;
+  
+  const res = await fetch(fullUrl, {
     method,
     headers: data ? { "Content-Type": "application/json" } : {},
     body: data ? JSON.stringify(data) : undefined,
@@ -24,13 +27,18 @@ export async function apiRequest(
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";
+import { getApiBaseUrl } from './environment.js';
+
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     try {
-      const url = queryKey.join("/") as string;
+      const apiPath = queryKey.join("/") as string;
+      const baseUrl = getApiBaseUrl();
+      const url = baseUrl + apiPath;
+      
       const res = await fetch(url, {
         credentials: "include",
       });

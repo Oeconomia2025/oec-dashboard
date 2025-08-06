@@ -57,6 +57,11 @@
   to = "/.netlify/functions/live-coin-watch-token"
   status = 200
 
+[[redirects]]
+  from = "/api/live-coin-watch/sync"
+  to = "/.netlify/functions/live-coin-watch-sync"
+  status = 200
+
 # SPA fallback
 [[redirects]]
   from = "/*"
