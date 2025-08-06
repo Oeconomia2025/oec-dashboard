@@ -130,8 +130,23 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
   const yTicks = calculateYTicks(priceHistory);
 
   const formatXAxis = (tickItem: any) => {
-    // Handle both timestamp formats: Unix timestamp and ISO string
-    const date = typeof tickItem === 'string' ? new Date(tickItem) : new Date(tickItem * 1000);
+    // Handle different timestamp formats properly
+    let date;
+    if (typeof tickItem === 'string') {
+      // ISO string format
+      date = new Date(tickItem);
+    } else if (tickItem > 1e12) {
+      // Already in milliseconds (like 1754433600000)
+      date = new Date(tickItem);
+    } else {
+      // Unix timestamp in seconds, convert to milliseconds
+      date = new Date(tickItem * 1000);
+    }
+    
+    if (isNaN(date.getTime())) {
+      return 'Invalid';
+    }
+    
     switch (timeframe) {
       case "1H":
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -283,7 +298,24 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                 <Tooltip 
                   formatter={formatTooltip}
                   labelFormatter={(value) => {
-                    const date = typeof value === 'string' ? new Date(value) : new Date(value * 1000);
+                    // Handle different timestamp formats properly
+                    let date;
+                    if (typeof value === 'string') {
+                      // ISO string format
+                      date = new Date(value);
+                    } else if (value > 1e12) {
+                      // Already in milliseconds (like 1754433600000)
+                      date = new Date(value);
+                    } else {
+                      // Unix timestamp in seconds, convert to milliseconds
+                      date = new Date(value * 1000);
+                    }
+                    
+                    // Ensure valid date
+                    if (isNaN(date.getTime())) {
+                      return 'Invalid Date';
+                    }
+                    
                     return date.toLocaleString();
                   }}
                   contentStyle={{
