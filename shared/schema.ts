@@ -211,7 +211,7 @@ export type InsertPriceHistoryData = z.infer<typeof insertPriceHistoryDataSchema
 
 // Default OEC token configuration
 export const TONE_TOKEN_CONFIG: TokenConfig = {
-  contractAddress: "0x55d398326f99059fF775485246999027B3197955", // Using USDT BSC as placeholder until OEC is deployed
+  contractAddress: "0x2170ed0880ac9a755fd29b2688956bd959f933f8", // ETH on BSC - authenticated contract from database
   operationsWallet: "0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed",
   buyFee: 5,
   sellFee: 5,
