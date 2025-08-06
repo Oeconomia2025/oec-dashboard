@@ -123,21 +123,7 @@ export function ETHHistoricalChart() {
 
   return (
     <div className="bg-crypto-card p-8 rounded-lg border border-crypto-border">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-xl font-semibold text-white">ETH Price Chart (Live Data)</h3>
-          {priceHistory.length > 0 && (
-            <div className="flex items-center space-x-4 mt-2">
-              <span className="text-2xl font-bold text-white">
-                ${priceHistory[priceHistory.length - 1]?.price.toFixed(2)}
-              </span>
-              <span className={`text-sm font-medium ${getChangeColor(priceChange)}`}>
-                {formatPercentage(priceChange)}
-              </span>
-            </div>
-          )}
-        </div>
-        
+      <div className="flex items-center justify-end mb-6">
         <div className="flex space-x-2">
           {timeframes.map((tf) => (
             <Button
@@ -227,9 +213,7 @@ export function ETHHistoricalChart() {
         </div>
       )}
       
-      <div className="mt-4 text-xs text-gray-400 text-center">
-        Live data from Live Coin Watch API • Updates every hour
-      </div>
+
     </div>
   );
 }
