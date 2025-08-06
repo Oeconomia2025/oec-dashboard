@@ -1,6 +1,18 @@
 import type { Handler } from '@netlify/functions';
-import { coinGeckoApiService } from './lib/services/coingecko-api';
-import type { PriceHistory } from './lib/shared/schema';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from '../../shared/schema.js';
+import { eq, and } from 'drizzle-orm';
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+}
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool, schema });
 
 export const handler: Handler = async (event, context) => {
   // Enable CORS
@@ -37,52 +49,87 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // Generate mock price history based on timeframe
-    const generatePriceHistory = (timeframe: string): PriceHistory[] => {
-      const basePrice = 0.999;
-      const now = Math.floor(Date.now() / 1000);
-      const data: PriceHistory[] = [];
+    // Try to get real historical data from database first
+    const historicalData = await db
+      .select()
+      .from(schema.priceHistoryData)
+      .where(and(
+        eq(schema.priceHistoryData.contractAddress, contractAddress.toLowerCase()),
+        eq(schema.priceHistoryData.timeframe, timeframe)
+      ))
+      .orderBy(schema.priceHistoryData.timestamp);
+
+    if (historicalData.length > 0) {
+      // Use real historical data
+      const priceHistory = historicalData.map(point => ({
+        timestamp: point.timestamp,
+        price: point.price,
+      }));
       
-      let intervals: number;
-      let timeStep: number;
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify(priceHistory),
+      };
+    }
+
+    // Fallback: Generate realistic price history based on known tokens
+    const generatePriceHistory = (contractAddress: string, timeframe: string) => {
+      const normalizedAddress = contractAddress.toLowerCase();
+      const knownTokens: Record<string, any> = {
+        "0x55d398326f99059ff775485246999027b3197955": { price: 1.00 },
+        "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": { price: 612.45 },
+        "0x2170ed0880ac9a755fd29b2688956bd959f933f8": { price: 3602.42 },
+        "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": { price: 0.9992 },
+        "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": { price: 88400.00 },
+        "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": { price: 2.57 },
+        "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": { price: 1.00 },
+        "0xe9e7cea3dedca5984780bafc599bd69add087d56": { price: 1.00 },
+        "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": { price: 18.45 },
+        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": { price: 0.85 }
+      };
+      
+      const currentPrice = knownTokens[normalizedAddress]?.price || 100;
+      const now = Date.now();
+      const data = [];
+      
+      let dataPoints = 24;
+      let intervalMinutes = 60;
       
       switch (timeframe) {
-        case '1H':
-          intervals = 60;
-          timeStep = 60; // 1 minute intervals
+        case "1H":
+          dataPoints = 12;
+          intervalMinutes = 5;
           break;
-        case '1D':
-          intervals = 288;
-          timeStep = 300; // 5 minute intervals
+        case "1D":
+          dataPoints = 24;
+          intervalMinutes = 60;
           break;
-        case '7D':
-          intervals = 168;
-          timeStep = 3600; // 1 hour intervals
+        case "7D":
+          dataPoints = 28;
+          intervalMinutes = 6 * 60;
           break;
-        case '30D':
-          intervals = 720;
-          timeStep = 3600; // 1 hour intervals
+        case "30D":
+          dataPoints = 30;
+          intervalMinutes = 24 * 60;
           break;
-        default:
-          intervals = 288;
-          timeStep = 300;
       }
       
-      for (let i = intervals; i >= 0; i--) {
-        const timestamp = now - (i * timeStep);
-        const variance = (Math.random() - 0.5) * 0.002; // ±0.1% variance
-        const price = basePrice + variance;
+      for (let i = dataPoints - 1; i >= 0; i--) {
+        const timestamp = now - (i * intervalMinutes * 60 * 1000);
+        const variation = (Math.random() - 0.5) * 0.06; // ±3% variation
+        const price = currentPrice * (1 + variation);
         
         data.push({
           timestamp,
-          price: Math.max(0.995, Math.min(1.005, price)), // Keep within reasonable bounds
+          price: Math.max(price, currentPrice * 0.92) // Ensure minimum 92% of current price
         });
       }
       
       return data;
     };
 
-    const priceHistory = generatePriceHistory(timeframe);
+    const priceHistory = generatePriceHistory(contractAddress, timeframe);
 
     return {
       statusCode: 200,

@@ -41,8 +41,20 @@ export function useNetworkStatus() {
 }
 
 export function usePriceHistory(contractAddress: string, timeframe: string = "1D") {
+  // Use the correct API endpoint based on environment
+  const apiEndpoint = window.location.hostname === 'localhost' 
+    ? `/api/price-history/${contractAddress}/${timeframe}`
+    : `/.netlify/functions/price-history/${contractAddress}/${timeframe}`;
+
   return useQuery<PriceHistory[]>({
-    queryKey: ["/api/price-history", contractAddress, timeframe],
+    queryKey: ["price-history", contractAddress, timeframe],
+    queryFn: async () => {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     enabled: !!contractAddress,
     retry: false,
