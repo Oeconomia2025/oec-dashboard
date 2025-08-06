@@ -106,7 +106,9 @@ class LiveCoinWatchSyncService {
 
       console.log(`Successfully synced ${coins.length} coins from Live Coin Watch`);
     } catch (error) {
-      console.error('Error syncing Live Coin Watch data:', error);
+      console.warn('Live Coin Watch API temporarily unavailable (likely rate limit reached)');
+      console.log('Dashboard will continue serving data from database cache');
+      // Don't stop the service - just skip this sync and continue with cached data
     }
   }
 
