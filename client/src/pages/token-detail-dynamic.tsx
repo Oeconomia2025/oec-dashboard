@@ -112,7 +112,7 @@ export default function TokenDetailDynamic() {
 
   return (
     <Layout
-      tokenLogo={getCryptoLogo(tokenCode, tokenData.symbol)}
+      tokenLogo={tokenData.logo || getCryptoLogo(tokenCode, tokenData.symbol)}
       tokenWebsite={tokenData.website}
       tokenTicker={tokenData.symbol || tokenCode}
       tokenName={cleanCoinName(tokenData.name)}
