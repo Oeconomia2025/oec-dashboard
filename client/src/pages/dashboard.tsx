@@ -37,7 +37,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
           <div className="lg:col-span-2">
-            <PriceChart contractAddress={contractAddress} />
+            <PriceChart contractAddress={contractAddress} tokenSymbol={tokenData?.symbol || "USDT"} />
             
             {/* Volume and Liquidity Analytics */}
             <VolumeLiquidityAnalytics contractAddress={contractAddress} />

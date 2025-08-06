@@ -317,7 +317,7 @@ export default function TokenDetail() {
           {/* Chart Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
-              <PriceChart contractAddress={tokenData.contractAddress || "0x55d398326f99059fF775485246999027B3197955"} />
+              <PriceChart contractAddress={tokenData.contractAddress || "0x55d398326f99059fF775485246999027B3197955"} tokenSymbol={tokenData.symbol} />
             </div>
             
             <div className="space-y-6">

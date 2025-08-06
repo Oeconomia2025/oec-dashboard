@@ -5,15 +5,21 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { usePriceHistory } from "@/hooks/use-token-data";
+import { getTokenColor, getChartGradientId } from "@/utils/token-colors";
 import type { PriceHistory } from "@shared/schema";
 
 interface PriceChartProps {
   contractAddress: string;
+  tokenSymbol?: string;
 }
 
-export function PriceChart({ contractAddress }: PriceChartProps) {
+export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT" }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
   const { data: rawPriceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
+  
+  // Get dynamic colors for this token
+  const tokenColor = getTokenColor(tokenSymbol);
+  const gradientId = getChartGradientId(tokenSymbol);
 
   // Smooth the data by reducing data points for cleaner curves
   const smoothPriceData = (data: PriceHistory[] | undefined): PriceHistory[] => {
@@ -108,10 +114,10 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={priceHistory}>
                 <defs>
-                  <linearGradient id="areaGradientDashboard" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--crypto-green)" stopOpacity={1.0}/>
-                    <stop offset="25%" stopColor="var(--crypto-green)" stopOpacity={1.0}/>
-                    <stop offset="100%" stopColor="var(--crypto-green)" stopOpacity={0.0}/>
+                  <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={tokenColor} stopOpacity={1.0}/>
+                    <stop offset="25%" stopColor={tokenColor} stopOpacity={1.0}/>
+                    <stop offset="100%" stopColor={tokenColor} stopOpacity={0.0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--crypto-border)" />
@@ -143,11 +149,11 @@ export function PriceChart({ contractAddress }: PriceChartProps) {
                 <Area 
                   type="monotone" 
                   dataKey="price" 
-                  stroke="var(--crypto-green)" 
+                  stroke={tokenColor} 
                   strokeWidth={2}
-                  fill="url(#areaGradientDashboard)"
+                  fill={`url(#${gradientId})`}
                   dot={false}
-                  activeDot={{ r: 4, fill: "var(--crypto-green)" }}
+                  activeDot={{ r: 4, fill: tokenColor }}
                   connectNulls={true}
                 />
               </AreaChart>

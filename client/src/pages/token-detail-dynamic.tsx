@@ -244,7 +244,7 @@ export default function TokenDetailDynamic() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0">
-            <PriceChart contractAddress={tokenData.contractAddress} />
+            <PriceChart contractAddress={tokenData.contractAddress} tokenSymbol={tokenData.symbol} />
           </CardContent>
         </Card>
 
