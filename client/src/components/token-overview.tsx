@@ -56,11 +56,18 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
-            <DollarSign className="text-gray-300 w-5 h-5" />
+            <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
+              ((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 
+                ? 'bg-green-600/70 text-green-100' 
+                : 'bg-red-600/70 text-red-100'
+            }`}>
+              {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
+              {(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}%
+            </span>
           </div>
           <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(tokenData.rate || tokenData.price || 0)}</div>
           <div className="text-sm text-gray-400 mt-2">
-            {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}{(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}% today
+            24h Change
           </div>
         </div>
       </Card>
