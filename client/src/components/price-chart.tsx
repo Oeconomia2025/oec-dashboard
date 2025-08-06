@@ -172,9 +172,16 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                   fontSize={12}
                 />
                 <YAxis 
-                  domain={['dataMin * 0.99', 'dataMax * 1.01']}
-                  tickCount={6}
-                  tickFormatter={(value) => `${value.toFixed(0)}`}
+                  domain={['dataMin * 0.995', 'dataMax * 1.005']}
+                  tickCount={5}
+                  interval="preserveStartEnd"
+                  tickFormatter={(value) => {
+                    // Better formatting based on value range
+                    if (value >= 1000) return `${(value/1000).toFixed(1)}k`;
+                    if (value >= 100) return value.toFixed(1);
+                    if (value >= 1) return value.toFixed(2);
+                    return value.toFixed(4);
+                  }}
                   stroke="#9CA3AF"
                   fontSize={12}
                 />
