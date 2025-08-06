@@ -39,6 +39,11 @@ export default function TokenDetailDynamic() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const truncateAddress = (address: string) => {
+    if (address.length <= 10) return address;
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
   const formatNumber = (num: number | undefined) => {
     if (num === undefined || num === null) return "0";
     if (num >= 1e12) return `${(num / 1e12).toFixed(2)}T`;
@@ -215,7 +220,7 @@ export default function TokenDetailDynamic() {
             className="border-crypto-blue text-crypto-blue hover:bg-crypto-blue/10"
           >
             {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-            {copied ? 'Copied!' : 'Copy Address'}
+            {copied ? 'Copied!' : truncateAddress(tokenData.contractAddress)}
           </Button>
           
           {tokenData.website && (
