@@ -13,8 +13,27 @@ export async function apiRequest(
   data?: unknown | undefined,
 ): Promise<Response> {
   // FORCE NETLIFY FUNCTIONS: Convert all API calls to use Netlify functions
-  const fullUrl = url.startsWith('http') ? url : 
-    url.startsWith('/api/') ? `/.netlify/functions/${url.replace('/api/', '').replace('/', '-')}` : url;
+  let fullUrl = url;
+  if (!url.startsWith('http')) {
+    if (url.startsWith('/api/')) {
+      const cleanPath = url.replace('/api/', '');
+      if (cleanPath.startsWith('price-history/')) {
+        // Handle price-history with contract and timeframe
+        const parts = cleanPath.split('/');
+        const contract = parts[1];
+        const timeframe = parts[2] || '1D';
+        fullUrl = `/.netlify/functions/price-history?contract=${contract}&timeframe=${timeframe}`;
+      } else if (cleanPath.startsWith('live-coin-watch/')) {
+        // Handle live-coin-watch endpoints
+        fullUrl = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
+      } else {
+        // Handle other endpoints
+        fullUrl = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
+      }
+    } else {
+      fullUrl = url;
+    }
+  }
   
   const res = await fetch(fullUrl, {
     method,
@@ -38,8 +57,23 @@ export const getQueryFn: <T>(options: {
     try {
       const apiPath = queryKey.join("/") as string;
       // FORCE NETLIFY FUNCTIONS: Convert all API calls to use Netlify functions
-      const url = apiPath.startsWith('/api/') ? 
-        `/.netlify/functions/${apiPath.replace('/api/', '').replace('/', '-')}` : apiPath;
+      let url = apiPath;
+      if (apiPath.startsWith('/api/')) {
+        const cleanPath = apiPath.replace('/api/', '');
+        if (cleanPath.startsWith('price-history/')) {
+          // Handle price-history with contract and timeframe
+          const parts = cleanPath.split('/');
+          const contract = parts[1];
+          const timeframe = parts[2] || '1D';
+          url = `/.netlify/functions/price-history?contract=${contract}&timeframe=${timeframe}`;
+        } else if (cleanPath.startsWith('live-coin-watch/')) {
+          // Handle live-coin-watch endpoints
+          url = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
+        } else {
+          // Handle other endpoints
+          url = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
+        }
+      }
       
       const res = await fetch(url, {
         credentials: "include",

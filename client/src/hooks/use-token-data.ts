@@ -41,24 +41,8 @@ export function useNetworkStatus() {
 }
 
 export function usePriceHistory(contractAddress: string, timeframe: string = "1D") {
-  // FORCE NETLIFY FUNCTIONS: Always use Netlify functions, never connect to Replit
-  const apiEndpoint = `/.netlify/functions/price-history?contract=${contractAddress}&timeframe=${timeframe}`;
-
   return useQuery<PriceHistory[]>({
-    queryKey: ["price-history", contractAddress, timeframe],
-    queryFn: async () => {
-      const response = await fetch(apiEndpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      console.log("usePriceHistory API Response:", { 
-        url: apiEndpoint, 
-        dataLength: data?.length, 
-        firstItem: data?.[0] 
-      });
-      return data;
-    },
+    queryKey: ["/api/price-history", contractAddress, timeframe],
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     enabled: !!contractAddress,
     retry: false,
