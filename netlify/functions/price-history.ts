@@ -73,23 +73,43 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // Fallback: Generate realistic price history based on known tokens
-    const generatePriceHistory = (contractAddress: string, timeframe: string) => {
+    // Fallback: Generate realistic price history using current Live Coin Watch prices
+    const generatePriceHistory = async (contractAddress: string, timeframe: string) => {
       const normalizedAddress = contractAddress.toLowerCase();
-      const knownTokens: Record<string, any> = {
-        "0x55d398326f99059ff775485246999027b3197955": { price: 1.00 },
-        "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": { price: 612.45 },
-        "0x2170ed0880ac9a755fd29b2688956bd959f933f8": { price: 3602.42 },
-        "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": { price: 0.9992 },
-        "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": { price: 88400.00 },
-        "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": { price: 2.57 },
-        "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": { price: 1.00 },
-        "0xe9e7cea3dedca5984780bafc599bd69add087d56": { price: 1.00 },
-        "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": { price: 18.45 },
-        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": { price: 0.85 }
+      let currentPrice = 100; // fallback
+      
+      // Map contract addresses to Live Coin Watch token codes
+      const contractToCodeMap: Record<string, string> = {
+        "0x55d398326f99059ff775485246999027b3197955": "USDT",
+        "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": "BNB", 
+        "0x2170ed0880ac9a755fd29b2688956bd959f933f8": "ETH",
+        "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d": "USDC",
+        "0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c": "BTC",
+        "0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82": "CAKE",
+        "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": "DAI",
+        "0xe9e7cea3dedca5984780bafc599bd69add087d56": "BUSD",
+        "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "LINK",
+        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "ADA"
       };
       
-      const currentPrice = knownTokens[normalizedAddress]?.price || 100;
+      const tokenCode = contractToCodeMap[normalizedAddress];
+      
+      if (tokenCode) {
+        try {
+          // Get current Live Coin Watch price for this token
+          const liveCoinData = await db
+            .select()
+            .from(schema.liveCoinWatchCoins)
+            .where(eq(schema.liveCoinWatchCoins.code, tokenCode))
+            .limit(1);
+            
+          if (liveCoinData.length > 0) {
+            currentPrice = liveCoinData[0].rate;
+          }
+        } catch (error) {
+          console.error(`Error fetching Live Coin Watch price for ${tokenCode}:`, error);
+        }
+      }
       const now = Date.now();
       const data = [];
       
@@ -129,7 +149,7 @@ export const handler: Handler = async (event, context) => {
       return data;
     };
 
-    const priceHistory = generatePriceHistory(contractAddress, timeframe);
+    const priceHistory = await generatePriceHistory(contractAddress, timeframe);
 
     return {
       statusCode: 200,
