@@ -115,7 +115,8 @@ export default function TokenDetailDynamic() {
   console.log('Token detail page - tokenData.logo:', tokenData.logo);
   console.log('Token detail page - tokenData.symbol:', tokenData.symbol);
   
-  const resolvedLogo = tokenData.logo || getCryptoLogo(tokenCode, tokenData.symbol);
+  // FORCE CRYPTO-LOGOS MAPPING: Always use the local mapping, ignore database logo to prevent inconsistencies
+  const resolvedLogo = getCryptoLogo(tokenCode, tokenData.symbol);
   console.log('Token detail page - resolved logo:', resolvedLogo);
 
   return (
