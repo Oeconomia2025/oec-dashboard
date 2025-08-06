@@ -141,10 +141,14 @@ export default function TokenDetailDynamic() {
                   copyToClipboard(tokenData.contractAddress);
                 }
               }}
-              className="text-gray-400 hover:text-white border-gray-600 hover:border-gray-500"
+              className={`border-gray-600 hover:border-gray-500 ${
+                copied 
+                  ? 'text-green-400 border-green-400/50' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
             >
-              {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-              {copied ? "Copied!" : tokenData.contractAddress}
+              {copied ? <Check className="w-4 h-4 mr-2 text-green-400" /> : <Copy className="w-4 h-4 mr-2" />}
+              <span className={copied ? 'text-green-400' : ''}>{tokenData.contractAddress}</span>
             </Button>
             <Button
               size="sm"

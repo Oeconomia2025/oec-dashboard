@@ -332,12 +332,14 @@ export default function TokenDetail() {
                     {tokenData.contractAddress ? (
                       <button
                         onClick={() => copyToClipboard(tokenData.contractAddress!)}
-                        className="flex items-center space-x-2 text-white font-mono text-sm hover:text-crypto-blue transition-colors cursor-pointer group"
+                        className={`flex items-center space-x-2 font-mono text-sm transition-colors cursor-pointer group ${
+                          copied ? 'text-green-400' : 'text-white hover:text-crypto-blue'
+                        }`}
                         title="Click to copy full contract address"
                       >
-                        <span>{`${tokenData.contractAddress.slice(0, 6)}...${tokenData.contractAddress.slice(-4)}`}</span>
+                        <span className={copied ? 'text-green-400' : ''}>{`${tokenData.contractAddress.slice(0, 6)}...${tokenData.contractAddress.slice(-4)}`}</span>
                         {copied ? (
-                          <Check className="w-3 h-3 text-green-500" />
+                          <Check className="w-3 h-3 text-green-400" />
                         ) : (
                           <Copy className="w-3 h-3 text-gray-400 group-hover:text-crypto-blue transition-colors" />
                         )}
