@@ -431,6 +431,16 @@ export function Layout({
             </div>
             
             <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSupportOpen(true)}
+                className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 group"
+                title="Support Development"
+              >
+                <Heart className="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors fill-current" />
+              </Button>
+              
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
@@ -468,16 +478,6 @@ export function Layout({
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSupportOpen(true)}
-                className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-cyan-500 hover:to-purple-600 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 group"
-                title="Support Development"
-              >
-                <Heart className="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors fill-current" />
-              </Button>
               
               <Button
                 variant="ghost"
