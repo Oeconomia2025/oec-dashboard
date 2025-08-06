@@ -92,7 +92,7 @@ export default function TokenDetailDynamic() {
             </p>
             <Button
               variant="outline"
-              onClick={() => setLocation("/live-coin-watch")}
+              onClick={() => setLocation("/liquidity?tab=tokens")}
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               View Available Tokens
@@ -112,11 +112,11 @@ export default function TokenDetailDynamic() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setLocation("/live-coin-watch")}
+              onClick={() => setLocation("/liquidity?tab=tokens")}
               className="text-gray-400 hover:text-white"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Live Coin Watch
+              Back to Tokens
             </Button>
           </div>
           
