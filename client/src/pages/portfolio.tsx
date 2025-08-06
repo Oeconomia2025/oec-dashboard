@@ -125,23 +125,7 @@ export function Portfolio() {
   }
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
-  // Calculate total portfolio value - only from actual token balances
-  const totalTokenValue = tokenBalances?.reduce((sum: number, token: TokenBalance) => {
-    return sum + (token.value || 0)
-  }, 0) || 0
-
-  // Get real BNB price from Live Coin Watch
-  const { data: bnbPriceData } = useQuery({
-    queryKey: ['/api/live-coin-watch/token/BNB'],
-    refetchInterval: 60000, // Refresh every 60 seconds
-  })
-
-  const bnbPrice = (bnbPriceData as any)?.price || 0
-  const bnbValue = bnbBalance && bnbBalance.formatted ? 
-    (parseFloat(bnbBalance.formatted) || 0) * bnbPrice : 0
-  
-  // Calculate pools/farms value
-  const poolsFarmsValue = poolsFarms.reduce((sum, item) => sum + item.userValue, 0)
+  // Remove portfolio value calculations
   
   // Total rewards value
   const totalRewardsValue = poolsFarms.reduce((sum, item) => {
@@ -177,14 +161,14 @@ export function Portfolio() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-gray-200 text-sm font-medium">Total Portfolio Value</h3>
-                <DollarSign className="text-gray-300 w-5 h-5" />
+                <h3 className="text-gray-200 text-sm font-medium">Portfolio Overview</h3>
+                <PieChart className="text-gray-300 w-5 h-5" />
               </div>
               <div className="text-2xl font-bold text-white drop-shadow-sm">
-                {formatPrice((totalTokenValue || 0) + (bnbValue || 0) + (poolsFarmsValue || 0))}
+                Dashboard
               </div>
               <div className="text-sm text-gray-400 mt-2">
-                Including {poolsFarms.length} DeFi positions
+                Track your DeFi positions
               </div>
             </div>
           </Card>
@@ -318,7 +302,7 @@ export function Portfolio() {
                       </div>
                       <div className="text-right">
                         <div className="font-medium">{formatNumber(parseFloat(bnbBalance.formatted || '0'))} BNB</div>
-                        <div className="text-sm text-gray-400">≈ {formatPrice(bnbValue)}</div>
+                        <div className="text-sm text-gray-400">Native BNB</div>
                       </div>
                     </div>
                   )}
