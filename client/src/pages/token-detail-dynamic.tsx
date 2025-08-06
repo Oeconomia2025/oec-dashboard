@@ -144,7 +144,7 @@ export default function TokenDetailDynamic() {
               className="text-gray-400 hover:text-white border-gray-600 hover:border-gray-500"
             >
               {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-              {copied ? "Copied!" : "Copy Address"}
+              {copied ? "Copied!" : tokenData.contractAddress}
             </Button>
             <Button
               size="sm"
