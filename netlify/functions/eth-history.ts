@@ -36,16 +36,8 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    // Extract timeframe from path
-    const timeframe = event.path.split('/').pop();
-    
-    if (!timeframe) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ message: 'Timeframe is required' }),
-      };
-    }
+    // Extract timeframe from query parameters
+    const timeframe = event.queryStringParameters?.timeframe || '1D';
 
     // Fetch ETH historical data from database
     const historicalData = await db

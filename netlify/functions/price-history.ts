@@ -36,10 +36,9 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
-    // Extract contract address and timeframe from path
-    const pathParts = event.path.split('/');
-    const contractAddress = pathParts[pathParts.length - 2];
-    const timeframe = pathParts[pathParts.length - 1] || '1D';
+    // Extract contract address and timeframe from query parameters
+    const contractAddress = event.queryStringParameters?.contract;
+    const timeframe = event.queryStringParameters?.timeframe || '1D';
     
     if (!contractAddress) {
       return {

@@ -22,23 +22,27 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
   // Use different API endpoints based on token
   const isETH = tokenSymbol === "ETH";
   
-  // For ETH, use the specialized endpoint, for others use the generic one
+  // FORCE NETLIFY FUNCTIONS: Always use Netlify functions for all API calls
   const apiEndpoint = isETH 
-    ? (window.location.hostname === 'localhost' 
-        ? `/api/eth-history/${timeframe}`
-        : `/.netlify/functions/eth-history/${timeframe}`)
-    : (window.location.hostname === 'localhost' 
-        ? `/api/price-history/${contractAddress}/${timeframe}`
-        : `/.netlify/functions/price-history/${contractAddress}/${timeframe}`);
+    ? `/.netlify/functions/eth-history?timeframe=${timeframe}`
+    : `/.netlify/functions/price-history?contract=${contractAddress}&timeframe=${timeframe}`;
 
   const { data: rawPriceHistory, isLoading, error } = useQuery<PriceHistory[]>({
     queryKey: isETH ? ["eth-history", timeframe] : ["price-history", contractAddress, timeframe],
     queryFn: async () => {
       const response = await fetch(apiEndpoint);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        console.warn(`No historical data available for ${tokenSymbol} (${response.status})`);
+        return []; // Return empty array instead of throwing error
       }
       const data = await response.json();
+      
+      // Ensure we always return an array
+      if (!Array.isArray(data)) {
+        console.warn(`Invalid data format for ${tokenSymbol}:`, data);
+        return [];
+      }
+      
       console.log("Chart API Response:", { 
         token: tokenSymbol,
         url: apiEndpoint, 
