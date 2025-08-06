@@ -400,7 +400,9 @@ export function Layout({
                       </a>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+                  {!tokenTicker && (
+                    <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+                  )}
                 </div>
               </div>
             </div>
