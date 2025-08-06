@@ -667,6 +667,25 @@ export function Layout({
                       {copiedAddress === 'btc' ? '✓ Copied!' : 'bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r'}
                     </div>
                   </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium min-w-[120px]">CashApp:</span>
+                    <div 
+                      className={`font-mono text-xs p-2 rounded break-all cursor-pointer transition-all duration-300 flex-1 ${
+                        copiedAddress === 'cashapp' 
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
+                          : 'bg-black/30 hover:bg-black/50'
+                      }`}
+                      onClick={() => {
+                        navigator.clipboard.writeText('$oooJASONooo');
+                        setCopiedAddress('cashapp');
+                        setTimeout(() => setCopiedAddress(null), 2000);
+                      }}
+                      title="Click to copy CashApp tag"
+                    >
+                      {copiedAddress === 'cashapp' ? '✓ Copied!' : '$oooJASONooo'}
+                    </div>
+                  </div>
                 </div>
               </div>
               
