@@ -234,9 +234,6 @@ export default function TokenDetailDynamic() {
                   </div>
                 )}
               </div>
-              <Badge variant="outline" className="border-crypto-blue text-crypto-blue">
-                Real-time Data
-              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0">

@@ -71,7 +71,6 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT" }: PriceCh
       <Card className="crypto-card p-6 border bg-crypto-card">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
-            <h2 className="text-xl font-semibold">Price Chart</h2>
           </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (
