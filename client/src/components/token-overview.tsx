@@ -62,15 +62,15 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
             <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-              ((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 
+              ((tokenData as any).priceChangePercent24h || 0) >= 0 
                 ? 'bg-green-600/70 text-green-100' 
                 : 'bg-red-600/70 text-red-100'
             }`}>
-              {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
-              {(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}%
+              {((tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
+              {((tokenData as any).priceChangePercent24h || 0).toFixed(1)}%
             </span>
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(tokenData.rate || tokenData.price || 0)}</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(tokenData.price || 0)}</div>
           <div className="text-sm text-gray-400 mt-2">
             24h Change
           </div>
@@ -87,7 +87,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           </div>
           <div className="text-2xl font-bold text-white drop-shadow-sm">${formatMarketCap((tokenData as any).cap || (tokenData as any).marketCap || 0)}</div>
           <div className="text-sm text-gray-400 mt-2">
-            Total Supply: {(tokenData as any).totalSupply ? formatSupply((tokenData as any).totalSupply) : 'N/A'}
+            Total Supply: {(tokenData as any).totalSupply ? formatNumber((tokenData as any).totalSupply) : 'N/A'} {tokenData.symbol}
           </div>
         </div>
       </Card>
@@ -107,16 +107,16 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
         </div>
       </Card>
 
-      {/* Liquidity Card */}
+      {/* Circulating Supply Card */}
       <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-200 text-sm font-medium">Liquidity Pool</h3>
-            <Droplets className="text-gray-300 w-5 h-5" />
+            <h3 className="text-gray-200 text-sm font-medium">Circulating Supply</h3>
+            <DollarSign className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatLiquidity((tokenData as any).liquidity || 0)}</div>
-          <div className="text-sm text-gray-400 mt-2">PancakeSwap V2</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">{formatNumber((tokenData as any).circulatingSupply || 0)}</div>
+          <div className="text-sm text-gray-400 mt-2">{tokenData.symbol} in circulation</div>
         </div>
       </Card>
     </div>
