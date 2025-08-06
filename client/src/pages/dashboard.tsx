@@ -44,7 +44,12 @@ export default function Dashboard() {
   };
 
   // Use Live Coin Watch ETH data as default for TokenOverview
-  const defaultTokenData = liveCoinData?.coins?.find((coin: any) => coin.code === "ETH");
+  const { data: ethTokenData, isLoading: isEthLoading } = useQuery({
+    queryKey: ['/api/live-coin-watch/token/ETH'],
+    refetchInterval: 60 * 1000, // Refresh every minute
+  });
+
+  const defaultTokenData = ethTokenData as any;
 
 
 
@@ -53,7 +58,7 @@ export default function Dashboard() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
           {/* Token Overview Cards - Use Live Data */}
-          <TokenOverview tokenData={defaultTokenData} isLoading={isLiveCoinLoading} />
+          <TokenOverview tokenData={defaultTokenData} isLoading={isEthLoading} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
@@ -68,7 +73,7 @@ export default function Dashboard() {
           </div>
 
           {/* Token Information Panel */}
-          <TokenInfoPanel tokenData={defaultTokenData} isLoading={isLiveCoinLoading} />
+          <TokenInfoPanel tokenData={defaultTokenData} isLoading={isEthLoading} />
           </div>
 
           {/* Recent Transactions Table */}
