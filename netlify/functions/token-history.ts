@@ -52,7 +52,10 @@ export const handler: Handler = async (event) => {
 
     // Fetch token historical data from database (same table as ETH)
     const historicalData = await db
-      .select()
+      .select({
+        timestamp: schema.priceHistoryData.timestamp,
+        price: schema.priceHistoryData.price
+      })
       .from(schema.priceHistoryData)
       .where(and(
         eq(schema.priceHistoryData.tokenCode, tokenCode.toUpperCase()),
@@ -60,12 +63,13 @@ export const handler: Handler = async (event) => {
       ))
       .orderBy(schema.priceHistoryData.timestamp);
 
-    // Transform data to match expected format
-    const formattedData = historicalData.map(record => ({
-      timestamp: record.timestamp,
-      price: record.price
-    }));
+    // Data is already in correct format from select
+    const formattedData = historicalData;
 
+    // Debug logging
+    console.log(`Found ${formattedData.length} records for ${tokenCode} ${timeframe}`);
+    console.log('Sample data:', formattedData.slice(0, 2));
+    
     // If no data found, return empty array to prevent synthetic data
     if (formattedData.length === 0) {
       console.log(`No ${tokenCode} historical data found for timeframe: ${timeframe}, returning empty data`);
