@@ -574,41 +574,66 @@ export function Layout({
 
             <div className="space-y-4 mb-6">
               <p className="text-gray-300">
-                Support the development of this project as funds are needed for operations, server, database, API, and node upgrades, as well as general help so that I can continue to work diligently on this project.
+                Your support helps fund essential infrastructure including servers, databases, APIs, and blockchain node operations. These resources are critical for maintaining the platform's performance and reliability.
               </p>
               
               <p className="text-gray-300">
-                I also have marketing needs that I will be addressing in the coming days. Your support helps ensure continued development and improvement of the Oeconomia ecosystem.
+                Additionally, upcoming marketing initiatives will help expand the Oeconomia ecosystem and reach new users. Every contribution directly supports continued development and innovation.
               </p>
 
               <div className="bg-gradient-to-r from-pink-500/10 to-red-500/10 border border-pink-500/30 rounded-lg p-4 space-y-3">
-                <h3 className="text-sm font-semibold text-pink-400 mb-2">Donation Addresses:</h3>
+                <h3 className="text-sm font-semibold text-pink-400 mb-2">Donation Addresses (Click to Copy):</h3>
                 
                 <div className="space-y-2 text-sm">
                   <div>
-                    <span className="text-gray-400 font-medium">EVM:</span>
-                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                    <span className="text-gray-400 font-medium">EVM Networks:</span>
+                    <div 
+                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText('0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed');
+                        // You could add a toast notification here if desired
+                      }}
+                      title="Click to copy address"
+                    >
                       0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed
                     </div>
                   </div>
                   
                   <div>
-                    <span className="text-gray-400 font-medium">SOL:</span>
-                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                    <span className="text-gray-400 font-medium">Solana:</span>
+                    <div 
+                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText('HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx');
+                      }}
+                      title="Click to copy address"
+                    >
                       HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx
                     </div>
                   </div>
                   
                   <div>
-                    <span className="text-gray-400 font-medium">SUI:</span>
-                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                    <span className="text-gray-400 font-medium">Sui Network:</span>
+                    <div 
+                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText('0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe');
+                      }}
+                      title="Click to copy address"
+                    >
                       0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe
                     </div>
                   </div>
                   
                   <div>
-                    <span className="text-gray-400 font-medium">BTC:</span>
-                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                    <span className="text-gray-400 font-medium">Bitcoin:</span>
+                    <div 
+                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      onClick={() => {
+                        navigator.clipboard.writeText('bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r');
+                      }}
+                      title="Click to copy address"
+                    >
                       bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r
                     </div>
                   </div>
@@ -617,7 +642,7 @@ export function Layout({
               
               <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
                 <p className="text-sm text-green-400">
-                  <strong>Thank you!</strong> Help will not be forgotten nor ignored. If I am in a position to give back, I will.
+                  <strong>Thank you for your support!</strong> Every contribution is deeply appreciated and will be remembered. When the opportunity arises, I am committed to giving back to the community.
                 </p>
               </div>
             </div>
