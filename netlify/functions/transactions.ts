@@ -1,7 +1,6 @@
 import type { Handler } from '@netlify/functions';
-import { bscApiService } from './lib/services/bsc-api';
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (event) => {
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -34,13 +33,32 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    const limit = parseInt(event.queryStringParameters?.limit || '20');
-    const transactions = await bscApiService.getTokenTransactions(contractAddress, limit);
+    // Return static transaction data (matches server implementation)
+    const staticTransactions = [
+      {
+        hash: "0x1234567890abcdef1234567890abcdef12345678",
+        from_address: "0x9876543210fedcba9876543210fedcba98765432",
+        to_address: "0xabcdef1234567890abcdef1234567890abcdef12",
+        value: "1000000000000000000",
+        transaction_fee: "21000",
+        block_timestamp: new Date(Date.now() - 300000).toISOString(),
+        block_number: "38234567"
+      },
+      {
+        hash: "0xabcdef1234567890abcdef1234567890abcdef12",
+        from_address: "0x1111222233334444555566667777888899990000",
+        to_address: "0x0000999988887777666655554444333322221111",
+        value: "2500000000000000000",
+        transaction_fee: "21000",
+        block_timestamp: new Date(Date.now() - 600000).toISOString(),
+        block_number: "38234566"
+      }
+    ];
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(transactions),
+      body: JSON.stringify(staticTransactions),
     };
   } catch (error) {
     console.error("Error fetching transactions:", error);
