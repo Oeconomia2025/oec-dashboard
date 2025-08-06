@@ -297,22 +297,24 @@ export function Portfolio() {
           {holdingsExpanded && (
             <div>
               {balancesLoading ? (
-                <div className="space-y-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <div key={i} className="flex items-center justify-between p-2 bg-[var(--crypto-dark)]/50 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <Skeleton className="w-7 h-7 rounded-full" />
-                        <div>
-                          <Skeleton className="h-4 w-20 mb-1" />
-                          <Skeleton className="h-3 w-16" />
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Skeleton className="h-4 w-24 mb-1" />
-                        <Skeleton className="h-3 w-16" />
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex flex-col items-center justify-center py-12">
+                  <div className="relative">
+                    <img 
+                      src="/oec-logo.png" 
+                      alt="OEC Logo" 
+                      className="w-16 h-16 animate-pulse"
+                      style={{
+                        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-600/20 rounded-full animate-ping"></div>
+                  </div>
+                  <p className="text-gray-400 mt-4 text-lg font-medium">Loading</p>
+                  <div className="flex space-x-1 mt-2">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-1">
