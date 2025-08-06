@@ -473,10 +473,10 @@ export function Layout({
                 variant="ghost"
                 size="sm"
                 onClick={() => setSupportOpen(true)}
-                className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
+                className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 group"
                 title="Support Development"
               >
-                <Heart className="w-5 h-5 text-red-500" />
+                <Heart className="w-5 h-5 text-red-500 group-hover:text-white transition-colors fill-current" />
               </Button>
               
               <Button
