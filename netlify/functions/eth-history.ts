@@ -2,7 +2,7 @@ import type { Handler } from '@netlify/functions';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import * as schema from '../../shared/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
@@ -51,8 +51,10 @@ export const handler: Handler = async (event) => {
     const historicalData = await db
       .select()
       .from(schema.priceHistoryData)
-      .where(eq(schema.priceHistoryData.tokenCode, 'ETH'))
-      .where(eq(schema.priceHistoryData.timeframe, timeframe))
+      .where(and(
+        eq(schema.priceHistoryData.tokenCode, 'ETH'),
+        eq(schema.priceHistoryData.timeframe, timeframe)
+      ))
       .orderBy(schema.priceHistoryData.timestamp);
 
     // Transform data to match expected format

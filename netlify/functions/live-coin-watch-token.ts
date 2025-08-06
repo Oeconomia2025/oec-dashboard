@@ -1,113 +1,97 @@
 import type { Handler } from '@netlify/functions';
-import { db } from './lib/shared/db.js';
-import { liveCoinWatchCoins } from './lib/shared/schema';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from '../../shared/schema.js';
 import { eq } from 'drizzle-orm';
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+}
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool, schema });
 
 export const handler: Handler = async (event) => {
-  // Only allow GET requests
+  // Enable CORS
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+    'Content-Type': 'application/json',
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+
   if (event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'Method Not Allowed' }),
+      headers,
+      body: JSON.stringify({ message: 'Method not allowed' }),
     };
   }
 
   try {
-    // Extract token code from path
+    // Extract token code from path (e.g., /api/live-coin-watch/token/ETH)
     const pathParts = event.path.split('/');
-    const tokenCode = pathParts[pathParts.length - 1]?.toUpperCase();
+    const tokenCode = pathParts[pathParts.length - 1];
     
     if (!tokenCode) {
       return {
         statusCode: 400,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify({ message: 'Token code is required' }),
       };
     }
 
-    // Find the token in database
+    // Fetch token data from database
     const [tokenData] = await db
       .select()
-      .from(liveCoinWatchCoins)
-      .where(eq(liveCoinWatchCoins.code, tokenCode))
+      .from(schema.liveCoinWatchCoins)
+      .where(eq(schema.liveCoinWatchCoins.code, tokenCode))
       .limit(1);
 
     if (!tokenData) {
       return {
         statusCode: 404,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message: 'Token not found' }),
+        headers,
+        body: JSON.stringify({ message: `Token ${tokenCode} not found` }),
       };
     }
 
-    // Map to BSC contract addresses for supported tokens
-    const contractMapping: Record<string, string> = {
-      'BTC': '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
-      'ETH': '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
-      'USDT': '0x55d398326f99059ff775485246999027b3197955',
-      'USDC': '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-      'LINK': '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd',
-      'ADA': '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
-    };
-
-    // Convert to TokenData format
+    // Transform database data to match expected API format
     const response = {
-      id: contractMapping[tokenCode] || tokenCode,
+      id: `0x2170ed0880ac9a755fd29b2de584394ba5d4a17f`, // BSC ETH contract
+      code: tokenData.code,
       name: tokenData.name,
       symbol: tokenData.code,
-      contractAddress: contractMapping[tokenCode],
+      contractAddress: tokenData.code === 'ETH' ? '0x2170ed0880ac9a755fd29b2de584394ba5d4a17f' : '',
+      network: 'BSC',
       price: tokenData.rate,
-      priceChange24h: tokenData.deltaDay || 0,
+      priceChange24h: tokenData.deltaDay ? (tokenData.rate * tokenData.deltaDay / 100) : 0,
       priceChangePercent24h: tokenData.deltaDay || 0,
       marketCap: tokenData.cap || 0,
       volume24h: tokenData.volume || 0,
-      totalSupply: 0, // Not available in Live Coin Watch
-      circulatingSupply: 0, // Not available in Live Coin Watch
-      lastUpdated: tokenData.lastUpdated,
-      
-      // Extended performance metrics
-      performance: {
-        hourChange: tokenData.deltaHour || 0,
-        dayChange: tokenData.deltaDay || 0,
-        weekChange: tokenData.deltaWeek || 0,
-        monthChange: tokenData.deltaMonth || 0,
-        quarterChange: tokenData.deltaQuarter || 0,
-        yearChange: tokenData.deltaYear || 0,
-      }
+      totalSupply: tokenData.code === 'ETH' ? 120300000 : 0,
+      circulatingSupply: tokenData.code === 'ETH' ? 120300000 : 0,
+      lastUpdated: tokenData.lastUpdated?.toISOString() || new Date().toISOString(),
     };
 
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(response),
     };
   } catch (error) {
-    console.error('Error fetching token data:', error);
+    console.error('Error fetching Live Coin Watch token data:', error);
     return {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      headers,
+      body: JSON.stringify({ 
         message: 'Failed to fetch token data',
         error: error instanceof Error ? error.message : 'Unknown error'
       }),

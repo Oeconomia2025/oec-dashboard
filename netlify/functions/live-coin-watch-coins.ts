@@ -1,53 +1,78 @@
 import type { Handler } from '@netlify/functions';
-import { db } from './lib/shared/db.js';
-import { liveCoinWatchCoins } from './lib/shared/schema';
-import { desc } from 'drizzle-orm';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from '../../shared/schema.js';
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+}
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool, schema });
 
 export const handler: Handler = async (event) => {
-  // Only allow GET requests
+  // Enable CORS
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+    'Content-Type': 'application/json',
+  };
+
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
+
   if (event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'Method Not Allowed' }),
+      headers,
+      body: JSON.stringify({ message: 'Method not allowed' }),
     };
   }
 
   try {
-    // Get all coins ordered by market cap (highest first)
+    // Fetch all coins from database
     const coins = await db
       .select()
-      .from(liveCoinWatchCoins)
-      .orderBy(desc(liveCoinWatchCoins.cap));
+      .from(schema.liveCoinWatchCoins)
+      .orderBy(schema.liveCoinWatchCoins.cap, { direction: 'desc' })
+      .limit(100);
+
+    // Transform database data to match expected API format
+    const response = {
+      coins: coins.map(coin => ({
+        id: coin.id,
+        code: coin.code,
+        name: coin.name,
+        rate: coin.rate,
+        volume: coin.volume,
+        cap: coin.cap,
+        deltaHour: coin.deltaHour,
+        deltaDay: coin.deltaDay,
+        deltaWeek: coin.deltaWeek,
+        deltaMonth: coin.deltaMonth,
+        deltaQuarter: coin.deltaQuarter,
+        deltaYear: coin.deltaYear,
+        lastUpdated: coin.lastUpdated?.toISOString() || new Date().toISOString(),
+      }))
+    };
 
     return {
       statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        coins,
-        lastUpdated: coins.length > 0 ? coins[0].lastUpdated : null,
-        isServiceRunning: false, // Netlify functions are stateless
-      }),
+      headers,
+      body: JSON.stringify(response),
     };
   } catch (error) {
-    console.error('Error fetching Live Coin Watch data:', error);
+    console.error('Error fetching Live Coin Watch coins:', error);
     return {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        message: 'Failed to fetch Live Coin Watch data',
+      headers,
+      body: JSON.stringify({ 
+        message: 'Failed to fetch coins data',
         error: error instanceof Error ? error.message : 'Unknown error'
       }),
     };
