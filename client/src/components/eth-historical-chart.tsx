@@ -107,10 +107,36 @@ export function ETHHistoricalChart() {
     return percent >= 0 ? 'text-green-500' : 'text-red-500';
   };
 
-  if (error) {
+  if (error || !priceHistory || priceHistory.length === 0) {
     return (
       <div className="bg-crypto-card p-8 rounded-lg border border-crypto-border">
-        <h3 className="text-xl font-semibold mb-6 text-white">ETH Price Chart (Live Data)</h3>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <img 
+              src="https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png" 
+              alt="ETH"
+              className="w-8 h-8"
+            />
+            <span className="text-gray-400 text-sm font-medium">ETH</span>
+          </div>
+          <div className="flex space-x-2">
+            {timeframes.map((tf) => (
+              <Button
+                key={tf.key}
+                variant={timeframe === tf.key ? "default" : "outline"}
+                size="sm"
+                onClick={() => setTimeframe(tf.key)}
+                className={timeframe === tf.key 
+                  ? "bg-crypto-blue text-white border-crypto-blue" 
+                  : "border-gray-600 text-gray-400 hover:text-white hover:border-gray-400"
+                }
+                disabled
+              >
+                {tf.label}
+              </Button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center justify-center h-80 text-gray-400">
           <div className="text-center">
             <p>Live ETH data unavailable</p>

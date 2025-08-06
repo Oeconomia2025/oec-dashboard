@@ -1,4 +1,18 @@
 import type { Handler } from '@netlify/functions';
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import * as schema from '../../shared/schema.js';
+import { eq } from 'drizzle-orm';
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+}
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const db = drizzle({ client: pool, schema });
 
 export const handler: Handler = async (event) => {
   // Enable CORS
@@ -33,36 +47,33 @@ export const handler: Handler = async (event) => {
       };
     }
 
-    // For now, return placeholder data until we can implement database access in Netlify functions
-    const placeholderData = {
-      '1H': [
-        { timestamp: Date.now() - 3600000, price: 3600 },
-        { timestamp: Date.now() - 1800000, price: 3610 },
-        { timestamp: Date.now(), price: 3620 }
-      ],
-      '1D': [
-        { timestamp: Date.now() - 86400000, price: 3500 },
-        { timestamp: Date.now() - 43200000, price: 3550 },
-        { timestamp: Date.now(), price: 3620 }
-      ],
-      '7D': [
-        { timestamp: Date.now() - 604800000, price: 3300 },
-        { timestamp: Date.now() - 302400000, price: 3450 },
-        { timestamp: Date.now(), price: 3620 }
-      ],
-      '30D': [
-        { timestamp: Date.now() - 2592000000, price: 3000 },
-        { timestamp: Date.now() - 1296000000, price: 3300 },
-        { timestamp: Date.now(), price: 3620 }
-      ]
-    };
+    // Fetch ETH historical data from database
+    const historicalData = await db
+      .select()
+      .from(schema.priceHistoryData)
+      .where(eq(schema.priceHistoryData.tokenCode, 'ETH'))
+      .where(eq(schema.priceHistoryData.timeframe, timeframe))
+      .orderBy(schema.priceHistoryData.timestamp);
 
-    const data = placeholderData[timeframe as keyof typeof placeholderData] || placeholderData['1D'];
+    // Transform data to match expected format
+    const formattedData = historicalData.map(record => ({
+      timestamp: record.timestamp,
+      price: record.price
+    }));
+
+    // If no data found, return empty array
+    if (formattedData.length === 0) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify([]),
+      };
+    }
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(data),
+      body: JSON.stringify(formattedData),
     };
   } catch (error) {
     console.error('Error fetching ETH historical data:', error);
