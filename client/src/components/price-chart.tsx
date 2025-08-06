@@ -45,7 +45,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
     const prices = data.map(d => d.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
-    const padding = (maxPrice - minPrice) * 0.05; // 5% padding
+    const padding = (maxPrice - minPrice) * 0.1; // 10% padding
     const adjustedMin = minPrice - padding;
     const adjustedMax = maxPrice + padding;
     const range = adjustedMax - adjustedMin;
@@ -195,7 +195,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                   fontSize={12}
                 />
                 <YAxis 
-                  domain={['dataMin * 0.95', 'dataMax * 1.05']}
+                  domain={['dataMin * 0.9', 'dataMax * 1.1']}
                   ticks={yTicks}
                   tickFormatter={(value) => {
                     // Better formatting based on value range
