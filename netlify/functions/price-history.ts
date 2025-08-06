@@ -119,27 +119,32 @@ export const handler: Handler = async (event, context) => {
       const now = Date.now();
       const data = [];
       
-      let dataPoints = 24;
-      let intervalMinutes = 60;
+      let dataPoints = 15;
+      let intervalMinutes = 4;
       
       switch (timeframe) {
         case "1H":
-          dataPoints = 12;
-          intervalMinutes = 5;
+          dataPoints = 15;
+          intervalMinutes = 4; // 4-minute intervals for 1 hour (15 * 4 = 60 minutes)
           break;
         case "1D":
           dataPoints = 24;
-          intervalMinutes = 60;
+          intervalMinutes = 60; // 1-hour intervals for 24 hours
           break;
         case "7D":
           dataPoints = 28;
-          intervalMinutes = 6 * 60;
+          intervalMinutes = 6 * 60; // 6-hour intervals for 7 days (28 * 6 = 168 hours = 7 days)
           break;
         case "30D":
           dataPoints = 30;
-          intervalMinutes = 24 * 60;
+          intervalMinutes = 24 * 60; // 24-hour intervals for 30 days
           break;
       }
+      
+      // Log timeframe calculation for verification
+      const totalDurationMinutes = dataPoints * intervalMinutes;
+      const totalDurationHours = totalDurationMinutes / 60;
+      console.log(`Netlify timeframe ${timeframe}: ${dataPoints} points, ${intervalMinutes}min intervals = ${totalDurationHours}h total`);
       
       for (let i = dataPoints - 1; i >= 0; i--) {
         const timestamp = now - (i * intervalMinutes * 60 * 1000);

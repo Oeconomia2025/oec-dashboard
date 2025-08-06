@@ -485,30 +485,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Generate historical data points based on current price for chart visualization
-      let dataPoints = 24; // Default for 1H/1D
-      let intervalMinutes = 60; // 1 hour intervals
+      let dataPoints = 15; // Updated to match ETH chart density
+      let intervalMinutes = 5; // Start with 5-minute intervals
       
       switch (timeframe) {
         case "1H":
-          dataPoints = 12;
-          intervalMinutes = 5; // 5-minute intervals
+          dataPoints = 15;
+          intervalMinutes = 4; // 4-minute intervals for 1 hour (15 * 4 = 60 minutes)
           break;
         case "1D":
           dataPoints = 24;
-          intervalMinutes = 60; // 1-hour intervals
+          intervalMinutes = 60; // 1-hour intervals for 24 hours
           break;
         case "7D":
           dataPoints = 28;
-          intervalMinutes = 6 * 60; // 6-hour intervals
+          intervalMinutes = 6 * 60; // 6-hour intervals for 7 days (28 * 6 = 168 hours = 7 days)
           break;
         case "30D":
           dataPoints = 30;
-          intervalMinutes = 24 * 60; // 1-day intervals
+          intervalMinutes = 24 * 60; // 24-hour intervals for 30 days
           break;
       }
       
       const priceHistory = [];
       const now = new Date();
+      
+      // Log timeframe calculation for verification
+      const totalDurationMinutes = dataPoints * intervalMinutes;
+      const totalDurationHours = totalDurationMinutes / 60;
+      console.log(`Timeframe ${timeframe}: ${dataPoints} points, ${intervalMinutes}min intervals = ${totalDurationHours}h total`);
       
       // Generate historical data points with realistic price variations
       for (let i = dataPoints - 1; i >= 0; i--) {
