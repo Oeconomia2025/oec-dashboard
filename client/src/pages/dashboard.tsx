@@ -49,13 +49,12 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <div className="w-full px-6 py-8">
+      <div className="p-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Token Overview Cards - Use Live Data */}
+          <TokenOverview tokenData={defaultTokenData} isLoading={isLiveCoinLoading} />
 
-
-        {/* Token Overview Cards - Use Live Data */}
-        <TokenOverview tokenData={defaultTokenData} isLoading={isLiveCoinLoading} />
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
           <div className="lg:col-span-2">
             <PriceChart contractAddress={contractAddress} tokenSymbol={defaultTokenData?.code || "BTC"} />
@@ -69,19 +68,19 @@ export default function Dashboard() {
 
           {/* Token Information Panel */}
           <TokenInfoPanel tokenData={defaultTokenData} isLoading={isLiveCoinLoading} />
-        </div>
+          </div>
 
-        {/* Recent Transactions Table */}
-        <TransactionsTable contractAddress={contractAddress} />
+          {/* Recent Transactions Table */}
+          <TransactionsTable contractAddress={contractAddress} />
 
-        {/* Holder Statistics */}
-        <HolderStatistics contractAddress={contractAddress} tokenData={defaultTokenData} />
+          {/* Holder Statistics */}
+          <HolderStatistics contractAddress={contractAddress} tokenData={defaultTokenData} />
 
-        {/* Quick Actions */}
-        <QuickActions contractAddress={contractAddress} />
+          {/* Quick Actions */}
+          <QuickActions contractAddress={contractAddress} />
 
-        {/* Contract Address Input - Admin Section */}
-        <Card className="crypto-card p-4 mt-8 border border-dashed border-gray-600">
+          {/* Contract Address Input - Admin Section */}
+          <Card className="crypto-card p-4 mt-8 border border-dashed border-gray-600">
           <div className="flex items-center space-x-4">
             <div className="flex-1">
               <label className="text-gray-400 text-sm mb-2 block">Admin: Update Token Contract Address</label>
@@ -100,6 +99,7 @@ export default function Dashboard() {
             </Button>
           </div>
         </Card>
+        </div>
       </div>
     </Layout>
   );
