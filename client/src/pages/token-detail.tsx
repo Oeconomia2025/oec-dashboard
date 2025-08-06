@@ -34,6 +34,10 @@ export default function TokenDetail() {
     '0xba2ae424d960c26247dd6c32edc70b295c744c43': 'DOGE',
     '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd': 'LINK',
     '0x4338665cbb7b2485a8855a139b75d5e34ab0db94': 'LTC',
+    '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c': 'BTC',
+    '0x570a5d26f7765ecb712c0924e4de545b89fd43df': 'SOL',
+    '0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b': 'TRX',
+    '0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe': 'XRP',
   };
 
   // Get Live Coin Watch data for enhanced price information
@@ -59,6 +63,11 @@ export default function TokenDetail() {
     "0xe9e7cea3dedca5984780bafc599bd69add087d56": "https://s2.coinmarketcap.com/static/img/coins/32x32/4687.png", // BUSD
     "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png", // LINK
     "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png", // ADA
+    "0xba2ae424d960c26247dd6c32edc70b295c744c43": "https://s2.coinmarketcap.com/static/img/coins/32x32/74.png", // DOGE
+    "0x4338665cbb7b2485a8855a139b75d5e34ab0db94": "https://s2.coinmarketcap.com/static/img/coins/32x32/2.png", // LTC
+    "0x570a5d26f7765ecb712c0924e4de545b89fd43df": "https://s2.coinmarketcap.com/static/img/coins/32x32/5426.png", // SOL
+    "0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b": "https://s2.coinmarketcap.com/static/img/coins/32x32/1958.png", // TRX
+    "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe": "https://s2.coinmarketcap.com/static/img/coins/32x32/52.png", // XRP
   };
 
   // Token website links mapping
@@ -73,6 +82,11 @@ export default function TokenDetail() {
     "0xe9e7cea3dedca5984780bafc599bd69add087d56": "https://www.binance.com/en/busd", // BUSD
     "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "https://chain.link/", // LINK
     "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "https://cardano.org/", // ADA
+    "0xba2ae424d960c26247dd6c32edc70b295c744c43": "https://dogecoin.com/", // DOGE
+    "0x4338665cbb7b2485a8855a139b75d5e34ab0db94": "https://litecoin.org/", // LTC
+    "0x570a5d26f7765ecb712c0924e4de545b89fd43df": "https://solana.com/", // SOL
+    "0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b": "https://tron.network/", // TRX
+    "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe": "https://ripple.com/", // XRP
   };
 
   const formatNumber = (num: number, decimals: number = 2) => {
@@ -179,7 +193,7 @@ export default function TokenDetail() {
                 <span className="text-gray-400 text-xs">Price</span>
                 <div className="flex items-center space-x-1">
                   {enhancedCoinData && (
-                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                    <Database className="w-3 h-3 text-green-400" />
                   )}
                   <DollarSign className="w-3 h-3 text-white" />
                 </div>
@@ -210,7 +224,7 @@ export default function TokenDetail() {
                     )}
                   </span>
                 </div>
-                {enhancedCoinData && (
+                {enhancedCoinData && enhancedCoinData.lastUpdated && (
                   <div className="text-xs text-green-400 opacity-70">
                     Live data • {new Date(enhancedCoinData.lastUpdated).toLocaleTimeString()}
                   </div>
@@ -223,7 +237,7 @@ export default function TokenDetail() {
                 <span className="text-gray-400 text-xs">Market Cap</span>
                 <div className="flex items-center space-x-1">
                   {enhancedCoinData?.cap && (
-                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                    <Database className="w-3 h-3 text-green-400" />
                   )}
                   <BarChart3 className="w-3 h-3 text-crypto-blue" />
                 </div>
@@ -238,7 +252,7 @@ export default function TokenDetail() {
                 <span className="text-gray-400 text-xs">24H Volume</span>
                 <div className="flex items-center space-x-1">
                   {enhancedCoinData?.volume && (
-                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                    <Database className="w-3 h-3 text-green-400" />
                   )}
                   <Activity className="w-3 h-3 text-crypto-green" />
                 </div>
@@ -285,7 +299,11 @@ export default function TokenDetail() {
                   </div>
                   <div className="text-right">
                     <div className="text-green-400 text-sm font-medium">
-                      Last synced: {new Date(enhancedCoinData.lastUpdated).toLocaleTimeString()}
+                      {enhancedCoinData.lastUpdated ? (
+                        <>Last synced: {new Date(enhancedCoinData.lastUpdated).toLocaleTimeString()}</>
+                      ) : (
+                        'No sync time available'
+                      )}
                     </div>
                     <div className="text-gray-400 text-xs">
                       Service: {liveCoinData?.isServiceRunning ? 'Running' : 'Stopped'}

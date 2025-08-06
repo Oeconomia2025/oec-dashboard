@@ -28,6 +28,10 @@ export default function LiveCoinWatch() {
     'DOGE': '0xba2ae424d960c26247dd6c32edc70b295c744c43',
     'LINK': '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd',
     'LTC': '0x4338665cbb7b2485a8855a139b75d5e34ab0db94',
+    'BTC': '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c', // BTCB (Bitcoin BEP2)
+    'SOL': '0x570a5d26f7765ecb712c0924e4de545b89fd43df', // SOL (Solana BEP20)
+    'TRX': '0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b', // TRX (TRON BEP20)
+    'XRP': '0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe', // XRP (Ripple BEP20)
   };
 
   const handleRowClick = (coin: LiveCoinWatchDbCoin) => {
