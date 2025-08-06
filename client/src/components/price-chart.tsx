@@ -11,9 +11,12 @@ import type { PriceHistory } from "@shared/schema";
 interface PriceChartProps {
   contractAddress: string;
   tokenSymbol?: string;
+  tokenData?: any;
+  formatPercentage?: (percent: number | undefined) => string;
+  getChangeColor?: (percent: number | undefined) => string;
 }
 
-export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT" }: PriceChartProps) {
+export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData, formatPercentage, getChangeColor }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
   const { data: rawPriceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
   
@@ -70,7 +73,49 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT" }: PriceCh
     <div className="lg:col-span-2">
       <Card className="crypto-card p-6 border bg-crypto-card">
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-6">
+            {tokenData && formatPercentage && getChangeColor && (
+              <>
+                {tokenData.deltaHour && (
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400">1 Hour</p>
+                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaHour - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaHour - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                <div className="text-center">
+                  <p className="text-xs text-gray-400">24 Hours</p>
+                  <p className={`text-sm font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
+                    {formatPercentage(tokenData.priceChangePercent24h)}
+                  </p>
+                </div>
+                {tokenData.deltaWeek && (
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400">7 Days</p>
+                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaWeek - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaWeek - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                {tokenData.deltaMonth && (
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400">30 Days</p>
+                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaMonth - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaMonth - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                {tokenData.deltaYear && (
+                  <div className="text-center">
+                    <p className="text-xs text-gray-400">1 Year</p>
+                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaYear - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaYear - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
           <div className="flex space-x-2">
             {timeframes.map((tf) => (

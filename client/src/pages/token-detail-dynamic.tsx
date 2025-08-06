@@ -191,55 +191,13 @@ export default function TokenDetailDynamic() {
         </div>
 
         {/* Chart Section */}
-        <Card className="crypto-card p-4">
-          <CardHeader className="px-0 pt-0 pb-2">
-            <CardTitle className="flex items-center justify-between">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                {tokenData.deltaHour && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">1 Hour</p>
-                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaHour - 1) * 100)}`}>
-                      {formatPercentage((tokenData.deltaHour - 1) * 100)}
-                    </p>
-                  </div>
-                )}
-                <div className="text-center">
-                  <p className="text-xs text-gray-400">24 Hours</p>
-                  <p className={`text-sm font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
-                    {formatPercentage(tokenData.priceChangePercent24h)}
-                  </p>
-                </div>
-                {tokenData.deltaWeek && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">7 Days</p>
-                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaWeek - 1) * 100)}`}>
-                      {formatPercentage((tokenData.deltaWeek - 1) * 100)}
-                    </p>
-                  </div>
-                )}
-                {tokenData.deltaMonth && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">30 Days</p>
-                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaMonth - 1) * 100)}`}>
-                      {formatPercentage((tokenData.deltaMonth - 1) * 100)}
-                    </p>
-                  </div>
-                )}
-                {tokenData.deltaYear && (
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">1 Year</p>
-                    <p className={`text-sm font-semibold ${getChangeColor((tokenData.deltaYear - 1) * 100)}`}>
-                      {formatPercentage((tokenData.deltaYear - 1) * 100)}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-0">
-            <PriceChart contractAddress={tokenData.contractAddress} tokenSymbol={tokenData.symbol} />
-          </CardContent>
-        </Card>
+        <PriceChart 
+          contractAddress={tokenData.contractAddress} 
+          tokenSymbol={tokenData.symbol}
+          tokenData={tokenData}
+          formatPercentage={formatPercentage}
+          getChangeColor={getChangeColor}
+        />
 
         {/* Actions */}
         <div className="flex flex-wrap gap-4">
