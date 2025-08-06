@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout";
-import { Activity, TrendingUp, TrendingDown, RefreshCw, Database, Wifi, WifiOff } from "lucide-react";
+import { Activity, TrendingUp, TrendingDown, RefreshCw, Database, Wifi, WifiOff, ExternalLink } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import type { LiveCoinWatchDbCoin } from "@shared/schema";
 
 interface LiveCoinWatchResponse {
@@ -15,6 +16,26 @@ interface LiveCoinWatchResponse {
 
 export default function LiveCoinWatch() {
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [, navigate] = useLocation();
+
+  // Map Live Coin Watch codes to BSC contract addresses for navigation
+  const coinContractAddresses: Record<string, string> = {
+    'USDT': '0x55d398326f99059ff775485246999027b3197955',
+    'BNB': '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+    'ETH': '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+    'USDC': '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+    'ADA': '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
+    'DOGE': '0xba2ae424d960c26247dd6c32edc70b295c744c43',
+    'LINK': '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd',
+    'LTC': '0x4338665cbb7b2485a8855a139b75d5e34ab0db94',
+  };
+
+  const handleRowClick = (coin: LiveCoinWatchDbCoin) => {
+    const contractAddress = coinContractAddresses[coin.code];
+    if (contractAddress) {
+      navigate(`/token/${contractAddress}`);
+    }
+  };
 
   // Fetch Live Coin Watch data from database
   const { data: coinData, isLoading, refetch } = useQuery<LiveCoinWatchResponse>({
@@ -162,9 +183,14 @@ export default function LiveCoinWatch() {
         {/* Coins Table */}
         <Card className="crypto-card">
           <CardHeader>
-            <CardTitle className="text-white flex items-center">
-              <Database className="w-5 h-5 mr-2" />
-              Top 10 Cryptocurrencies (From Database)
+            <CardTitle className="text-white flex items-center justify-between">
+              <div className="flex items-center">
+                <Database className="w-5 h-5 mr-2" />
+                Top 10 Cryptocurrencies (From Database)
+              </div>
+              <div className="text-sm text-gray-400 font-normal">
+                Click supported tokens to view details
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -187,36 +213,59 @@ export default function LiveCoinWatch() {
                     </tr>
                   </thead>
                   <tbody>
-                    {coinData.coins.map((coin, index) => (
-                      <tr key={coin.code} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
-                        <td className="py-4 px-4">
-                          <span className="text-white font-medium">#{index + 1}</span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <div className="flex items-center space-x-3">
-                            <div>
-                              <div className="text-white font-semibold">{coin.name}</div>
-                              <div className="text-gray-400 text-sm uppercase">{coin.code}</div>
+                    {coinData.coins.map((coin, index) => {
+                      const hasContractAddress = coinContractAddresses[coin.code];
+                      return (
+                        <tr 
+                          key={coin.code} 
+                          className={`border-b border-gray-800/50 transition-colors ${
+                            hasContractAddress 
+                              ? 'hover:bg-gray-800/50 cursor-pointer hover:border-cyan-500/30' 
+                              : 'hover:bg-gray-800/20'
+                          }`}
+                          onClick={() => hasContractAddress && handleRowClick(coin)}
+                        >
+                          <td className="py-4 px-4">
+                            <span className="text-white font-medium">#{index + 1}</span>
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div>
+                                  <div className="text-white font-semibold">{coin.name}</div>
+                                  <div className="text-gray-400 text-sm uppercase">{coin.code}</div>
+                                </div>
+                              </div>
+                              {hasContractAddress && (
+                                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                              )}
                             </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="text-white font-semibold">{formatPrice(coin.rate)}</span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <div className={`flex items-center justify-end space-x-1 ${getChangeColor(coin.deltaDay)}`}>
-                            {getChangeIcon(coin.deltaDay)}
-                            <span className="font-medium">{formatPercentage(coin.deltaDay)}</span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="text-white">{formatMarketCap(coin.cap)}</span>
-                        </td>
-                        <td className="py-4 px-4 text-right">
-                          <span className="text-white">{formatVolume(coin.volume)}</span>
-                        </td>
-                      </tr>
-                    ))}
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <span className="text-white font-semibold">{formatPrice(coin.rate)}</span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <div className={`flex items-center justify-end space-x-1 ${getChangeColor(coin.deltaDay)}`}>
+                              {getChangeIcon(coin.deltaDay)}
+                              <span className="font-medium">{formatPercentage(coin.deltaDay)}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <span className="text-white">{formatMarketCap(coin.cap)}</span>
+                          </td>
+                          <td className="py-4 px-4 text-right">
+                            <div className="flex items-center justify-end space-x-2">
+                              <span className="text-white">{formatVolume(coin.volume)}</span>
+                              {hasContractAddress && (
+                                <div className="text-xs text-cyan-400 opacity-70">
+                                  Click to view details
+                                </div>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
