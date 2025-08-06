@@ -559,7 +559,7 @@ export function Layout({
           onClick={() => setSupportOpen(false)}
         >
           <Card 
-            className="max-w-lg w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative"
+            className="max-w-2xl w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
