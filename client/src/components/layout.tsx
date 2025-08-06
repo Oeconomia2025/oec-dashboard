@@ -679,7 +679,7 @@ export function Layout({
 
             <Button 
               onClick={() => setSupportOpen(false)}
-              className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
+              className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
             >
               Close
             </Button>
