@@ -89,7 +89,13 @@ export const handler: Handler = async (event, context) => {
         "0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3": "DAI",
         "0xe9e7cea3dedca5984780bafc599bd69add087d56": "BUSD",
         "0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd": "LINK",
-        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "ADA"
+        "0x3ee2200efb3400fabb9aacf31297cbdd1d435d47": "ADA",
+        "0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe": "XRP",
+        "0x4338665cbb7b2485a8855a139b75d5e34ab0db94": "LTC",
+        "0x2859e4544c4bb03966803b044a93563bd2d0dd4d": "SHIB",
+        "0x947950bcc74888a40ffa2593c5798f11fc9124c4": "SUSHI",
+        "0xba2ae424d960c26247dd6c32edc70b295c744c43": "DOGE",
+        "0x7083609fce4d1d8dc0c979aab8c869ea2c873402": "DOT"
       };
       
       const tokenCode = contractToCodeMap[normalizedAddress];
