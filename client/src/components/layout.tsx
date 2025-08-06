@@ -119,6 +119,9 @@ export function Layout({
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
+  const [donationStep, setDonationStep] = useState<'addresses' | 'thankyou'>('addresses');
+  const [selectedDonationType, setSelectedDonationType] = useState<string>('');
+  const [donorName, setDonorName] = useState('');
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
@@ -563,21 +566,31 @@ export function Layout({
             onClick={(e) => e.stopPropagation()}
           >
             <button 
-              onClick={() => setSupportOpen(false)}
+              onClick={() => {
+                setSupportOpen(false);
+                // Reset donation flow when closing
+                setTimeout(() => {
+                  setDonationStep('addresses');
+                  setSelectedDonationType('');
+                  setDonorName('');
+                }, 300);
+              }}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-pink-400 fill-current" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">Support Development</h2>
-                <p className="text-sm text-gray-400">Help Oeconomia Grow</p>
-              </div>
-            </div>
+            {donationStep === 'addresses' ? (
+              <div className="animate-in fade-in duration-500">
+                <div className="flex items-center space-x-3 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-pink-400 fill-current" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold">Support Development</h2>
+                    <p className="text-sm text-gray-400">Help Oeconomia Grow</p>
+                  </div>
+                </div>
 
             <div className="space-y-4 mb-6">
               <p className="text-gray-300">
@@ -603,7 +616,12 @@ export function Layout({
                       onClick={() => {
                         navigator.clipboard.writeText('0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed');
                         setCopiedAddress('evm');
+                        setSelectedDonationType('EVM Networks');
                         setTimeout(() => setCopiedAddress(null), 2000);
+                        // Trigger donation flow after copy
+                        setTimeout(() => {
+                          setDonationStep('thankyou');
+                        }, 2500);
                       }}
                       title="Click to copy address"
                     >
@@ -622,7 +640,12 @@ export function Layout({
                       onClick={() => {
                         navigator.clipboard.writeText('HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx');
                         setCopiedAddress('sol');
+                        setSelectedDonationType('Solana');
                         setTimeout(() => setCopiedAddress(null), 2000);
+                        // Trigger donation flow after copy
+                        setTimeout(() => {
+                          setDonationStep('thankyou');
+                        }, 2500);
                       }}
                       title="Click to copy address"
                     >
@@ -641,7 +664,12 @@ export function Layout({
                       onClick={() => {
                         navigator.clipboard.writeText('0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe');
                         setCopiedAddress('sui');
+                        setSelectedDonationType('Sui Network');
                         setTimeout(() => setCopiedAddress(null), 2000);
+                        // Trigger donation flow after copy
+                        setTimeout(() => {
+                          setDonationStep('thankyou');
+                        }, 2500);
                       }}
                       title="Click to copy address"
                     >
@@ -660,7 +688,12 @@ export function Layout({
                       onClick={() => {
                         navigator.clipboard.writeText('bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r');
                         setCopiedAddress('btc');
+                        setSelectedDonationType('Bitcoin');
                         setTimeout(() => setCopiedAddress(null), 2000);
+                        // Trigger donation flow after copy
+                        setTimeout(() => {
+                          setDonationStep('thankyou');
+                        }, 2500);
                       }}
                       title="Click to copy address"
                     >
@@ -679,7 +712,12 @@ export function Layout({
                       onClick={() => {
                         navigator.clipboard.writeText('$oooJASONooo');
                         setCopiedAddress('cashapp');
+                        setSelectedDonationType('CashApp');
                         setTimeout(() => setCopiedAddress(null), 2000);
+                        // Trigger donation flow after copy
+                        setTimeout(() => {
+                          setDonationStep('thankyou');
+                        }, 2500);
                       }}
                       title="Click to copy CashApp tag"
                     >
@@ -689,19 +727,108 @@ export function Layout({
                 </div>
               </div>
               
-              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
-                <p className="text-sm text-green-400">
-                  <strong>Thank you for your support!</strong> Every contribution is deeply appreciated and will be remembered. When the opportunity arises, I am committed to giving back to the community.
-                </p>
+                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                  <p className="text-sm text-green-400">
+                    <strong>Thank you for your support!</strong> Every contribution is deeply appreciated and will be remembered. When the opportunity arises, I am committed to giving back to the community.
+                  </p>
+                </div>
               </div>
-            </div>
 
-            <Button 
-              onClick={() => setSupportOpen(false)}
-              className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
-            >
-              Close
-            </Button>
+              <Button 
+                onClick={() => setSupportOpen(false)}
+                className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white"
+              >
+                Close
+              </Button>
+            </div>
+            ) : (
+              // Thank You Screen
+              <div className="animate-in slide-in-from-right duration-700 ease-out">
+                <div className="text-center space-y-6">
+                  {/* Animated Heart */}
+                  <div className="relative">
+                    <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center animate-pulse">
+                      <Heart className="w-10 h-10 text-pink-400 fill-current animate-bounce" />
+                    </div>
+                    {/* Sparkle Effect */}
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full animate-ping"></div>
+                    <div className="absolute -bottom-1 -left-1 w-3 h-3 bg-cyan-400 rounded-full animate-ping" style={{animationDelay: '0.5s'}}></div>
+                  </div>
+
+                  {/* Thank You Message */}
+                  <div className="space-y-3">
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent animate-in slide-in-from-bottom duration-500" style={{animationDelay: '0.2s'}}>
+                      Thank You!
+                    </h2>
+                    <p className="text-lg text-gray-300 animate-in slide-in-from-bottom duration-500" style={{animationDelay: '0.4s'}}>
+                      Your {selectedDonationType} donation address has been copied
+                    </p>
+                  </div>
+
+                  {/* Personalized Message */}
+                  <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/30 rounded-lg p-4 space-y-3 animate-in slide-in-from-bottom duration-500" style={{animationDelay: '0.6s'}}>
+                    <p className="text-gray-300">
+                      Your support means the world to us! 🌟 Every contribution helps fund:
+                    </p>
+                    <ul className="text-sm text-gray-400 space-y-1 text-left">
+                      <li>• Server infrastructure & database operations</li>
+                      <li>• Live market data API subscriptions</li>
+                      <li>• New feature development</li>
+                      <li>• Community growth initiatives</li>
+                    </ul>
+                  </div>
+
+                  {/* Optional Name Input */}
+                  <div className="space-y-3 animate-in slide-in-from-bottom duration-500" style={{animationDelay: '0.8s'}}>
+                    <p className="text-sm text-gray-400">Want a personal thank you message? (Optional)</p>
+                    <input
+                      type="text"
+                      placeholder="Your name or handle"
+                      value={donorName}
+                      onChange={(e) => setDonorName(e.target.value)}
+                      className="w-full px-3 py-2 bg-black/30 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                  </div>
+
+                  {/* Personalized Thank You */}
+                  {donorName && (
+                    <div className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg p-3 animate-in slide-in-from-bottom duration-500">
+                      <p className="text-green-400">
+                        <span className="font-semibold">Dear {donorName},</span><br/>
+                        Your generosity will be remembered. When Oeconomia thrives, supporters like you will be among the first to benefit from our success. Thank you for believing in our vision!
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 animate-in slide-in-from-bottom duration-500" style={{animationDelay: '1s'}}>
+                    <Button 
+                      onClick={() => {
+                        setDonationStep('addresses');
+                        setSelectedDonationType('');
+                      }}
+                      variant="outline"
+                      className="flex-1 border-gray-600 hover:bg-gray-700"
+                    >
+                      Back to Addresses
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setSupportOpen(false);
+                        setTimeout(() => {
+                          setDonationStep('addresses');
+                          setSelectedDonationType('');
+                          setDonorName('');
+                        }, 300);
+                      }}
+                      className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                    >
+                      Complete
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </Card>
         </div>
       )}
