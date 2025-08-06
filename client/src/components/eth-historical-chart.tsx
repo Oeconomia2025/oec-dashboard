@@ -20,8 +20,20 @@ interface PriceHistory {
 export function ETHHistoricalChart() {
   const [timeframe, setTimeframe] = useState("1D");
   
+  // Use the correct API endpoint based on environment
+  const apiEndpoint = window.location.hostname === 'localhost' 
+    ? `/api/eth-history/${timeframe}`
+    : `/.netlify/functions/eth-history/${timeframe}`;
+  
   const { data: rawPriceHistory, isLoading, error } = useQuery<PriceHistory[]>({
-    queryKey: ["/api/eth-history", timeframe],
+    queryKey: ["eth-history", timeframe],
+    queryFn: async () => {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    },
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes for fresh data
     enabled: true,
     retry: 3,
