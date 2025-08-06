@@ -1,10 +1,10 @@
 [build]
   publish = "dist/public"
-  command = "npm install --include=dev && npx vite build --config vite.config.netlify.ts && npx esbuild netlify/functions/*.ts --platform=node --target=node18 --format=cjs --bundle --packages=external --outdir=netlify/functions/dist --out-extension:.js=.js"
+  command = "npm install --include=dev && npx vite build --config vite.config.netlify.ts && npx esbuild netlify/functions/*.ts --platform=node --target=node20 --format=cjs --bundle --packages=external --outdir=netlify/functions/dist --out-extension:.js=.js"
   functions = "netlify/functions/dist"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 # API function redirects
 [[redirects]]
