@@ -173,6 +173,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
                 />
                 <YAxis 
                   domain={['dataMin * 0.99', 'dataMax * 1.01']}
+                  tickCount={6}
                   tickFormatter={(value) => `${value.toFixed(0)}`}
                   stroke="#9CA3AF"
                   fontSize={12}
