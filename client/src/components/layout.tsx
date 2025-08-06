@@ -163,7 +163,7 @@ export function Layout({
   // Get current page info - use custom props if provided, otherwise use route-based info
   const routePageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
   const currentPageInfo = {
-    title: pageTitle || (tokenTicker && tokenName ? `${tokenTicker} - ${tokenName}` : routePageInfo.title),
+    title: pageTitle || routePageInfo.title,
     description: pageDescription || routePageInfo.description
   };
 
@@ -386,22 +386,42 @@ export function Layout({
                   />
                 )}
                 <div className="flex flex-col">
-                  <div className="flex items-center space-x-2">
-                    <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
-                    {(tokenWebsite || pageWebsite) && (
-                      <a 
-                        href={tokenWebsite || pageWebsite} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
-                        title="Visit official website"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
-                  </div>
-                  {!tokenTicker && (
-                    <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+                  {tokenTicker && tokenName ? (
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <h1 className="text-xl font-semibold text-white">{tokenTicker}</h1>
+                        {(tokenWebsite || pageWebsite) && (
+                          <a 
+                            href={tokenWebsite || pageWebsite} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
+                            title="Visit official website"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{tokenName}</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <h1 className="text-xl font-semibold text-white">{currentPageInfo.title}</h1>
+                        {(tokenWebsite || pageWebsite) && (
+                          <a 
+                            href={tokenWebsite || pageWebsite} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-crypto-blue hover:text-crypto-blue/80 transition-colors"
+                            title="Visit official website"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground hidden md:block">{currentPageInfo.description}</p>
+                    </div>
                   )}
                 </div>
               </div>
