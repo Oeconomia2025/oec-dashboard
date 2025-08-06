@@ -18,35 +18,28 @@ const TOP_10_TOKENS = [
   'BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'USDC', 'XRP', 'DOGE', 'ADA', 'TRX'
 ];
 
-// Generate realistic historical price data based on current Live Coin Watch prices
+// Fetch AUTHENTIC historical price data from Live Coin Watch API
 async function seedTokenHistoricalData(tokenCode: string) {
-  console.log(`Seeding historical data for ${tokenCode}...`);
+  console.log(`🔍 Fetching AUTHENTIC historical data for ${tokenCode} from Live Coin Watch API...`);
   
   try {
-    // Get current token price from Live Coin Watch data
-    const tokenData = await db
-      .select()
-      .from(schema.liveCoinWatchCoins)
-      .where(eq(schema.liveCoinWatchCoins.code, tokenCode))
-      .limit(1);
-    
-    if (tokenData.length === 0) {
-      console.log(`No Live Coin Watch data found for ${tokenCode}, skipping...`);
+    if (!process.env.LIVE_COIN_WATCH_API_KEY) {
+      console.error(`❌ LIVE_COIN_WATCH_API_KEY not found - cannot fetch authentic ${tokenCode} data`);
       return;
     }
-    
-    const currentPrice = tokenData[0].rate;
+
+    // Define timeframes with their Live Coin Watch API parameters
     const timeframes = [
-      { name: '1H', points: 12, intervalMinutes: 5, variation: 0.01 },   // ±0.5% hourly
-      { name: '1D', points: 24, intervalMinutes: 60, variation: 0.04 },  // ±2% daily  
-      { name: '7D', points: 28, intervalMinutes: 360, variation: 0.08 }, // ±4% weekly
-      { name: '30D', points: 30, intervalMinutes: 1440, variation: 0.12 } // ±6% monthly
+      { name: '1H', start: Date.now() - (1 * 60 * 60 * 1000), end: Date.now() },     // Last 1 hour
+      { name: '1D', start: Date.now() - (24 * 60 * 60 * 1000), end: Date.now() },   // Last 24 hours  
+      { name: '7D', start: Date.now() - (7 * 24 * 60 * 60 * 1000), end: Date.now() }, // Last 7 days
+      { name: '30D', start: Date.now() - (30 * 24 * 60 * 60 * 1000), end: Date.now() } // Last 30 days
     ];
     
     let totalInserted = 0;
     
     for (const timeframe of timeframes) {
-      // Check if data already exists for this timeframe
+      // Check if authentic data already exists for this timeframe
       const existingData = await db
         .select()
         .from(schema.priceHistoryData)
@@ -57,50 +50,73 @@ async function seedTokenHistoricalData(tokenCode: string) {
         .limit(1);
       
       if (existingData.length > 0) {
-        console.log(`${tokenCode} ${timeframe.name} data already exists, skipping...`);
+        console.log(`${tokenCode} ${timeframe.name} authentic data already exists, skipping...`);
         continue;
       }
-      
-      const historicalData = [];
-      const now = Date.now();
-      
-      for (let i = timeframe.points - 1; i >= 0; i--) {
-        const timestamp = now - (i * timeframe.intervalMinutes * 60 * 1000);
+
+      try {
+        // Fetch authentic historical data from Live Coin Watch API
+        console.log(`📡 Requesting authentic ${tokenCode} ${timeframe.name} data from Live Coin Watch...`);
         
-        // Create realistic price variations based on timeframe
-        const variation = (Math.random() - 0.5) * timeframe.variation;
-        let price = currentPrice * (1 + variation);
-        
-        // Ensure price doesn't go below 85% of current price
-        price = Math.max(price, currentPrice * 0.85);
-        
-        // Add slight trending for longer timeframes
-        if (timeframe.name === '30D') {
-          const trendFactor = (timeframe.points - 1 - i) / timeframe.points;
-          price = price * (0.95 + trendFactor * 0.10); // Slight upward trend over 30 days
-        }
-        
-        historicalData.push({
-          tokenCode,
-          timestamp,
-          price,
-          timeframe: timeframe.name,
+        const response = await fetch('https://api.livecoinwatch.com/coins/single/history', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'x-api-key': process.env.LIVE_COIN_WATCH_API_KEY,
+          },
+          body: JSON.stringify({
+            code: tokenCode,
+            start: timeframe.start,
+            end: timeframe.end,
+            meta: false
+          }),
         });
+
+        if (!response.ok) {
+          console.error(`❌ Live Coin Watch API error for ${tokenCode} ${timeframe.name}: ${response.status}`);
+          continue;
+        }
+
+        const apiData = await response.json();
+        
+        if (!apiData.history || !Array.isArray(apiData.history)) {
+          console.log(`⚠️ No historical data available for ${tokenCode} ${timeframe.name}`);
+          continue;
+        }
+
+        // Transform authentic API data to database format
+        const historicalData = apiData.history.map((dataPoint: any) => ({
+          tokenCode,
+          timestamp: dataPoint.date,
+          price: dataPoint.rate,
+          timeframe: timeframe.name,
+        }));
+
+        if (historicalData.length === 0) {
+          console.log(`⚠️ Empty historical data for ${tokenCode} ${timeframe.name}`);
+          continue;
+        }
+
+        // Insert authentic historical data
+        await db
+          .insert(schema.priceHistoryData)
+          .values(historicalData)
+          .onConflictDoNothing();
+
+        totalInserted += historicalData.length;
+        console.log(`✅ Inserted ${historicalData.length} AUTHENTIC ${tokenCode} ${timeframe.name} data points`);
+
+        // Rate limiting - wait between API calls
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+      } catch (apiError) {
+        console.error(`❌ Error fetching ${tokenCode} ${timeframe.name} from Live Coin Watch:`, apiError);
       }
-      
-      // Insert historical data
-      await db
-        .insert(schema.priceHistoryData)
-        .values(historicalData)
-        .onConflictDoNothing();
-      
-      totalInserted += historicalData.length;
-      console.log(`Inserted ${historicalData.length} ${tokenCode} ${timeframe.name} data points`);
     }
     
-    console.log(`✅ Completed ${tokenCode}: ${totalInserted} total records`);
+    console.log(`🎯 AUTHENTIC DATA COMPLETE for ${tokenCode}: ${totalInserted} total authentic records`);
   } catch (error) {
-    console.error(`❌ Error seeding ${tokenCode} historical data:`, error);
+    console.error(`❌ Error in authentic ${tokenCode} historical data fetch:`, error);
   }
 }
 
