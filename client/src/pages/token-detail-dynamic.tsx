@@ -168,7 +168,20 @@ export default function TokenDetailDynamic() {
         </Card>
 
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <Card className="crypto-card p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-400">Current Price</p>
+                <p className="text-lg font-semibold">${formatPrice(tokenData.price)}</p>
+                <p className={`text-sm ${getChangeColor(tokenData.priceChangePercent24h)}`}>
+                  {formatPercentage(tokenData.priceChangePercent24h)}
+                </p>
+              </div>
+              <DollarSign className="w-8 h-8 text-crypto-gold" />
+            </div>
+          </Card>
+          
           <Card className="crypto-card p-4">
             <div className="flex items-center justify-between">
               <div>
