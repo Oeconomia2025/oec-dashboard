@@ -144,6 +144,10 @@ export const liveCoinWatchCoins = pgTable("live_coin_watch_coins", {
   deltaMonth: real("delta_month"),
   deltaQuarter: real("delta_quarter"),
   deltaYear: real("delta_year"),
+  // Supply data from Live Coin Watch API
+  totalSupply: real("total_supply"),
+  circulatingSupply: real("circulating_supply"),
+  maxSupply: real("max_supply"),
   lastUpdated: timestamp("last_updated").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });

@@ -80,6 +80,10 @@ class LiveCoinWatchSyncService {
           deltaMonth: coin.delta?.month || null,
           deltaQuarter: coin.delta?.quarter || null,
           deltaYear: coin.delta?.year || null,
+          // Include supply data from Live Coin Watch API
+          totalSupply: coin.totalSupply || null,
+          circulatingSupply: coin.circulatingSupply || null,
+          maxSupply: coin.maxSupply || null,
         };
 
         // Upsert coin data (insert or update if exists)
@@ -99,6 +103,10 @@ class LiveCoinWatchSyncService {
               deltaMonth: coinData.deltaMonth,
               deltaQuarter: coinData.deltaQuarter,
               deltaYear: coinData.deltaYear,
+              // Update supply data from Live Coin Watch API
+              totalSupply: coinData.totalSupply,
+              circulatingSupply: coinData.circulatingSupply,
+              maxSupply: coinData.maxSupply,
               lastUpdated: new Date(),
             },
           });

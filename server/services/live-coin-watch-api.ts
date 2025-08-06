@@ -27,7 +27,7 @@ class LiveCoinWatchApiService {
           order: 'ascending',
           offset: 0,
           limit,
-          meta: false,
+          meta: true,  // Request supply data from Live Coin Watch API
         }),
       });
 

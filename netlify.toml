@@ -67,6 +67,11 @@
   to = "/.netlify/functions/authentic-token-sync"
   status = 200
 
+[[redirects]]
+  from = "/api/token-supply/*"
+  to = "/.netlify/functions/token-supply-data"
+  status = 200
+
 # SPA fallback
 [[redirects]]
   from = "/*"
