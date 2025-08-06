@@ -20,55 +20,31 @@ interface PriceHistory {
 export function ETHHistoricalChart() {
   const [timeframe, setTimeframe] = useState("1D");
   
-  // Use the correct API endpoint based on environment
-  const apiEndpoint = window.location.hostname === 'localhost' 
-    ? `/api/eth-history/${timeframe}`
-    : `/.netlify/functions/eth-history/${timeframe}`;
-  
-  // Primary fetch with Live Coin Watch API
-  const { data: rawPriceHistory, isLoading, error } = useQuery<PriceHistory[]>({
-    queryKey: ["eth-history", timeframe],
+  // PRODUCTION-READY: Use ONLY database cache for complete independence
+  const { data: rawPriceHistory, isLoading } = useQuery<PriceHistory[]>({
+    queryKey: ["eth-history-database", timeframe],
     queryFn: async () => {
-      const response = await fetch(apiEndpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.json();
-    },
-    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes for fresh data
-    enabled: true,
-    retry: 1, // Reduced retries for faster fallback
-    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
-  });
-
-  // Fallback to database cache when API fails
-  const { data: fallbackPriceHistory, isLoading: isFallbackLoading } = useQuery<PriceHistory[]>({
-    queryKey: ["eth-history-fallback", timeframe],
-    queryFn: async () => {
-      const fallbackEndpoint = window.location.hostname === 'localhost' 
+      // Use only database endpoint - never Live Coin Watch API
+      const endpoint = window.location.hostname === 'localhost' 
         ? `/api/tokens/historical/ETH/${timeframe}`
         : `/.netlify/functions/token-historical-data?token=ETH&timeframe=${timeframe}`;
         
-      const response = await fetch(fallbackEndpoint);
+      const response = await fetch(endpoint);
       if (!response.ok) {
-        throw new Error(`Fallback failed: ${response.status}`);
+        throw new Error(`Database fetch failed: ${response.status}`);
       }
       const data = await response.json();
       
       // Transform database format to expected format
       return data.map((point: any) => ({
-        timestamp: new Date(point.date).getTime(),
+        timestamp: point.timestamp || new Date(point.date).getTime(),
         price: parseFloat(point.price)
       })).sort((a: any, b: any) => a.timestamp - b.timestamp);
     },
-    enabled: !!error, // Only run when primary API fails
+    refetchInterval: 10 * 60 * 1000, // Refresh every 10 minutes from database
     retry: 2,
-    staleTime: 10 * 60 * 1000, // Cache longer for fallback data
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
-
-  // Use fallback data when primary fails
-  const finalPriceHistory = error ? fallbackPriceHistory : rawPriceHistory;
-  const finalIsLoading = error ? isFallbackLoading : isLoading;
 
   // Get ETH's authentic brand color
   const tokenColor = getTokenColor("ETH");
@@ -171,7 +147,7 @@ export function ETHHistoricalChart() {
     return percent >= 0 ? 'text-green-500' : 'text-red-500';
   };
 
-  if (error || !priceHistory || priceHistory.length === 0) {
+  if (!priceHistory || priceHistory.length === 0) {
     return (
       <div className="bg-crypto-card p-8 rounded-lg border border-crypto-border">
         <div className="flex items-center justify-between mb-6">

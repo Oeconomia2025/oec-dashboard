@@ -26,10 +26,23 @@ export default function Dashboard() {
   
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
   
-  // Fetch Live Coin Watch data for top cryptocurrencies
+  // PRODUCTION-READY: Fetch data from database only - no Live Coin Watch API
   const { data: liveCoinData, isLoading: isLiveCoinLoading } = useQuery({
-    queryKey: ['/api/live-coin-watch/coins'],
-    refetchInterval: 15000, // Refresh every 15 seconds
+    queryKey: ['/api/tokens/coins-database'],
+    queryFn: async () => {
+      const endpoint = window.location.hostname === 'localhost' 
+        ? '/api/tokens/coins'
+        : '/.netlify/functions/token-coins-data';
+        
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`Database fetch failed: ${response.status}`);
+      }
+      return response.json();
+    },
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes from database
+    retry: 2,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   }) as { data: { coins: any[] } | undefined; isLoading: boolean };
   
   // Get selected token data from Live Coin Watch
@@ -43,10 +56,23 @@ export default function Dashboard() {
     }
   };
 
-  // Use Live Coin Watch ETH data as default for TokenOverview
+  // PRODUCTION-READY: Use database ETH data only - no Live Coin Watch API
   const { data: ethTokenData, isLoading: isEthLoading } = useQuery({
-    queryKey: ['/api/live-coin-watch/token/ETH'],
-    refetchInterval: 60 * 1000, // Refresh every minute
+    queryKey: ['/api/tokens/eth-database'],
+    queryFn: async () => {
+      const endpoint = window.location.hostname === 'localhost' 
+        ? '/api/tokens/ETH'
+        : '/.netlify/functions/token-data?token=ETH';
+        
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`ETH database fetch failed: ${response.status}`);
+      }
+      return response.json();
+    },
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes from database
+    retry: 2,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
   const defaultTokenData = ethTokenData as any;

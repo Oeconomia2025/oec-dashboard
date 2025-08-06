@@ -17,6 +17,7 @@ UI/UX preferences: Values polished, professional appearance with attention to de
 - **Styling**: Tailwind CSS with custom crypto-themed design system, utilizing custom gradient color schemes.
 - **Build Tool**: Vite
 - **UI/UX Decisions**: Professional UI/UX for swap functionality, dynamic page titles, unified design system with consistent branding, comprehensive staking interface with distinct gradient color schemes, interactive ROI Calculator and Achievement system, clear visual distinction between DeFi position types, one-time popup modal for new visitors, and an advanced chart interface with responsive layout, collapsible sidebar, token-specific color mapping, and area chart with gradient fade effects.
+- **Data Flow Architecture**: All frontend data exclusively sourced from Neon database via dedicated Netlify functions (token-coins-data.ts, token-data.ts, token-historical-data.ts) ensuring complete independence from Replit environment limitations.
 
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js server (converted to Netlify serverless functions for production)
@@ -38,6 +39,7 @@ UI/UX preferences: Values polished, professional appearance with attention to de
 - **Robust Error Handling**: Graceful API failure management with database cache fallback
 - **Dynamic Token System**: Database-driven token routing supporting all Live Coin Watch tokens
 - **Professional Accuracy**: Charts match TradingView precision using authentic market data
+- **Complete Database Independence**: All frontend components (ETH chart, dashboard, token lists) exclusively use database cache via Netlify functions - zero Live Coin Watch API calls from frontend
 
 ## External Dependencies
 
