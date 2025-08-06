@@ -45,7 +45,8 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
         dataLength: data?.length, 
         firstItem: data?.[0],
         lastItem: data?.[data?.length - 1],
-        expectedPrice: tokenData?.price
+        expectedPrice: tokenData?.price,
+        targetPoints: timeframe === "1H" ? 15 : timeframe === "1D" ? 24 : timeframe === "7D" ? 28 : 30
       });
       return data;
     },
@@ -59,16 +60,21 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
   const tokenColor = getTokenColor(tokenSymbol);
   const gradientId = getChartGradientId(tokenSymbol);
 
-  // Smooth the data by reducing data points for cleaner curves
+  // Smooth the data by reducing data points for cleaner curves - matching ETH chart density
   const smoothPriceData = (data: PriceHistory[] | undefined): PriceHistory[] => {
     if (!data || data.length === 0) return [];
     
-    // For shorter timeframes, reduce data points more aggressively
-    const reductionFactor = timeframe === "1H" ? 3 : timeframe === "1D" ? 5 : 10;
+    // Ensure we always return meaningful data
+    if (data.length <= 5) return data; // Don't filter if we have very few points
     
-    if (data.length <= 20) return data; // Don't reduce if we have few points
+    // Use same target points as ETH chart for consistency
+    const targetPoints = timeframe === "1H" ? 15 : timeframe === "1D" ? 24 : timeframe === "7D" ? 28 : 30;
+    const interval = Math.max(1, Math.floor(data.length / targetPoints));
     
-    return data.filter((_, index) => index % reductionFactor === 0 || index === data.length - 1);
+    const filtered = data.filter((_, index) => index % interval === 0 || index === data.length - 1);
+    
+    // Ensure we have at least 2 points for a line
+    return filtered.length < 2 ? data.slice(0, Math.min(data.length, 10)) : filtered;
   };
 
   // Process data and ensure current price is the final point
