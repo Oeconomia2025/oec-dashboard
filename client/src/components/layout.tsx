@@ -27,7 +27,8 @@ import {
   Droplets,
   DollarSign,
   ChevronDown,
-  AlertTriangle
+  AlertTriangle,
+  Heart
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -116,6 +117,7 @@ export function Layout({
     return false;
   });
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
@@ -469,6 +471,16 @@ export function Layout({
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => setSupportOpen(true)}
+                className="p-2"
+                title="Support Development"
+              >
+                <Heart className="w-4 h-4" />
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => handleNavigation('/settings')}
                 className="p-2"
                 title="Settings"
@@ -534,6 +546,87 @@ export function Layout({
               className="w-full bg-crypto-blue hover:bg-crypto-blue/80 text-white"
             >
               I Understand
+            </Button>
+          </Card>
+        </div>
+      )}
+      
+      {/* Support Modal */}
+      {supportOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <Card className="max-w-lg w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative">
+            <button 
+              onClick={() => setSupportOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center">
+                <Heart className="w-6 h-6 text-pink-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">Support Development</h2>
+                <p className="text-sm text-gray-400">Help Oeconomia Grow</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <p className="text-gray-300">
+                Support the development of this project as funds are needed for operations, server, database, API, and node upgrades, as well as general help so that I can continue to work diligently on this project.
+              </p>
+              
+              <p className="text-gray-300">
+                I also have marketing needs that I will be addressing in the coming days. Your support helps ensure continued development and improvement of the Oeconomia ecosystem.
+              </p>
+
+              <div className="bg-gradient-to-r from-pink-500/10 to-red-500/10 border border-pink-500/30 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-semibold text-pink-400 mb-2">Donation Addresses:</h3>
+                
+                <div className="space-y-2 text-sm">
+                  <div>
+                    <span className="text-gray-400 font-medium">EVM:</span>
+                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                      0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <span className="text-gray-400 font-medium">SOL:</span>
+                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                      HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <span className="text-gray-400 font-medium">SUI:</span>
+                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                      0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <span className="text-gray-400 font-medium">BTC:</span>
+                    <div className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all">
+                      bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
+                <p className="text-sm text-green-400">
+                  <strong>Thank you!</strong> Help will not be forgotten nor ignored. If I am in a position to give back, I will.
+                </p>
+              </div>
+            </div>
+
+            <Button 
+              onClick={() => setSupportOpen(false)}
+              className="w-full bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white"
+            >
+              Close
             </Button>
           </Card>
         </div>
