@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { usePriceHistory } from "@/hooks/use-token-data";
+import { useQuery } from "@tanstack/react-query";
 import { getTokenColor, getChartGradientId } from "@/utils/token-colors";
 import type { PriceHistory } from "@shared/schema";
 
@@ -18,16 +18,40 @@ interface PriceChartProps {
 
 export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData, formatPercentage, getChangeColor }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
-  const { data: rawPriceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
   
-  // Debug log to see what data we're getting
-  console.log("PriceChart Debug:", { 
-    contractAddress, 
-    tokenSymbol, 
-    dataLength: rawPriceHistory?.length, 
-    isLoading, 
-    error, 
-    firstDataPoint: rawPriceHistory?.[0] 
+  // Use different API endpoints based on token
+  const isETH = tokenSymbol === "ETH";
+  
+  // For ETH, use the specialized endpoint, for others use the generic one
+  const apiEndpoint = isETH 
+    ? (window.location.hostname === 'localhost' 
+        ? `/api/eth-history/${timeframe}`
+        : `/.netlify/functions/eth-history/${timeframe}`)
+    : (window.location.hostname === 'localhost' 
+        ? `/api/price-history/${contractAddress}/${timeframe}`
+        : `/.netlify/functions/price-history/${contractAddress}/${timeframe}`);
+
+  const { data: rawPriceHistory, isLoading, error } = useQuery<PriceHistory[]>({
+    queryKey: isETH ? ["eth-history", timeframe] : ["price-history", contractAddress, timeframe],
+    queryFn: async () => {
+      const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Chart API Response:", { 
+        token: tokenSymbol,
+        url: apiEndpoint, 
+        dataLength: data?.length, 
+        firstItem: data?.[0],
+        expectedPrice: tokenData?.price
+      });
+      return data;
+    },
+    refetchInterval: 5 * 60 * 1000,
+    enabled: !!(contractAddress || isETH),
+    retry: false,
+    staleTime: 10 * 60 * 1000,
   });
   
   // Get dynamic colors for this token
