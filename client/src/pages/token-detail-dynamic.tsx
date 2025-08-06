@@ -128,8 +128,27 @@ export default function TokenDetailDynamic() {
           </div>
           
           <div className="flex items-center space-x-2">
-            <Database className="w-4 h-4 text-crypto-blue" />
-            <span className="text-sm text-gray-400">Live Data</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                if (tokenData.contractAddress) {
+                  copyToClipboard(tokenData.contractAddress);
+                }
+              }}
+              className="text-gray-400 hover:text-white border-gray-600 hover:border-gray-500"
+            >
+              {copied ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
+              {copied ? "Copied!" : "Copy Address"}
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => setLocation("/liquidity?tab=add")}
+              className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Liquidity
+            </Button>
           </div>
         </div>
 
