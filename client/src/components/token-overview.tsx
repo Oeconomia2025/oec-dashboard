@@ -57,19 +57,19 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
             <span className={`px-2 py-1 rounded text-xs font-medium ${
-              tokenData.priceChangePercent24h >= 0 
+              ((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 
                 ? 'bg-green-600/80 text-white border border-green-500/50' 
                 : 'bg-red-600/80 text-white border border-red-500/50'
             }`}>
-              {tokenData.priceChangePercent24h >= 0 ? '+' : ''}
-              {tokenData.priceChangePercent24h.toFixed(1)}%
+              {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
+              {(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}%
             </span>
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">{formatPrice(tokenData.price)}</div>
+          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatPrice(tokenData.rate || tokenData.price || 0)}</div>
           <div className="text-sm text-gray-300">
             24h Change: 
-            <span className={tokenData.priceChange24h >= 0 ? 'text-green-300' : 'text-red-300'}>
-              {tokenData.priceChange24h >= 0 ? '+' : ''}{tokenData.priceChange24h.toFixed(2)}
+            <span className={(tokenData.deltaDay || tokenData.priceChange24h || 0) >= 0 ? 'text-green-300' : 'text-red-300'}>
+              {(tokenData.deltaDay || tokenData.priceChange24h || 0) >= 0 ? '+' : ''}{((tokenData.deltaDay || tokenData.priceChange24h || 0) * (tokenData.deltaDay ? 100 : 1)).toFixed(2)}{tokenData.deltaDay ? '%' : ''}
             </span>
           </div>
         </div>
@@ -83,9 +83,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Market Cap</h3>
             <BarChart3 className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">{formatMarketCap(tokenData.marketCap)}</div>
+          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatMarketCap((tokenData as any).cap || (tokenData as any).marketCap || 0)}</div>
           <div className="text-sm text-gray-300">
-            Total Supply: <span>{formatSupply(tokenData.totalSupply)}</span>
+            Total Supply: <span>{(tokenData as any).totalSupply ? formatSupply((tokenData as any).totalSupply) : 'N/A'}</span>
           </div>
         </div>
       </Card>
@@ -98,9 +98,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">24h Volume</h3>
             <ArrowUpDown className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">{formatVolume(tokenData.volume24h)}</div>
+          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatVolume((tokenData as any).volume || (tokenData as any).volume24h || 0)}</div>
           <div className="text-sm text-gray-300">
-            Transactions: <span>{tokenData.txCount24h}</span>
+            Transactions: <span>{(tokenData as any).txCount24h || 'N/A'}</span>
           </div>
         </div>
       </Card>
@@ -113,7 +113,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Liquidity Pool</h3>
             <Droplets className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">{formatLiquidity(tokenData.liquidity)}</div>
+          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatLiquidity((tokenData as any).liquidity || 0)}</div>
           <div className="text-sm text-gray-300">PancakeSwap V2</div>
         </div>
       </Card>
