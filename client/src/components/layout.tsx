@@ -571,7 +571,7 @@ export function Layout({
 
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-pink-400" />
+                <Heart className="w-6 h-6 text-pink-400 fill-current" />
               </div>
               <div>
                 <h2 className="text-xl font-bold">Support Development</h2>
@@ -588,8 +588,8 @@ export function Layout({
                 Additionally, upcoming marketing initiatives will help expand the Oeconomia ecosystem and reach new users. Every contribution directly supports continued development and innovation.
               </p>
 
-              <div className="bg-gradient-to-r from-pink-500/10 to-red-500/10 border border-pink-500/30 rounded-lg p-4 space-y-3">
-                <h3 className="text-sm font-semibold text-pink-400 mb-2">Donation Addresses (Click to Copy):</h3>
+              <div className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/30 rounded-lg p-4 space-y-3">
+                <h3 className="text-sm font-semibold text-cyan-400 mb-2">Donation Addresses (Click to Copy):</h3>
                 
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-4">
