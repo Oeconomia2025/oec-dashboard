@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { bscApiService } from './lib/services/bsc-api';
+
 import { pancakeSwapApiService } from './lib/services/pancakeswap-api';
 import { coinGeckoApiService } from './lib/services/coingecko-api';
 import type { TokenData } from './lib/shared/schema';

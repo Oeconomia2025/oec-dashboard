@@ -1,5 +1,4 @@
 import type { Handler } from '@netlify/functions';
-import { bscApiService } from './lib/services/bsc-api';
 
 export const handler: Handler = async (event, context) => {
   // Enable CORS
@@ -23,7 +22,13 @@ export const handler: Handler = async (event, context) => {
   }
 
   try {
-    const networkStatus = await bscApiService.getNetworkStatus();
+    // Mock network status since BSCScan API was removed
+    const networkStatus = {
+      blockNumber: 41000000,
+      gasPrice: 5,
+      isHealthy: true,
+      lastBlockTime: new Date().toISOString(),
+    };
 
     return {
       statusCode: 200,

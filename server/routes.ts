@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { bscApiService } from "./services/bsc-api";
+
 import { pancakeSwapApiService } from "./services/pancakeswap-api";
 import { coinGeckoApiService } from "./services/coingecko-api";
 import { alchemyApiService } from "./services/alchemy-api";

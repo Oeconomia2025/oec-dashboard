@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { bscApiService } from './lib/services/bsc-api';
+
 import { pancakeSwapApiService } from './lib/services/pancakeswap-api';
 import { coinGeckoApiService } from './lib/services/coingecko-api';
 
@@ -50,8 +50,8 @@ export const handler: Handler = async (event, context) => {
 
     for (const tokenAddress of tokenAddresses) {
       try {
-        // Get token balance using BSCScan API
-        const balance = await bscApiService.getTokenBalance(walletAddress, tokenAddress);
+        // Mock token balance since BSCScan API was removed
+        const balance = "1000";
         
         // Get token info from our existing API
         const [coinGeckoData, pancakeSwapData] = await Promise.all([

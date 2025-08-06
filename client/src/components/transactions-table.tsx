@@ -65,7 +65,7 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
     }
   };
 
-  const getBSCScanUrl = (hash: string) => {
+  const getBlockExplorerUrl = (hash: string) => {
     return `https://bscscan.com/tx/${hash}`;
   };
 
@@ -80,7 +80,7 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
             rel="noopener noreferrer"
             className="text-crypto-blue hover:text-crypto-blue/80 text-sm flex items-center gap-1"
           >
-            View on BSCScan <ExternalLink className="w-4 h-4" />
+            View on Explorer <ExternalLink className="w-4 h-4" />
           </a>
         </div>
         
@@ -130,7 +130,7 @@ export function TransactionsTable({ contractAddress }: TransactionsTableProps) {
                     <td className="py-4 text-gray-400">{formatTime(tx.timestamp)}</td>
                     <td className="py-4">
                       <a 
-                        href={getBSCScanUrl(tx.hash)}
+                        href={getBlockExplorerUrl(tx.hash)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-crypto-blue hover:text-crypto-blue/80 text-sm flex items-center gap-1"

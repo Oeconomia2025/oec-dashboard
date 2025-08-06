@@ -1,5 +1,5 @@
 import type { Handler } from '@netlify/functions';
-import { bscApiService } from './lib/services/bsc-api';
+
 
 export const handler: Handler = async (event, context) => {
   // Enable CORS
@@ -34,8 +34,7 @@ export const handler: Handler = async (event, context) => {
       };
     }
 
-    // BSCScan free tier doesn't provide holder data
-    // In production, you'd use Moralis, Alchemy, or similar
+    // Mock holder data - use Moralis, Alchemy, or similar for real data
     const mockHolders = [
       {
         address: "0x1234567890123456789012345678901234567890",
