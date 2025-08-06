@@ -42,7 +42,7 @@ export function useNetworkStatus() {
 
 export function usePriceHistory(contractAddress: string, timeframe: string = "1D") {
   // FORCE NETLIFY FUNCTIONS: Always use Netlify functions, never connect to Replit
-  const apiEndpoint = `/.netlify/functions/price-history/${contractAddress}/${timeframe}`;
+  const apiEndpoint = `/.netlify/functions/price-history?contract=${contractAddress}&timeframe=${timeframe}`;
 
   return useQuery<PriceHistory[]>({
     queryKey: ["price-history", contractAddress, timeframe],
