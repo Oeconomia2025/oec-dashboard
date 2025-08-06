@@ -198,7 +198,7 @@ export default function TokenDetailDynamic() {
         <Card className="crypto-card p-6">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="flex items-center justify-between">
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
                 {tokenData.deltaHour && (
                   <div className="text-center">
                     <p className="text-sm text-gray-400">1 Hour</p>
