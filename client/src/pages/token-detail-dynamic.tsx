@@ -165,15 +165,15 @@ export default function TokenDetailDynamic() {
           
           <Card className="crypto-card p-4">
             <div>
-              <p className="text-sm text-gray-400">Market Cap</p>
-              <p className="text-lg font-semibold">${formatNumber(tokenData.marketCap)}</p>
+              <p className="text-sm text-gray-400">24h Volume</p>
+              <p className="text-lg font-semibold">${formatNumber(tokenData.volume24h)}</p>
             </div>
           </Card>
           
           <Card className="crypto-card p-4">
             <div>
-              <p className="text-sm text-gray-400">24h Volume</p>
-              <p className="text-lg font-semibold">${formatNumber(tokenData.volume24h)}</p>
+              <p className="text-sm text-gray-400">Market Cap</p>
+              <p className="text-lg font-semibold">${formatNumber(tokenData.marketCap)}</p>
             </div>
           </Card>
           
