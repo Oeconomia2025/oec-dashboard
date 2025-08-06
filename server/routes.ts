@@ -329,20 +329,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         } catch (error) {
           console.log(`Error fetching data for token ${tokenAddress}:`, error);
           
-          // Even if balance fetch fails, still show the token with fallback data
+          // Always show the token with fallback data
           const fallback = getTokenFallback(tokenAddress);
-          if (fallback.name !== 'Unknown Token') {
-            const tokenInfo = {
-              address: tokenAddress,
-              name: fallback.name,
-              symbol: fallback.symbol,
-              balance: '0', // Show 0 balance if we can't fetch it
-              decimals: fallback.decimals,
-              price: 0,
-              value: 0
-            };
-            portfolio.push(tokenInfo);
-          }
+          const tokenInfo = {
+            address: tokenAddress,
+            name: fallback.name,
+            symbol: fallback.symbol,
+            balance: '0', // Show 0 balance if we can't fetch it
+            decimals: fallback.decimals,
+            price: 0,
+            value: 0
+          };
+          portfolio.push(tokenInfo);
         }
       }
 

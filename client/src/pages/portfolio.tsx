@@ -46,46 +46,18 @@ export function Portfolio() {
     '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c', // BTCB
   ])
 
-  // Mock pools/farms data - in real implementation, this would come from API
+  // Static pools/farms data - simplified for demo purposes
   const [poolsFarms] = useState<PoolFarm[]>([
     {
-      id: 'pancake-bnb-usdt',
-      protocol: 'PancakeSwap',
+      id: 'demo-pool',
+      protocol: 'Demo Protocol',
       type: 'pool',
-      pair: 'BNB-USDT',
-      apr: 12.5,
-      tvl: 125000000,
-      userBalance: 0.45,
-      userValue: 156.78,
-      rewards: [
-        { token: 'CAKE', amount: 0.023, value: 0.068 }
-      ]
-    },
-    {
-      id: 'pancake-cake-farm',
-      protocol: 'PancakeSwap',
-      type: 'farm',
-      pair: 'CAKE-BNB',
-      apr: 28.3,
-      tvl: 89000000,
-      userBalance: 0.12,
-      userValue: 89.45,
-      rewards: [
-        { token: 'CAKE', amount: 0.087, value: 0.25 }
-      ]
-    },
-    {
-      id: 'venus-usdt',
-      protocol: 'Venus',
-      type: 'pool',
-      pair: 'USDT Supply',
-      apr: 5.8,
-      tvl: 450000000,
-      userBalance: 250,
-      userValue: 250.00,
-      rewards: [
-        { token: 'XVS', amount: 0.012, value: 0.084 }
-      ]
+      pair: 'Demo Pool',
+      apr: 0,
+      tvl: 0,
+      userBalance: 0,
+      userValue: 0,
+      rewards: []
     }
   ])
 
@@ -153,13 +125,20 @@ export function Portfolio() {
   }
   const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
-  // Calculate total portfolio value
-  const totalValue = tokenBalances?.reduce((sum: number, token: TokenBalance) => {
+  // Calculate total portfolio value - only from actual token balances
+  const totalTokenValue = tokenBalances?.reduce((sum: number, token: TokenBalance) => {
     return sum + (token.value || 0)
   }, 0) || 0
 
+  // Get real BNB price from Live Coin Watch
+  const { data: bnbPriceData } = useQuery({
+    queryKey: ['/api/live-coin-watch/token/BNB'],
+    refetchInterval: 60000, // Refresh every 60 seconds
+  })
+
+  const bnbPrice = (bnbPriceData as any)?.price || 0
   const bnbValue = bnbBalance && bnbBalance.formatted ? 
-    (parseFloat(bnbBalance.formatted) || 0) * 300 : 0 // Approximate BNB price
+    (parseFloat(bnbBalance.formatted) || 0) * bnbPrice : 0
   
   // Calculate pools/farms value
   const poolsFarmsValue = poolsFarms.reduce((sum, item) => sum + item.userValue, 0)
@@ -202,7 +181,7 @@ export function Portfolio() {
                 <DollarSign className="text-gray-300 w-5 h-5" />
               </div>
               <div className="text-2xl font-bold text-white drop-shadow-sm">
-                {formatPrice((totalValue || 0) + (bnbValue || 0) + (poolsFarmsValue || 0))}
+                {formatPrice((totalTokenValue || 0) + (bnbValue || 0) + (poolsFarmsValue || 0))}
               </div>
               <div className="text-sm text-gray-400 mt-2">
                 Including {poolsFarms.length} DeFi positions
