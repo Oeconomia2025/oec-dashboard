@@ -53,7 +53,13 @@ export function usePriceHistory(contractAddress: string, timeframe: string = "1D
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      return response.json();
+      const data = await response.json();
+      console.log("usePriceHistory API Response:", { 
+        url: apiEndpoint, 
+        dataLength: data?.length, 
+        firstItem: data?.[0] 
+      });
+      return data;
     },
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
     enabled: !!contractAddress,

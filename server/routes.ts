@@ -471,16 +471,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const tokenCode = contractToCodeMap[normalizedAddress];
       
       if (tokenCode) {
-        try {
-          // Get current Live Coin Watch price for this token using the sync service
-          const liveCoinData = await liveCoinWatchSyncService.getCoinByCode(tokenCode);
-          if (liveCoinData) {
-            currentPrice = liveCoinData.rate;
-            console.log(`Using Live Coin Watch price for ${tokenCode}: $${currentPrice}`);
-          }
-        } catch (error) {
-          console.error(`Error fetching Live Coin Watch price for ${tokenCode}:`, error);
-        }
+        // For now, just log that we found the token code and use fallback
+        console.log(`Found token code ${tokenCode} for contract ${normalizedAddress}, using fallback price generation`);
       }
       
       // Generate historical data points based on current price for chart visualization

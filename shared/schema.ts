@@ -47,9 +47,9 @@ export const networkStatusSchema = z.object({
 });
 
 export const priceHistorySchema = z.object({
-  timestamp: z.number(),
+  timestamp: z.union([z.number(), z.string()]), // Support both Unix timestamp and ISO string
   price: z.number(),
-  volume: z.number(),
+  volume: z.number().optional(), // Make volume optional since not all endpoints provide it
 });
 
 export const tokenConfigSchema = z.object({

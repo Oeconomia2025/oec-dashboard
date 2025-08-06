@@ -20,6 +20,16 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
   const [timeframe, setTimeframe] = useState("1D");
   const { data: rawPriceHistory, isLoading, error } = usePriceHistory(contractAddress, timeframe);
   
+  // Debug log to see what data we're getting
+  console.log("PriceChart Debug:", { 
+    contractAddress, 
+    tokenSymbol, 
+    dataLength: rawPriceHistory?.length, 
+    isLoading, 
+    error, 
+    firstDataPoint: rawPriceHistory?.[0] 
+  });
+  
   // Get dynamic colors for this token
   const tokenColor = getTokenColor(tokenSymbol);
   const gradientId = getChartGradientId(tokenSymbol);
