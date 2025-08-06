@@ -1370,7 +1370,7 @@ function LiquidityContent() {
               </div>
               ) : (
                 <div>
-                <div className="border rounded-lg overflow-hidden relative max-h-[calc(100vh-280px)] overflow-y-auto scrollbar-hide">
+                <div className="border rounded-lg overflow-hidden relative max-h-[700px] overflow-y-auto scrollbar-hide">
                   <table className="w-full">
                     <thead className="sticky top-0 z-20 bg-[#1a1b23] border-b border-crypto-border">
                       <tr>
@@ -1432,7 +1432,7 @@ function LiquidityContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredTokens.slice(0, 10).map((token, index) => (
+                      {filteredTokens.map((token, index) => (
                         <tr key={token.id} className="border-b border-crypto-border hover:bg-gray-800/40 hover:border-crypto-green/60 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                             onClick={() => setLocation(`/coin/${token.symbol}`)}>
                           <td className="py-4 px-6">
