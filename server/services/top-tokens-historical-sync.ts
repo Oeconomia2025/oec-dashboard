@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/neon-serverless';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import * as schema from '@shared/schema';
-import { eq, and, desc } from 'drizzle-orm';
+import { eq, and, desc, sql } from 'drizzle-orm';
 import ws from "ws";
 
 neonConfig.webSocketConstructor = ws;
@@ -13,10 +13,23 @@ if (!process.env.DATABASE_URL) {
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle({ client: pool, schema });
 
-// Top 10 cryptocurrency tokens to sync historical data
-const TOP_10_TOKENS = [
-  'BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'USDC', 'XRP', 'DOGE', 'ADA', 'TRX'
-];
+// Get ALL tokens from Live Coin Watch database (up to 100 tokens)
+async function getAllAvailableTokens(): Promise<string[]> {
+  try {
+    const tokens = await db
+      .select({ code: schema.liveCoinWatchCoins.code })
+      .from(schema.liveCoinWatchCoins)
+      .where(sql`cap IS NOT NULL`)
+      .orderBy(sql`cap DESC`)
+      .limit(100);
+    
+    return tokens.map(t => t.code);
+  } catch (error) {
+    console.error('Error fetching available tokens:', error);
+    // Fallback to top 10 if database query fails
+    return ['BTC', 'ETH', 'USDT', 'BNB', 'SOL', 'USDC', 'XRP', 'DOGE', 'ADA', 'TRX'];
+  }
+}
 
 // Fetch AUTHENTIC historical price data from Live Coin Watch API
 async function seedTokenHistoricalData(tokenCode: string) {
@@ -165,31 +178,64 @@ async function updateTokenHistoricalData(tokenCode: string) {
   }
 }
 
-// Seed historical data for all top 10 tokens
+// Seed historical data for all available tokens (up to 100)
 export async function seedTop10TokensHistoricalData() {
-  console.log("🚀 Starting Top 10 Tokens Historical Data Sync...");
+  console.log("🚀 Starting ALL Available Tokens Historical Data Sync...");
   
   try {
-    for (const tokenCode of TOP_10_TOKENS) {
-      await seedTokenHistoricalData(tokenCode);
+    const allTokens = await getAllAvailableTokens();
+    console.log(`📊 Found ${allTokens.length} tokens to sync with authentic data`);
+    
+    let successCount = 0;
+    let errorCount = 0;
+    
+    for (const tokenCode of allTokens) {
+      try {
+        await seedTokenHistoricalData(tokenCode);
+        successCount++;
+        
+        // Rate limiting between tokens to respect API limits
+        if (successCount % 10 === 0) {
+          console.log(`⏳ Processed ${successCount}/${allTokens.length} tokens, pausing briefly...`);
+          await new Promise(resolve => setTimeout(resolve, 5000)); // 5 second pause every 10 tokens
+        }
+      } catch (tokenError) {
+        errorCount++;
+        console.error(`❌ Failed to sync ${tokenCode}:`, tokenError);
+      }
     }
-    console.log("✅ Completed historical data seeding for top 10 tokens");
+    
+    console.log(`✅ Completed authentic data sync: ${successCount} success, ${errorCount} errors`);
   } catch (error) {
-    console.error("❌ Error in top 10 tokens historical data sync:", error);
+    console.error("❌ Error in all tokens historical data sync:", error);
   }
 }
 
-// Update historical data for all top 10 tokens (run hourly)
+// Update historical data for all available tokens (run hourly)
 export async function updateTop10TokensHistoricalData() {
-  console.log("🔄 Updating Top 10 Tokens Historical Data...");
+  console.log("🔄 Updating ALL Available Tokens Historical Data...");
   
   try {
-    for (const tokenCode of TOP_10_TOKENS) {
-      await updateTokenHistoricalData(tokenCode);
+    const allTokens = await getAllAvailableTokens();
+    let updateCount = 0;
+    
+    for (const tokenCode of allTokens) {
+      try {
+        await updateTokenHistoricalData(tokenCode);
+        updateCount++;
+        
+        // Brief pause every 20 updates to respect rate limits
+        if (updateCount % 20 === 0) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        }
+      } catch (error) {
+        console.error(`❌ Failed to update ${tokenCode}:`, error);
+      }
     }
-    console.log("✅ Updated historical data for top 10 tokens");
+    
+    console.log(`✅ Updated historical data for ${updateCount} tokens`);
   } catch (error) {
-    console.error("❌ Error updating top 10 tokens historical data:", error);
+    console.error("❌ Error updating all tokens historical data:", error);
   }
 }
 
@@ -198,24 +244,24 @@ export const topTokensHistoricalSyncService = {
   intervalId: null as NodeJS.Timeout | null,
   
   async start() {
-    console.log("Starting Top 10 Tokens Historical Data Sync Service...");
+    console.log("Starting ALL Available Tokens Historical Data Sync Service...");
     
-    // Initial seeding
+    // Initial seeding for all available tokens
     await seedTop10TokensHistoricalData();
     
-    // Set up hourly updates
+    // Set up hourly updates for all tokens
     this.intervalId = setInterval(async () => {
       await updateTop10TokensHistoricalData();
     }, 60 * 60 * 1000); // Every hour
     
-    console.log("Top 10 tokens historical data sync service started with 1-hour interval");
+    console.log("All available tokens historical data sync service started with 1-hour interval");
   },
   
   stop() {
     if (this.intervalId) {
       clearInterval(this.intervalId);
       this.intervalId = null;
-      console.log("Top 10 tokens historical data sync service stopped");
+      console.log("All tokens historical data sync service stopped");
     }
   }
 };

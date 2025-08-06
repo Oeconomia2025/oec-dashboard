@@ -31,18 +31,23 @@ UI/UX preferences: Values polished, professional appearance with attention to de
 - **Data Persistence**: Persistent storage for tracked tokens, historical snapshots, user watchlists, and price alerts.
 
 ### System Design Choices
-- Focus on real-time data with automatic polling (15-60 second intervals).
-- Modular design for extensibility.
-- Robust error handling with graceful API failure management and app-wide error boundaries.
-- State locking mechanism and localStorage persistence for consistent sidebar navigation.
-- Dynamic token routing system supporting all database tokens.
-- Comprehensive crypto logo mapping and name cleaning across all token displays.
+- **100% Authentic Data**: All charts use Live Coin Watch historical data (no synthetic prices)
+- **Complete Token Coverage**: Authentic historical data for all 100+ tokens with full timeframe support
+- **Production Independence**: Netlify functions handle all data operations independent of Replit
+- **Automated Updates**: Hourly sync system maintains fresh authentic data across all tokens
+- **Robust Error Handling**: Graceful API failure management with database cache fallback
+- **Dynamic Token System**: Database-driven token routing supporting all Live Coin Watch tokens
+- **Professional Accuracy**: Charts match TradingView precision using authentic market data
 
 ## External Dependencies
 
 ### Crypto Data Sources
-- **Live Coin Watch API**: Real-time cryptocurrency market data with database persistence.
-- **CoinGecko API**: Market data and token information.
+- **Live Coin Watch API**: Primary source for all authentic cryptocurrency market data and historical prices.
+  - Real-time market data for 100+ tokens with database persistence
+  - Authentic historical price data (1H, 1D, 7D, 30D timeframes) 
+  - Production Netlify function integration for independent operation
+  - Hourly automated updates for all tracked tokens
+- **CoinGecko API**: Secondary market data source (deprecated in favor of Live Coin Watch).
 - **PancakeSwap API**: DEX trading data and liquidity information.
 - **Moralis API**: BSC blockchain data and token analytics.
 
