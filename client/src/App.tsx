@@ -13,6 +13,7 @@ import Swap from "@/pages/swap";
 import Liquidity from "@/pages/liquidity";
 import Lend from "@/pages/lend";
 import TokenDetail from "@/pages/token-detail";
+import TokenDetailDynamic from "@/pages/token-detail-dynamic";
 import Staking from "@/pages/staking";
 import Governance from "@/pages/governance";
 import Learn from "@/pages/learn";
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/liquidity" component={Liquidity} />
       <Route path="/lend" component={Lend} />
       <Route path="/token/:id" component={TokenDetail} />
+      <Route path="/coin/:code" component={TokenDetailDynamic} />
       <Route path="/staking" component={Staking} />
       <Route path="/governance" component={Governance} />
       <Route path="/learn" component={Learn} />

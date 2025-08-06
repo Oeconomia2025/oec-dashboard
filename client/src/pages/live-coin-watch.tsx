@@ -35,10 +35,8 @@ export default function LiveCoinWatch() {
   };
 
   const handleRowClick = (coin: LiveCoinWatchDbCoin) => {
-    const contractAddress = coinContractAddresses[coin.code];
-    if (contractAddress) {
-      navigate(`/token/${contractAddress}`);
-    }
+    // Navigate to dynamic token detail page using coin code instead of contract address
+    navigate(`/coin/${coin.code}`);
   };
 
   // Fetch Live Coin Watch data from database
@@ -193,7 +191,7 @@ export default function LiveCoinWatch() {
                 Top 10 Cryptocurrencies (From Database)
               </div>
               <div className="text-sm text-gray-400 font-normal">
-                Click supported tokens to view details
+                Click any token to view detailed information
               </div>
             </CardTitle>
           </CardHeader>
@@ -222,12 +220,8 @@ export default function LiveCoinWatch() {
                       return (
                         <tr 
                           key={coin.code} 
-                          className={`border-b border-gray-800/50 transition-colors ${
-                            hasContractAddress 
-                              ? 'hover:bg-gray-800/50 cursor-pointer hover:border-cyan-500/30' 
-                              : 'hover:bg-gray-800/20'
-                          }`}
-                          onClick={() => hasContractAddress && handleRowClick(coin)}
+                          className="border-b border-gray-800/50 transition-colors hover:bg-gray-800/50 cursor-pointer hover:border-cyan-500/30"
+                          onClick={() => handleRowClick(coin)}
                         >
                           <td className="py-4 px-4">
                             <span className="text-white font-medium">#{index + 1}</span>
@@ -240,9 +234,7 @@ export default function LiveCoinWatch() {
                                   <div className="text-gray-400 text-sm uppercase">{coin.code}</div>
                                 </div>
                               </div>
-                              {hasContractAddress && (
-                                <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
-                              )}
+                              <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                             </div>
                           </td>
                           <td className="py-4 px-4 text-right">
@@ -260,11 +252,9 @@ export default function LiveCoinWatch() {
                           <td className="py-4 px-4 text-right">
                             <div className="flex items-center justify-end space-x-2">
                               <span className="text-white">{formatVolume(coin.volume)}</span>
-                              {hasContractAddress && (
-                                <div className="text-xs text-cyan-400 opacity-70">
-                                  Click to view details
-                                </div>
-                              )}
+                              <div className="text-xs text-cyan-400 opacity-70">
+                                Click to view details
+                              </div>
                             </div>
                           </td>
                         </tr>

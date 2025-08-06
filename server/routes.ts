@@ -722,6 +722,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Get token data by code (for dynamic token detail pages)
+  app.get("/api/live-coin-watch/token/:code", async (req, res) => {
+    try {
+      const { code } = req.params;
+      const coins = await liveCoinWatchSyncService.getStoredCoins();
+      
+      const token = coins.find(coin => coin.code.toLowerCase() === code.toLowerCase());
+      
+      if (!token) {
+        return res.status(404).json({ 
+          message: "Token not found",
+          availableTokens: coins.map(c => c.code).sort()
+        });
+      }
+
+      // Map Live Coin Watch codes to BSC contract addresses for compatibility
+      const codeToContract: Record<string, string> = {
+        'USDT': '0x55d398326f99059ff775485246999027b3197955',
+        'BNB': '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+        'ETH': '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+        'USDC': '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        'ADA': '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
+        'DOGE': '0xba2ae424d960c26247dd6c32edc70b295c744c43',
+        'LINK': '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd',
+        'LTC': '0x4338665cbb7b2485a8855a139b75d5e34ab0db94',
+        'BTC': '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
+        'SOL': '0x570a5d26f7765ecb712c0924e4de545b89fd43df',
+        'TRX': '0x85eac5ac2f758618dfa09bdbe0cf174e7d574d5b',
+        'XRP': '0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe',
+      };
+
+      // Token logo mapping based on CoinMarketCap
+      const logoMapping: Record<string, string> = {
+        'USDT': 'https://s2.coinmarketcap.com/static/img/coins/32x32/825.png',
+        'BNB': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png',
+        'ETH': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png',
+        'USDC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/3408.png',
+        'BTC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1.png',
+        'ADA': 'https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png',
+        'DOGE': 'https://s2.coinmarketcap.com/static/img/coins/32x32/74.png',
+        'LINK': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png',
+        'LTC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/2.png',
+        'SOL': 'https://s2.coinmarketcap.com/static/img/coins/32x32/5426.png',
+        'TRX': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1958.png',
+        'XRP': 'https://s2.coinmarketcap.com/static/img/coins/32x32/52.png',
+      };
+
+      // Website mapping for tokens
+      const websiteMapping: Record<string, string> = {
+        'USDT': 'https://tether.to/',
+        'BNB': 'https://www.binance.com/en/bnb',
+        'ETH': 'https://ethereum.org/',
+        'USDC': 'https://www.centre.io/usdc',
+        'BTC': 'https://bitcoin.org/',
+        'ADA': 'https://cardano.org/',
+        'DOGE': 'https://dogecoin.com/',
+        'LINK': 'https://chain.link/',
+        'LTC': 'https://litecoin.org/',
+        'SOL': 'https://solana.com/',
+        'TRX': 'https://tron.network/',
+        'XRP': 'https://ripple.com/',
+      };
+
+      // Transform the data into TokenData format for compatibility
+      const tokenData = {
+        id: codeToContract[token.code] || `dynamic-${token.code.toLowerCase()}`,
+        name: token.name,
+        symbol: token.code,
+        contractAddress: codeToContract[token.code] || `0x${token.code.toLowerCase().padEnd(40, '0')}`,
+        price: token.rate,
+        priceChange24h: token.rate * ((token.deltaDay || 1) - 1),
+        priceChangePercent24h: ((token.deltaDay || 1) - 1) * 100,
+        marketCap: token.cap,
+        volume24h: token.volume,
+        totalSupply: 0, // Not available in Live Coin Watch
+        circulatingSupply: 0, // Not available in Live Coin Watch
+        liquidity: 0, // Not available in Live Coin Watch
+        txCount24h: 0, // Not available in Live Coin Watch
+        network: "BSC",
+        lastUpdated: token.lastUpdated || new Date().toISOString(),
+        logo: logoMapping[token.code] || `https://ui-avatars.com/api/?name=${token.code}&background=0066cc&color=fff`,
+        website: websiteMapping[token.code] || `https://coinmarketcap.com/currencies/${token.name.toLowerCase().replace(/\s+/g, '-')}/`,
+        // Additional Live Coin Watch specific data
+        deltaHour: token.deltaHour,
+        deltaWeek: token.deltaWeek,
+        deltaMonth: token.deltaMonth,
+        deltaQuarter: token.deltaQuarter,
+        deltaYear: token.deltaYear,
+      };
+
+      res.json(tokenData);
+    } catch (error) {
+      console.error("Error fetching Live Coin Watch token:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch token data",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
