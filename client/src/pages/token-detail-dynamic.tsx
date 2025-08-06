@@ -67,7 +67,7 @@ export default function TokenDetailDynamic() {
     return percent >= 0 ? "text-crypto-green" : "text-crypto-red";
   };
 
-  if (isLoading) {
+  if (isLoading || !tokenData) {
     return (
       <Layout>
         <div className="container mx-auto p-6 space-y-6">
@@ -81,7 +81,7 @@ export default function TokenDetailDynamic() {
     );
   }
 
-  if (error || !tokenData) {
+  if (error) {
     return (
       <Layout>
         <div className="container mx-auto p-6">
@@ -103,11 +103,13 @@ export default function TokenDetailDynamic() {
     );
   }
 
+
+
   return (
     <Layout
       tokenLogo={getCryptoLogo(tokenCode, tokenData.symbol)}
       tokenWebsite={tokenData.website}
-      tokenTicker={tokenData.code}
+      tokenTicker={tokenData.symbol || tokenCode}
       tokenName={cleanCoinName(tokenData.name)}
     >
       <div className="container mx-auto p-6 space-y-6">
