@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout";
 import { PriceChart } from "@/components/price-chart";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check, Database } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { formatCryptoData, getCryptoLogo } from "@/utils/crypto-logos";
 import type { TokenData, LiveCoinWatchDbCoin } from "@shared/schema";
 
 export default function TokenDetailDynamic() {
@@ -130,12 +131,12 @@ export default function TokenDetailDynamic() {
           <div className="flex items-start justify-between">
             <div className="flex items-center space-x-4">
               <img 
-                src={tokenData.logo || `https://ui-avatars.com/api/?name=${tokenData.symbol}&background=0066cc&color=fff`} 
+                src={getCryptoLogo(tokenCode, tokenData.symbol)} 
                 alt={tokenData.name}
                 className="w-16 h-16 rounded-full"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = `https://ui-avatars.com/api/?name=${tokenData.symbol}&background=0066cc&color=fff`;
+                  target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tokenData.symbol)}&background=0066cc&color=fff&size=64`;
                 }}
               />
               <div>

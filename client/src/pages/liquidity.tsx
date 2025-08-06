@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useTokenData } from "@/hooks/use-token-data";
 import { useQuery } from "@tanstack/react-query";
+import { formatCryptoData } from "@/utils/crypto-logos";
 import type { LiveCoinWatchDbCoin } from "@shared/schema";
 
 interface Token {
@@ -334,34 +335,22 @@ function LiquidityContent() {
     refetchInterval: 15 * 1000, // Refresh every 15 seconds for real-time data
   });
 
-  // Token logos mapping for Live Coin Watch tokens
-  const liveCoinWatchLogos: { [key: string]: string } = {
-    'USDT': 'https://s2.coinmarketcap.com/static/img/coins/32x32/825.png',
-    'BNB': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1839.png',
-    'ETH': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1027.png',
-    'USDC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/3408.png',
-    'BTC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1.png',
-    'ADA': 'https://s2.coinmarketcap.com/static/img/coins/32x32/2010.png',
-    'DOGE': 'https://s2.coinmarketcap.com/static/img/coins/32x32/74.png',
-    'LINK': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1975.png',
-    'LTC': 'https://s2.coinmarketcap.com/static/img/coins/32x32/2.png',
-    'SOL': 'https://s2.coinmarketcap.com/static/img/coins/32x32/5426.png',
-    'TRX': 'https://s2.coinmarketcap.com/static/img/coins/32x32/1958.png',
-    'XRP': 'https://s2.coinmarketcap.com/static/img/coins/32x32/52.png',
-  };
-
   // Transform Live Coin Watch data into the format expected by the UI
-  const tokens = liveCoinWatchData?.coins?.map((coin: LiveCoinWatchDbCoin) => ({
-    id: coin.code,
-    name: coin.name,
-    symbol: coin.code,
-    logo: liveCoinWatchLogos[coin.code] || `https://ui-avatars.com/api/?name=${coin.code}&background=0066cc&color=fff`,
-    price: coin.rate,
-    change24h: coin.deltaDay ? (coin.deltaDay - 1) * 100 : 0,
-    marketCap: coin.cap || 0,
-    volume24h: coin.volume || 0,
-    holders: Math.floor(Math.random() * 100000), // Mock holder data since not available in Live Coin Watch
-  })) || [];
+  const tokens = liveCoinWatchData?.coins?.map((coin: LiveCoinWatchDbCoin) => {
+    const formatted = formatCryptoData(coin);
+    
+    return {
+      id: coin.code,
+      name: formatted.cleanName,
+      symbol: formatted.cleanCode,
+      logo: formatted.logo,
+      price: coin.rate,
+      change24h: coin.deltaDay ? (coin.deltaDay - 1) * 100 : 0,
+      marketCap: coin.cap || 0,
+      volume24h: coin.volume || 0,
+      holders: Math.floor(Math.random() * 100000), // Mock holder data since not available in Live Coin Watch
+    };
+  }) || [];
 
   // Mock pool data for pools view
   const mockPools = [

@@ -6,6 +6,7 @@ import { Layout } from "@/components/layout";
 import { Activity, TrendingUp, TrendingDown, RefreshCw, Database, Wifi, WifiOff, ExternalLink } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
+import { formatCryptoData } from "@/utils/crypto-logos";
 import type { LiveCoinWatchDbCoin } from "@shared/schema";
 
 interface LiveCoinWatchResponse {
@@ -188,7 +189,7 @@ export default function LiveCoinWatch() {
             <CardTitle className="text-white flex items-center justify-between">
               <div className="flex items-center">
                 <Database className="w-5 h-5 mr-2" />
-                Top 10 Cryptocurrencies (From Database)
+                Top 100 Cryptocurrencies (From Database)
               </div>
               <div className="text-sm text-gray-400 font-normal">
                 Click any token to view detailed information
@@ -216,6 +217,7 @@ export default function LiveCoinWatch() {
                   </thead>
                   <tbody>
                     {coinData.coins.map((coin, index) => {
+                      const formatted = formatCryptoData(coin);
                       const hasContractAddress = coinContractAddresses[coin.code];
                       return (
                         <tr 
@@ -229,9 +231,18 @@ export default function LiveCoinWatch() {
                           <td className="py-4 px-4">
                             <div className="flex items-center justify-between">
                               <div className="flex items-center space-x-3">
+                                <img 
+                                  src={formatted.logo} 
+                                  alt={formatted.cleanName}
+                                  className="w-8 h-8 rounded-full"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(formatted.cleanCode)}&background=0066cc&color=fff&size=32`;
+                                  }}
+                                />
                                 <div>
-                                  <div className="text-white font-semibold">{coin.name}</div>
-                                  <div className="text-gray-400 text-sm uppercase">{coin.code}</div>
+                                  <div className="text-white font-semibold">{formatted.cleanName}</div>
+                                  <div className="text-gray-400 text-sm uppercase">{formatted.cleanCode}</div>
                                 </div>
                               </div>
                               <ExternalLink className="w-4 h-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
