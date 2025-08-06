@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Activity, RefreshCw, TrendingUp, TrendingDown } from "lucide-react";
 import { TokenOverview } from "@/components/token-overview";
 import { PriceChart } from "@/components/price-chart";
+import { ETHHistoricalChart } from "@/components/eth-historical-chart";
 import { TokenInfoPanel } from "@/components/token-info-panel";
 import { VolumeLiquidityAnalytics } from "@/components/volume-liquidity-analytics";
 import { HistoricalPerformance } from "@/components/historical-performance";
@@ -57,7 +58,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
           <div className="lg:col-span-2">
-            <PriceChart contractAddress={contractAddress} tokenSymbol={defaultTokenData?.code || "BTC"} />
+            <ETHHistoricalChart />
             
             {/* Volume and Liquidity Analytics */}
             <VolumeLiquidityAnalytics contractAddress={contractAddress} />

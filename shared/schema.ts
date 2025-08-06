@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { pgTable, serial, text, real, integer, timestamp, boolean, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, real, integer, timestamp, boolean, jsonb, bigint, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 
 export const tokenDataSchema = z.object({
@@ -148,6 +148,21 @@ export const liveCoinWatchCoins = pgTable("live_coin_watch_coins", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Historical price data table for Live Coin Watch
+export const priceHistoryData = pgTable("price_history_data", {
+  id: serial("id").primaryKey(),
+  tokenCode: text("token_code").notNull(), // ETH, BTC, etc.
+  contractAddress: text("contract_address"), // BSC contract if available
+  timestamp: bigint("timestamp", { mode: "number" }).notNull(), // Unix timestamp
+  price: real("price").notNull(),
+  volume: real("volume"),
+  marketCap: real("market_cap"),
+  timeframe: text("timeframe").notNull(), // 1H, 1D, 7D, 30D
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  uniqueEntry: uniqueIndex("unique_price_entry").on(table.tokenCode, table.timestamp, table.timeframe),
+}));
+
 // Insert and Select Types
 export const insertUserSchema = createInsertSchema(users).omit({ 
   id: true, 
@@ -176,6 +191,11 @@ export const insertLiveCoinWatchCoinSchema = createInsertSchema(liveCoinWatchCoi
   lastUpdated: true
 });
 
+export const insertPriceHistoryDataSchema = createInsertSchema(priceHistoryData).omit({ 
+  id: true, 
+  createdAt: true
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type TrackedToken = typeof trackedTokens.$inferSelect;
@@ -186,6 +206,8 @@ export type UserWatchlist = typeof userWatchlists.$inferSelect;
 export type InsertUserWatchlist = z.infer<typeof insertUserWatchlistSchema>;
 export type LiveCoinWatchDbCoin = typeof liveCoinWatchCoins.$inferSelect;
 export type InsertLiveCoinWatchCoin = z.infer<typeof insertLiveCoinWatchCoinSchema>;
+export type PriceHistoryDataRecord = typeof priceHistoryData.$inferSelect;
+export type InsertPriceHistoryData = z.infer<typeof insertPriceHistoryDataSchema>;
 
 // Default OEC token configuration
 export const TONE_TOKEN_CONFIG: TokenConfig = {

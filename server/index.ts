@@ -43,6 +43,10 @@ app.use((req, res, next) => {
   // Start Live Coin Watch sync service
   await liveCoinWatchSyncService.start();
 
+  // Start Historical Data sync service
+  const { historicalDataSyncService } = await import('./services/historical-data-sync');
+  await historicalDataSyncService.start();
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";

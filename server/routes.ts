@@ -7,6 +7,7 @@ import { alchemyApiService } from "./services/alchemy-api";
 import { moralisApiService } from "./services/moralis-api";
 import { storage } from "./storage";
 import { liveCoinWatchSyncService } from "./services/live-coin-watch-sync";
+import { historicalDataSyncService } from "./services/historical-data-sync";
 import { 
   TONE_TOKEN_CONFIG, 
   type TokenData, 
@@ -419,12 +420,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get price history - using static data (Moralis disabled)
+  // Get price history - using Live Coin Watch historical data
   app.get("/api/price-history/:contractAddress/:timeframe", async (req, res) => {
     try {
       const { contractAddress, timeframe } = req.params;
       
-      // Use fallback price from known tokens (all lowercase keys)
+      // Try to get real historical data first
+      const historicalData = await historicalDataSyncService.getHistoricalDataByContract(
+        contractAddress.toLowerCase(), 
+        timeframe, 
+        100
+      );
+
+      if (historicalData && historicalData.length > 0) {
+        // Use real historical data
+        const priceHistory = historicalData.map(point => ({
+          timestamp: point.timestamp,
+          price: point.price,
+        }));
+        
+        res.json(priceHistory);
+        return;
+      }
+
+      // Fallback to static data if no historical data available
       const normalizedAddress = contractAddress.toLowerCase();
       const knownTokens: Record<string, any> = {
         "0x55d398326f99059ff775485246999027b3197955": { price: 1.00 },
@@ -501,6 +520,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get token configuration
   app.get("/api/token-config", (req, res) => {
     res.json(TONE_TOKEN_CONFIG);
+  });
+
+  // New endpoint for ETH historical data specifically
+  app.get("/api/eth-history/:timeframe", async (req, res) => {
+    try {
+      const { timeframe } = req.params;
+      
+      const historicalData = await historicalDataSyncService.getHistoricalData('ETH', timeframe, 100);
+      
+      if (historicalData && historicalData.length > 0) {
+        res.json(historicalData);
+      } else {
+        res.status(404).json({ message: 'No ETH historical data available yet' });
+      }
+    } catch (error) {
+      console.error("Error fetching ETH historical data:", error);
+      res.status(500).json({ 
+        message: "ETH historical data unavailable",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
   });
 
   // Database-enabled endpoints
