@@ -24,7 +24,7 @@ export function ETHHistoricalChart() {
     queryKey: ["/api/eth-history", timeframe],
     refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes for fresh data
     enabled: true,
-    retry: false,
+    retry: 3,
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
@@ -36,11 +36,17 @@ export function ETHHistoricalChart() {
   const smoothPriceData = (data: PriceHistory[] | undefined): PriceHistory[] => {
     if (!data || data.length === 0) return [];
     
+    // Ensure we always return meaningful data
+    if (data.length <= 5) return data; // Don't filter if we have very few points
+    
     // For shorter timeframes, reduce data points more aggressively
     const targetPoints = timeframe === "1H" ? 15 : timeframe === "1D" ? 24 : timeframe === "7D" ? 28 : 30;
     const interval = Math.max(1, Math.floor(data.length / targetPoints));
     
-    return data.filter((_, index) => index % interval === 0 || index === data.length - 1);
+    const filtered = data.filter((_, index) => index % interval === 0 || index === data.length - 1);
+    
+    // Ensure we have at least 2 points for a line
+    return filtered.length < 2 ? data.slice(0, Math.min(data.length, 10)) : filtered;
   };
 
   const priceHistory = smoothPriceData(rawPriceHistory);
