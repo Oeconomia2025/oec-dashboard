@@ -295,15 +295,8 @@ export default function Learn() {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-4">
-              <BookOpen className="w-8 h-8 text-cyan-400" />
-              <h1 className="text-3xl font-bold text-white">Learning Center</h1>
-            </div>
-            <div className="flex items-center justify-between">
-              <p className="text-gray-400 text-lg">
-                Expand your knowledge about Oeconomia, DeFi, and blockchain technology with our curated educational resources.
-              </p>
-              {(completedResources.length > 0 || earnedAchievements.length > 0) && (
+            {(completedResources.length > 0 || earnedAchievements.length > 0) && (
+              <div className="flex justify-end">
                 <Button
                   variant="outline"
                   size="sm"
@@ -312,8 +305,8 @@ export default function Learn() {
                 >
                   Reset Progress
                 </Button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Gamified Progress Dashboard */}
