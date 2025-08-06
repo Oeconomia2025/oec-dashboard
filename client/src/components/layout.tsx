@@ -559,7 +559,7 @@ export function Layout({
           onClick={() => setSupportOpen(false)}
         >
           <Card 
-            className="max-w-2xl w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative"
+            className="max-w-4xl w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button 
@@ -591,11 +591,11 @@ export function Layout({
               <div className="bg-gradient-to-r from-pink-500/10 to-red-500/10 border border-pink-500/30 rounded-lg p-4 space-y-3">
                 <h3 className="text-sm font-semibold text-pink-400 mb-2">Donation Addresses (Click to Copy):</h3>
                 
-                <div className="space-y-2 text-sm">
-                  <div>
-                    <span className="text-gray-400 font-medium">EVM Networks:</span>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium min-w-[120px]">EVM Networks:</span>
                     <div 
-                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                      className={`font-mono text-xs p-2 rounded break-all cursor-pointer transition-all duration-300 flex-1 ${
                         copiedAddress === 'evm' 
                           ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
                           : 'bg-black/30 hover:bg-black/50'
@@ -611,10 +611,10 @@ export function Layout({
                     </div>
                   </div>
                   
-                  <div>
-                    <span className="text-gray-400 font-medium">Solana:</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium min-w-[120px]">Solana:</span>
                     <div 
-                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                      className={`font-mono text-xs p-2 rounded break-all cursor-pointer transition-all duration-300 flex-1 ${
                         copiedAddress === 'sol' 
                           ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
                           : 'bg-black/30 hover:bg-black/50'
@@ -630,10 +630,10 @@ export function Layout({
                     </div>
                   </div>
                   
-                  <div>
-                    <span className="text-gray-400 font-medium">Sui Network:</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium min-w-[120px]">Sui Network:</span>
                     <div 
-                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                      className={`font-mono text-xs p-2 rounded break-all cursor-pointer transition-all duration-300 flex-1 ${
                         copiedAddress === 'sui' 
                           ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
                           : 'bg-black/30 hover:bg-black/50'
@@ -649,10 +649,10 @@ export function Layout({
                     </div>
                   </div>
                   
-                  <div>
-                    <span className="text-gray-400 font-medium">Bitcoin:</span>
+                  <div className="flex items-center gap-4">
+                    <span className="text-gray-400 font-medium min-w-[120px]">Bitcoin:</span>
                     <div 
-                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                      className={`font-mono text-xs p-2 rounded break-all cursor-pointer transition-all duration-300 flex-1 ${
                         copiedAddress === 'btc' 
                           ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
                           : 'bg-black/30 hover:bg-black/50'
