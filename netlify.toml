@@ -42,6 +42,21 @@
   to = "/.netlify/functions/portfolio"
   status = 200
 
+[[redirects]]
+  from = "/api/live-coin-watch/coins"
+  to = "/.netlify/functions/live-coin-watch-coins"
+  status = 200
+
+[[redirects]]
+  from = "/api/live-coin-watch/status"
+  to = "/.netlify/functions/live-coin-watch-status"
+  status = 200
+
+[[redirects]]
+  from = "/api/live-coin-watch/token/*"
+  to = "/.netlify/functions/live-coin-watch-token"
+  status = 200
+
 # SPA fallback
 [[redirects]]
   from = "/*"

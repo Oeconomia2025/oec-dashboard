@@ -70,6 +70,24 @@ export type PriceHistory = z.infer<typeof priceHistorySchema>;
 export type TokenConfig = z.infer<typeof tokenConfigSchema>;
 
 // Database Tables
+// Live Coin Watch table (must be defined before users table)
+export const liveCoinWatchCoins = pgTable("live_coin_watch_coins", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  name: text("name").notNull(),
+  rate: real("rate").notNull(),
+  volume: real("volume").notNull(),
+  cap: real("cap"),
+  deltaHour: real("delta_hour"),
+  deltaDay: real("delta_day"),
+  deltaWeek: real("delta_week"),
+  deltaMonth: real("delta_month"),
+  deltaQuarter: real("delta_quarter"),
+  deltaYear: real("delta_year"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
   username: text("username").notNull().unique(),
@@ -141,6 +159,16 @@ export type TokenSnapshot = typeof tokenSnapshots.$inferSelect;
 export type InsertTokenSnapshot = z.infer<typeof insertTokenSnapshotSchema>;
 export type UserWatchlist = typeof userWatchlists.$inferSelect;
 export type InsertUserWatchlist = z.infer<typeof insertUserWatchlistSchema>;
+
+// Live Coin Watch types and schemas
+export type LiveCoinWatchDbCoin = typeof liveCoinWatchCoins.$inferSelect;
+export type InsertLiveCoinWatchCoin = z.infer<typeof insertLiveCoinWatchCoinSchema>;
+
+export const insertLiveCoinWatchCoinSchema = createInsertSchema(liveCoinWatchCoins).omit({ 
+  id: true, 
+  createdAt: true,
+  lastUpdated: true
+});
 
 // Default OEC token configuration
 export const TONE_TOKEN_CONFIG: TokenConfig = {
