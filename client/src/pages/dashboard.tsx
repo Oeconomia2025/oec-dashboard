@@ -43,8 +43,8 @@ export default function Dashboard() {
     }
   };
 
-  // Use Live Coin Watch BTC data as default for TokenOverview
-  const defaultTokenData = liveCoinData?.coins?.find((coin: any) => coin.code === "BTC");
+  // Use Live Coin Watch ETH data as default for TokenOverview
+  const defaultTokenData = liveCoinData?.coins?.find((coin: any) => coin.code === "ETH");
 
 
 
