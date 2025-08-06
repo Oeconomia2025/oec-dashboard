@@ -133,39 +133,7 @@ export default function TokenDetailDynamic() {
           </div>
         </div>
 
-        {/* Token Info Card */}
-        <Card className="crypto-card p-6">
-          <div className="flex items-start justify-between">
-            <div className="flex items-center space-x-4">
-              <img 
-                src={getCryptoLogo(tokenCode, tokenData.symbol)} 
-                alt={tokenData.name}
-                className="w-16 h-16 rounded-full"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tokenData.symbol)}&background=0066cc&color=fff&size=64`;
-                }}
-              />
-              <div>
-                <h1 className="text-3xl font-bold">{tokenData.name}</h1>
-                <div className="flex items-center space-x-2 mt-1">
-                  <span className="text-xl text-gray-400">{tokenData.symbol}</span>
-                  <Badge className="bg-crypto-blue/20 text-crypto-blue border-crypto-blue/50">
-                    Live Data
-                  </Badge>
-                </div>
-              </div>
-            </div>
-            
-            <div className="text-right">
-              <div className="text-3xl font-bold">${formatPrice(tokenData.price)}</div>
-              <div className={`text-lg ${getChangeColor(tokenData.priceChangePercent24h)}`}>
-                {tokenData.priceChangePercent24h >= 0 ? <TrendingUp className="inline w-4 h-4 mr-1" /> : <TrendingDown className="inline w-4 h-4 mr-1" />}
-                {formatPercentage(tokenData.priceChangePercent24h)}
-              </div>
-            </div>
-          </div>
-        </Card>
+
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
