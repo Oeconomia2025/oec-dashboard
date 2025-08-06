@@ -118,6 +118,7 @@ export function Layout({
   });
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [location, navigate] = useLocation();
   const isNavigatingRef = useRef(false);
   const lockedCollapsedStateRef = useRef<boolean | null>(null);
@@ -472,10 +473,10 @@ export function Layout({
                 variant="ghost"
                 size="sm"
                 onClick={() => setSupportOpen(true)}
-                className="p-2"
+                className="w-10 h-10 p-0 rounded-full bg-gray-800 hover:bg-gradient-to-r hover:from-pink-500 hover:to-red-500 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                 title="Support Development"
               >
-                <Heart className="w-4 h-4" />
+                <Heart className="w-5 h-5 text-red-500" />
               </Button>
               
               <Button
@@ -553,8 +554,14 @@ export function Layout({
       
       {/* Support Modal */}
       {supportOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <Card className="max-w-lg w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative">
+        <div 
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setSupportOpen(false)}
+        >
+          <Card 
+            className="max-w-lg w-full bg-[var(--crypto-card)] border-crypto-border p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button 
               onClick={() => setSupportOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
@@ -588,53 +595,76 @@ export function Layout({
                   <div>
                     <span className="text-gray-400 font-medium">EVM Networks:</span>
                     <div 
-                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                        copiedAddress === 'evm' 
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
+                          : 'bg-black/30 hover:bg-black/50'
+                      }`}
                       onClick={() => {
                         navigator.clipboard.writeText('0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed');
-                        // You could add a toast notification here if desired
+                        setCopiedAddress('evm');
+                        setTimeout(() => setCopiedAddress(null), 2000);
                       }}
                       title="Click to copy address"
                     >
-                      0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed
+                      {copiedAddress === 'evm' ? '✓ Copied!' : '0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed'}
                     </div>
                   </div>
                   
                   <div>
                     <span className="text-gray-400 font-medium">Solana:</span>
                     <div 
-                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                        copiedAddress === 'sol' 
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
+                          : 'bg-black/30 hover:bg-black/50'
+                      }`}
                       onClick={() => {
                         navigator.clipboard.writeText('HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx');
+                        setCopiedAddress('sol');
+                        setTimeout(() => setCopiedAddress(null), 2000);
                       }}
                       title="Click to copy address"
                     >
-                      HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx
+                      {copiedAddress === 'sol' ? '✓ Copied!' : 'HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx'}
                     </div>
                   </div>
                   
                   <div>
                     <span className="text-gray-400 font-medium">Sui Network:</span>
                     <div 
-                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                        copiedAddress === 'sui' 
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
+                          : 'bg-black/30 hover:bg-black/50'
+                      }`}
                       onClick={() => {
                         navigator.clipboard.writeText('0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe');
+                        setCopiedAddress('sui');
+                        setTimeout(() => setCopiedAddress(null), 2000);
                       }}
                       title="Click to copy address"
                     >
-                      0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe
+                      {copiedAddress === 'sui' ? '✓ Copied!' : '0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe'}
                     </div>
                   </div>
                   
                   <div>
                     <span className="text-gray-400 font-medium">Bitcoin:</span>
                     <div 
-                      className="font-mono text-xs bg-black/30 p-2 rounded mt-1 break-all cursor-pointer hover:bg-black/50 transition-colors"
+                      className={`font-mono text-xs p-2 rounded mt-1 break-all cursor-pointer transition-all duration-300 ${
+                        copiedAddress === 'btc' 
+                          ? 'bg-green-500/30 border border-green-500/50 text-green-300' 
+                          : 'bg-black/30 hover:bg-black/50'
+                      }`}
                       onClick={() => {
                         navigator.clipboard.writeText('bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r');
+                        setCopiedAddress('btc');
+                        setTimeout(() => setCopiedAddress(null), 2000);
                       }}
                       title="Click to copy address"
                     >
-                      bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r
+                      {copiedAddress === 'btc' ? '✓ Copied!' : 'bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r'}
                     </div>
                   </div>
                 </div>
