@@ -42,7 +42,12 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
     });
   };
 
-  const formatPrice = (price: number) => formatNumber(price);
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('en-US', { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: 2 
+    });
+  };
   const formatMarketCap = (cap: number) => formatNumber(cap);
   const formatVolume = (vol: number) => formatNumber(vol);  
   const formatLiquidity = (liq: number) => formatNumber(liq);
