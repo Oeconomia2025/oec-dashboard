@@ -1,7 +1,7 @@
 import { db } from "../db";
 import { liveCoinWatchCoins, type InsertLiveCoinWatchCoin } from "@shared/schema";
 import { liveCoinWatchApiService } from "./live-coin-watch-api";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 class LiveCoinWatchSyncService {
   private isRunning = false;
@@ -112,7 +112,9 @@ class LiveCoinWatchSyncService {
 
   async getStoredCoins() {
     try {
-      return await db.select().from(liveCoinWatchCoins).orderBy(liveCoinWatchCoins.rate);
+      const result = await db.select().from(liveCoinWatchCoins);
+      // Sort by market cap in descending order (highest first)
+      return result.sort((a, b) => (b.cap || 0) - (a.cap || 0));
     } catch (error) {
       console.error('Error fetching stored coins:', error);
       return [];
