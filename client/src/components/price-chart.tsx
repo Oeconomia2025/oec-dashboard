@@ -90,8 +90,8 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
 
   return (
     <div className="lg:col-span-2">
-      <Card className="crypto-card p-6 border bg-crypto-card">
-        <div className="flex items-center justify-between mb-6">
+      <Card className="crypto-card p-4 border bg-crypto-card">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-6">
             {tokenData && formatPercentage && getChangeColor && (
               <>
