@@ -6,6 +6,7 @@ import { coinGeckoApiService } from "./services/coingecko-api";
 import { alchemyApiService } from "./services/alchemy-api";
 import { moralisApiService } from "./services/moralis-api";
 import { storage } from "./storage";
+import { liveCoinWatchSyncService } from "./services/live-coin-watch-sync";
 import { 
   TONE_TOKEN_CONFIG, 
   type TokenData, 
@@ -694,6 +695,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
         error: error instanceof Error ? error.message : "Unknown error"
       });
     }
+  });
+
+  // Live Coin Watch API routes
+  app.get("/api/live-coin-watch/coins", async (req, res) => {
+    try {
+      const coins = await liveCoinWatchSyncService.getStoredCoins();
+      res.json({
+        coins,
+        lastUpdated: coins.length > 0 ? coins[0].lastUpdated : null,
+        isServiceRunning: liveCoinWatchSyncService.isServiceRunning(),
+      });
+    } catch (error) {
+      console.error("Error fetching Live Coin Watch data:", error);
+      res.status(500).json({ 
+        message: "Failed to fetch Live Coin Watch data",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  app.get("/api/live-coin-watch/status", (req, res) => {
+    res.json({
+      isRunning: liveCoinWatchSyncService.isServiceRunning(),
+      syncInterval: "30 seconds",
+    });
   });
 
   const httpServer = createServer(app);

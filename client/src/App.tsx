@@ -16,6 +16,7 @@ import TokenDetail from "@/pages/token-detail";
 import Staking from "@/pages/staking";
 import Governance from "@/pages/governance";
 import Learn from "@/pages/learn";
+import LiveCoinWatch from "@/pages/live-coin-watch";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/staking" component={Staking} />
       <Route path="/governance" component={Governance} />
       <Route path="/learn" component={Learn} />
+      <Route path="/live-coin-watch" component={LiveCoinWatch} />
       <Route component={NotFound} />
     </Switch>
   );

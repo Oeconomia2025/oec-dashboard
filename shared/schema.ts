@@ -69,6 +69,25 @@ export type NetworkStatus = z.infer<typeof networkStatusSchema>;
 export type PriceHistory = z.infer<typeof priceHistorySchema>;
 export type TokenConfig = z.infer<typeof tokenConfigSchema>;
 
+// Live Coin Watch API Schema
+export const liveCoinWatchCoinSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  rate: z.number(),
+  volume: z.number(),
+  cap: z.number().nullable(),
+  delta: z.object({
+    hour: z.number().nullable(),
+    day: z.number().nullable(),
+    week: z.number().nullable(),
+    month: z.number().nullable(),
+    quarter: z.number().nullable(),
+    year: z.number().nullable(),
+  }),
+});
+
+export type LiveCoinWatchCoin = z.infer<typeof liveCoinWatchCoinSchema>;
+
 // Database Tables
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -111,6 +130,24 @@ export const userWatchlists = pgTable("user_watchlists", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Live Coin Watch data table
+export const liveCoinWatchCoins = pgTable("live_coin_watch_coins", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  name: text("name").notNull(),
+  rate: real("rate").notNull(),
+  volume: real("volume").notNull(),
+  cap: real("cap"),
+  deltaHour: real("delta_hour"),
+  deltaDay: real("delta_day"),
+  deltaWeek: real("delta_week"),
+  deltaMonth: real("delta_month"),
+  deltaQuarter: real("delta_quarter"),
+  deltaYear: real("delta_year"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Insert and Select Types
 export const insertUserSchema = createInsertSchema(users).omit({ 
   id: true, 
@@ -133,6 +170,12 @@ export const insertUserWatchlistSchema = createInsertSchema(userWatchlists).omit
   createdAt: true 
 });
 
+export const insertLiveCoinWatchCoinSchema = createInsertSchema(liveCoinWatchCoins).omit({ 
+  id: true, 
+  createdAt: true,
+  lastUpdated: true
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type TrackedToken = typeof trackedTokens.$inferSelect;
@@ -141,6 +184,8 @@ export type TokenSnapshot = typeof tokenSnapshots.$inferSelect;
 export type InsertTokenSnapshot = z.infer<typeof insertTokenSnapshotSchema>;
 export type UserWatchlist = typeof userWatchlists.$inferSelect;
 export type InsertUserWatchlist = z.infer<typeof insertUserWatchlistSchema>;
+export type LiveCoinWatchDbCoin = typeof liveCoinWatchCoins.$inferSelect;
+export type InsertLiveCoinWatchCoin = z.infer<typeof insertLiveCoinWatchCoinSchema>;
 
 // Default OEC token configuration
 export const TONE_TOKEN_CONFIG: TokenConfig = {
