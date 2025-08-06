@@ -66,59 +66,14 @@ export const handler: Handler = async (event) => {
       price: record.price
     }));
 
-    // If no data found, generate fallback data for production (exactly like ETH)
+    // If no data found, return empty array to prevent synthetic data
     if (formattedData.length === 0) {
-      console.log(`No ${tokenCode} historical data found for timeframe: ${timeframe}, generating fallback data`);
-      
-      // Get current token price from Live Coin Watch data
-      const tokenData = await db
-        .select()
-        .from(schema.liveCoinWatchCoins)
-        .where(eq(schema.liveCoinWatchCoins.code, tokenCode.toUpperCase()))
-        .limit(1);
-      
-      const currentPrice = tokenData.length > 0 ? tokenData[0].rate : 1000; // Fallback price
-      let dataPoints = 24;
-      let intervalMinutes = 60;
-      
-      switch (timeframe) {
-        case "1H":
-          dataPoints = 12;
-          intervalMinutes = 5;
-          break;
-        case "1D":
-          dataPoints = 24;
-          intervalMinutes = 60;
-          break;
-        case "7D":
-          dataPoints = 28;
-          intervalMinutes = 360; // 6 hours
-          break;
-        case "30D":
-          dataPoints = 30;
-          intervalMinutes = 1440; // 24 hours
-          break;
-      }
-      
-      const fallbackData = [];
-      const now = Date.now();
-      
-      for (let i = dataPoints - 1; i >= 0; i--) {
-        const timestamp = now - (i * intervalMinutes * 60 * 1000);
-        // Create realistic price variations (±3% from current price)
-        const variation = (Math.random() - 0.5) * 0.06;
-        const price = currentPrice * (1 + variation);
-        
-        fallbackData.push({
-          timestamp,
-          price: Math.max(price, currentPrice * 0.92) // Ensure minimum 92% of current price
-        });
-      }
+      console.log(`No ${tokenCode} historical data found for timeframe: ${timeframe}, returning empty data`);
       
       return {
         statusCode: 200,
         headers,
-        body: JSON.stringify(fallbackData),
+        body: JSON.stringify([]),
       };
     }
 
