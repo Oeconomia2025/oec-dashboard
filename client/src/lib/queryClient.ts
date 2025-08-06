@@ -23,8 +23,12 @@ export async function apiRequest(
         const contract = parts[1];
         const timeframe = parts[2] || '1D';
         fullUrl = `/.netlify/functions/price-history?contract=${contract}&timeframe=${timeframe}`;
+      } else if (cleanPath.startsWith('live-coin-watch/token/')) {
+        // Handle live-coin-watch token endpoints: /api/live-coin-watch/token/BTC -> /live-coin-watch-token?token=BTC
+        const tokenCode = cleanPath.split('/')[2];
+        fullUrl = `/.netlify/functions/live-coin-watch-token?token=${tokenCode}`;
       } else if (cleanPath.startsWith('live-coin-watch/')) {
-        // Handle live-coin-watch endpoints
+        // Handle other live-coin-watch endpoints
         fullUrl = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
       } else {
         // Handle other endpoints
@@ -66,8 +70,12 @@ export const getQueryFn: <T>(options: {
           const contract = parts[1];
           const timeframe = parts[2] || '1D';
           url = `/.netlify/functions/price-history?contract=${contract}&timeframe=${timeframe}`;
+        } else if (cleanPath.startsWith('live-coin-watch/token/')) {
+          // Handle live-coin-watch token endpoints: /api/live-coin-watch/token/BTC -> /live-coin-watch-token?token=BTC
+          const tokenCode = cleanPath.split('/')[2];
+          url = `/.netlify/functions/live-coin-watch-token?token=${tokenCode}`;
         } else if (cleanPath.startsWith('live-coin-watch/')) {
-          // Handle live-coin-watch endpoints
+          // Handle other live-coin-watch endpoints
           url = `/.netlify/functions/${cleanPath.replace(/\//g, '-')}`;
         } else {
           // Handle other endpoints

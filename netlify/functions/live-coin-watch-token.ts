@@ -36,9 +36,8 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    // Extract token code from path (e.g., /api/live-coin-watch/token/ETH)
-    const pathParts = event.path.split('/');
-    const tokenCode = pathParts[pathParts.length - 1];
+    // Extract token code from query parameters or path
+    const tokenCode = event.queryStringParameters?.token || event.path.split('/').pop();
     
     if (!tokenCode) {
       return {
