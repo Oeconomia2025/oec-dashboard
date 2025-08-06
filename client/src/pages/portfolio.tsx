@@ -193,7 +193,7 @@ export function Portfolio() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
         {/* Portfolio Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
             <div className="relative z-10">
@@ -217,21 +217,21 @@ export function Portfolio() {
                 <h3 className="text-gray-200 text-sm font-medium">Wallet Address</h3>
                 <Wallet className="text-gray-300 w-5 h-5" />
               </div>
-              <div className="text-lg font-mono text-white drop-shadow-sm">
+              <div className="text-2xl font-bold text-white drop-shadow-sm">
                 {address ? formatAddress(address) : '---'}
               </div>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="mt-2 text-crypto-blue hover:text-crypto-blue/80 p-0"
-                onClick={() => {
-                  if (address) {
-                    window.open(`https://bscscan.com/address/${address}`, '_blank')
-                  }
-                }}
-              >
-                View on BSCScan <ExternalLink className="w-3 h-3 ml-1" />
-              </Button>
+              <div className="text-sm text-gray-400 mt-2">
+                <span 
+                  className="cursor-pointer hover:text-crypto-blue"
+                  onClick={() => {
+                    if (address) {
+                      window.open(`https://bscscan.com/address/${address}`, '_blank')
+                    }
+                  }}
+                >
+                  View on BSCScan <ExternalLink className="w-3 h-3 ml-1 inline" />
+                </span>
+              </div>
             </div>
           </Card>
 
@@ -247,6 +247,23 @@ export function Portfolio() {
               </div>
               <div className="text-sm text-gray-400 mt-2">
                 Including BNB
+              </div>
+            </div>
+          </Card>
+
+          {/* Fourth card to match 4-column layout */}
+          <Card className="p-6 border bg-gradient-to-br from-gray-950 via-gray-950 to-black border-gray-700 hover:border-gray-600 transition-all duration-300 shadow-xl shadow-black/70 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-gray-200 text-sm font-medium">DeFi Positions</h3>
+                <TrendingUp className="text-gray-300 w-5 h-5" />
+              </div>
+              <div className="text-2xl font-bold text-white drop-shadow-sm">
+                {poolsFarms.length}
+              </div>
+              <div className="text-sm text-gray-400 mt-2">
+                Active pools & farms
               </div>
             </div>
           </Card>

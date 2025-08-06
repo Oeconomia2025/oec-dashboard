@@ -204,7 +204,7 @@ export default function Analytics() {
                   {ecosystemStats?.activeProtocols || "2"}
                 </div>
                 <div className="text-sm text-gray-400 mt-2">
-                  2 in development
+                  {ecosystemStats?.activeProtocols === 3 ? "1 in development" : "2 in development"}
                 </div>
               </div>
             </Card>
