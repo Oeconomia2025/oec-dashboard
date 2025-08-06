@@ -7,7 +7,7 @@ export const tokenColorMapping: Record<string, string> = {
   'BNB': '#F3BA2F', // Binance yellow
   'SOL': '#9945FF', // Solana purple
   'USDC': '#2775CA', // USD Coin blue
-  'XRP': '#23292F', // XRP black
+  'XRP': '#E5E7EB', // XRP light gray (contrast fix for dark theme)
   'DOGE': '#C2A633', // Dogecoin gold
   'ADA': '#0033AD', // Cardano blue
   'AVAX': '#E84142', // Avalanche red
@@ -22,13 +22,13 @@ export const tokenColorMapping: Record<string, string> = {
   'UNI': '#FF007A', // Uniswap pink
   'LEO': '#FF9500', // Leo orange
   'ICP': '#29ABE2', // Internet Computer blue
-  'APT': '#000000', // Aptos black
+  'APT': '#F3F4F6', // Aptos light gray (contrast fix for dark theme)
   'FIL': '#0090FF', // Filecoin blue
   'LDO': '#00A3FF', // Lido blue
   'ARB': '#28A0F0', // Arbitrum blue
   'VET': '#15BDFF', // VeChain blue
-  'MNT': '#000000', // Mantle black
-  'ATOM': '#2E3148', // Cosmos dark
+  'MNT': '#F9FAFB', // Mantle white (contrast fix for dark theme)
+  'ATOM': '#D1D5DB', // Cosmos light gray (contrast fix for dark theme)
   'GRT': '#6F4CFF', // The Graph purple
   'MKR': '#1AAB9B', // Maker teal
   'OP': '#FF0420', // Optimism red
@@ -50,7 +50,7 @@ export const tokenColorMapping: Record<string, string> = {
   'YFI': '#006AE3', // Yearn blue
   'SNX': '#5FCDF7', // Synthetix cyan
   'CRV': '#40E0D0', // Curve turquoise
-  'BAL': '#1E1E1E', // Balancer black
+  'BAL': '#F3F4F6', // Balancer light gray (contrast fix for dark theme)
   'RUNE': '#33FF99', // THORChain green
   'ALPHA': '#2E7D32', // Alpha green
   'BAKE': '#D1884F', // BakerySwap brown
@@ -61,10 +61,10 @@ export const tokenColorMapping: Record<string, string> = {
   'ONE': '#00AEE9', // Harmony blue
   'ZIL': '#49C1BF', // Zilliqa teal
   'EGLD': '#1B46C2', // MultiversX blue
-  'ALGO': '#000000', // Algorand black
-  'HBAR': '#000000', // Hedera black
+  'ALGO': '#E5E7EB', // Algorand light gray (contrast fix for dark theme)
+  'HBAR': '#D1D5DB', // Hedera light gray (contrast fix for dark theme)
   'FLOW': '#00EF8B', // Flow green
-  'IOS': '#1C1C1C', // IOST black
+  'IOS': '#F9FAFB', // IOST white (contrast fix for dark theme)
   'XTZ': '#2C7DF7', // Tezos blue
   
   // Meme and community tokens
@@ -75,7 +75,7 @@ export const tokenColorMapping: Record<string, string> = {
   'MEME': '#FFD700', // Meme gold
   
   // Stable coins and wrapped tokens
-  'FRAX': '#000000', // Frax black
+  'FRAX': '#E5E7EB', // Frax light gray (contrast fix for dark theme)
   'TUSD': '#002868', // TrueUSD blue
   'USDP': '#0052FF', // Pax Dollar blue
   'FDUSD': '#F0B90B', // First Digital USD yellow
