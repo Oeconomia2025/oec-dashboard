@@ -511,57 +511,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           break;
       }
       
-      const priceHistory = [];
-      const now = new Date();
-      
-      // Log timeframe calculation for verification
-      const totalDurationMinutes = dataPoints * intervalMinutes;
-      const totalDurationHours = totalDurationMinutes / 60;
-      console.log(`Timeframe ${timeframe}: ${dataPoints} points, ${intervalMinutes}min intervals = ${totalDurationHours}h total`);
-      
-      // Create realistic crypto price movements with proper volatility
-      let basePrice = currentPrice;
-      
-      for (let i = dataPoints - 1; i >= 0; i--) {
-        const timestamp = new Date(now.getTime() - (i * intervalMinutes * 60 * 1000));
-        
-        // Create realistic volatility based on timeframe
-        let volatilityFactor = 0.05; // Default 5% variation per point
-        switch (timeframe) {
-          case "1H":
-            volatilityFactor = 0.02; // 2% for short-term
-            break;
-          case "1D":
-            volatilityFactor = 0.04; // 4% for daily
-            break;
-          case "7D":
-            volatilityFactor = 0.08; // 8% for weekly
-            break;
-          case "30D":
-            volatilityFactor = 0.12; // 12% for monthly (creates bigger swings)
-            break;
-        }
-        
-        // Create trending movements (not just random noise)
-        const trend = Math.sin(i / dataPoints * Math.PI * 2 + Math.random() * Math.PI) * 0.3;
-        const randomWalk = (Math.random() - 0.5) * volatilityFactor;
-        const totalVariation = trend + randomWalk;
-        
-        // Apply variation to base price and update base for next iteration
-        basePrice = basePrice * (1 + totalVariation);
-        
-        // Ensure we end up close to current price in final point
-        if (i === 0) {
-          basePrice = currentPrice;
-        }
-        
-        priceHistory.push({
-          timestamp: timestamp.toISOString(),
-          price: Math.max(basePrice, currentPrice * 0.3) // Prevent prices going below 30% of current
-        });
-      }
-      
-      res.json(priceHistory);
+      // ONLY USE REAL PRICES - no artificial generation
+      // Return error if no real historical data available
+      res.status(404).json({ 
+        message: "No real historical data available for this token",
+        note: "Only authentic Live Coin Watch data is supported - no synthetic price generation"
+      });
     } catch (error) {
       console.error("Error fetching price history:", error);
       res.status(500).json({ 

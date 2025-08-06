@@ -115,7 +115,12 @@ export const getCryptoLogo = (code: string, symbol?: string) => {
   const cleanedCode = cleanCoinCode(code);
   const displaySymbol = symbol || cleanedCode;
   
-  return cryptoLogos[code] || `https://ui-avatars.com/api/?name=${encodeURIComponent(displaySymbol)}&background=0066cc&color=fff&size=32`;
+  // Debug logging to help identify logo mapping issues
+  console.log(`getCryptoLogo called with code: "${code}", symbol: "${symbol}", cleanedCode: "${cleanedCode}"`);
+  const logo = cryptoLogos[code];
+  console.log(`Found logo for ${code}:`, logo);
+  
+  return logo || `https://ui-avatars.com/api/?name=${encodeURIComponent(displaySymbol)}&background=0066cc&color=fff&size=32`;
 };
 
 // Clean and format crypto data for UI display

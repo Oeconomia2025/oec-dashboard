@@ -110,9 +110,17 @@ export default function TokenDetailDynamic() {
 
 
 
+  // Debug logging for logo resolution
+  console.log('Token detail page - tokenCode:', tokenCode);
+  console.log('Token detail page - tokenData.logo:', tokenData.logo);
+  console.log('Token detail page - tokenData.symbol:', tokenData.symbol);
+  
+  const resolvedLogo = tokenData.logo || getCryptoLogo(tokenCode, tokenData.symbol);
+  console.log('Token detail page - resolved logo:', resolvedLogo);
+
   return (
     <Layout
-      tokenLogo={tokenData.logo || getCryptoLogo(tokenCode, tokenData.symbol)}
+      tokenLogo={resolvedLogo}
       tokenWebsite={tokenData.website}
       tokenTicker={tokenData.symbol || tokenCode}
       tokenName={cleanCoinName(tokenData.name)}
