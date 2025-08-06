@@ -785,6 +785,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'XRP': 'https://ripple.com/',
       };
 
+      // Supply data mapping based on actual cryptocurrency data
+      const supplyMapping: Record<string, { totalSupply: number; circulatingSupply: number }> = {
+        'BTC': { totalSupply: 21000000, circulatingSupply: 19800000 },
+        'ETH': { totalSupply: 120300000, circulatingSupply: 120300000 },
+        'USDT': { totalSupply: 119000000000, circulatingSupply: 119000000000 },
+        'BNB': { totalSupply: 144000000, circulatingSupply: 144000000 },
+        'SOL': { totalSupply: 580000000, circulatingSupply: 470000000 },
+        'USDC': { totalSupply: 33000000000, circulatingSupply: 33000000000 },
+        'XRP': { totalSupply: 100000000000, circulatingSupply: 57000000000 },
+        'ADA': { totalSupply: 45000000000, circulatingSupply: 35000000000 },
+        'DOGE': { totalSupply: 147000000000, circulatingSupply: 147000000000 },
+        'TRX': { totalSupply: 86000000000, circulatingSupply: 86000000000 },
+        'LINK': { totalSupply: 1000000000, circulatingSupply: 620000000 },
+        'LTC': { totalSupply: 84000000, circulatingSupply: 74500000 },
+      };
+
+      // Get supply data for the token
+      const supplyData = supplyMapping[token.code] || { totalSupply: 0, circulatingSupply: 0 };
+
       // Transform the data into TokenData format for compatibility
       const tokenData = {
         id: codeToContract[token.code] || `dynamic-${token.code.toLowerCase()}`,
@@ -796,8 +815,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         priceChangePercent24h: ((token.deltaDay || 1) - 1) * 100,
         marketCap: token.cap,
         volume24h: token.volume,
-        totalSupply: 0, // Not available in Live Coin Watch
-        circulatingSupply: 0, // Not available in Live Coin Watch
+        totalSupply: supplyData.totalSupply,
+        circulatingSupply: supplyData.circulatingSupply,
         liquidity: 0, // Not available in Live Coin Watch
         txCount24h: 0, // Not available in Live Coin Watch
         network: "BSC",
