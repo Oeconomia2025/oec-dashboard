@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, BarChart3, ArrowUpDown, Droplets } from "lucide-react";
+import { TrendingUp, BarChart3, ArrowUpDown, Droplets, DollarSign } from "lucide-react";
 import type { TokenData } from "@shared/schema";
 
 interface TokenOverviewProps {
@@ -56,21 +56,11 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
         <div className="relative z-10">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
-            <span className={`px-2 py-1 rounded text-xs font-medium ${
-              ((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 
-                ? 'bg-green-600/80 text-white border border-green-500/50' 
-                : 'bg-red-600/80 text-white border border-red-500/50'
-            }`}>
-              {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
-              {(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}%
-            </span>
+            <DollarSign className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatPrice(tokenData.rate || tokenData.price || 0)}</div>
-          <div className="text-sm text-gray-300">
-            24h Change: 
-            <span className={(tokenData.deltaDay || tokenData.priceChange24h || 0) >= 0 ? 'text-green-300' : 'text-red-300'}>
-              {(tokenData.deltaDay || tokenData.priceChange24h || 0) >= 0 ? '+' : ''}{((tokenData.deltaDay || tokenData.priceChange24h || 0) * (tokenData.deltaDay ? 100 : 1)).toFixed(2)}{tokenData.deltaDay ? '%' : ''}
-            </span>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(tokenData.rate || tokenData.price || 0)}</div>
+          <div className="text-sm text-gray-400 mt-2">
+            {((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}{(((tokenData as any).deltaDay || (tokenData as any).priceChangePercent24h || 0) * ((tokenData as any).deltaDay ? 100 : 1)).toFixed(1)}% today
           </div>
         </div>
       </Card>
@@ -83,9 +73,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Market Cap</h3>
             <BarChart3 className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatMarketCap((tokenData as any).cap || (tokenData as any).marketCap || 0)}</div>
-          <div className="text-sm text-gray-300">
-            Total Supply: <span>{(tokenData as any).totalSupply ? formatSupply((tokenData as any).totalSupply) : 'N/A'}</span>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatMarketCap((tokenData as any).cap || (tokenData as any).marketCap || 0)}</div>
+          <div className="text-sm text-gray-400 mt-2">
+            Total Supply: {(tokenData as any).totalSupply ? formatSupply((tokenData as any).totalSupply) : 'N/A'}
           </div>
         </div>
       </Card>
@@ -98,9 +88,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">24h Volume</h3>
             <ArrowUpDown className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatVolume((tokenData as any).volume || (tokenData as any).volume24h || 0)}</div>
-          <div className="text-sm text-gray-300">
-            Transactions: <span>{(tokenData as any).txCount24h || 'N/A'}</span>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatVolume((tokenData as any).volume || (tokenData as any).volume24h || 0)}</div>
+          <div className="text-sm text-gray-400 mt-2">
+            Transactions: {(tokenData as any).txCount24h || 'N/A'}
           </div>
         </div>
       </Card>
@@ -113,8 +103,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Liquidity Pool</h3>
             <Droplets className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold mb-2 text-white drop-shadow-sm">${formatLiquidity((tokenData as any).liquidity || 0)}</div>
-          <div className="text-sm text-gray-300">PancakeSwap V2</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatLiquidity((tokenData as any).liquidity || 0)}</div>
+          <div className="text-sm text-gray-400 mt-2">PancakeSwap V2</div>
         </div>
       </Card>
     </div>
