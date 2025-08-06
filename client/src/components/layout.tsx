@@ -49,6 +49,8 @@ interface LayoutProps {
   tokenLogo?: string;
   tokenWebsite?: string;
   contractAddress?: string;
+  tokenTicker?: string;
+  tokenName?: string;
 }
 
 // Page information for each route
@@ -99,7 +101,9 @@ export function Layout({
   pageWebsite,
   tokenLogo,
   tokenWebsite,
-  contractAddress
+  contractAddress,
+  tokenTicker,
+  tokenName
 }: LayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -159,7 +163,7 @@ export function Layout({
   // Get current page info - use custom props if provided, otherwise use route-based info
   const routePageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
   const currentPageInfo = {
-    title: pageTitle || routePageInfo.title,
+    title: pageTitle || (tokenTicker && tokenName ? `${tokenTicker} - ${tokenName}` : routePageInfo.title),
     description: pageDescription || routePageInfo.description
   };
 

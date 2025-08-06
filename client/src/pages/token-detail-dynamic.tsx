@@ -7,7 +7,7 @@ import { Layout } from "@/components/layout";
 import { PriceChart } from "@/components/price-chart";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check, Database } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { formatCryptoData, getCryptoLogo } from "@/utils/crypto-logos";
+import { formatCryptoData, getCryptoLogo, cleanCoinName } from "@/utils/crypto-logos";
 import type { TokenData, LiveCoinWatchDbCoin } from "@shared/schema";
 
 export default function TokenDetailDynamic() {
@@ -104,7 +104,12 @@ export default function TokenDetailDynamic() {
   }
 
   return (
-    <Layout>
+    <Layout
+      tokenLogo={getCryptoLogo(tokenCode, tokenData.symbol)}
+      tokenWebsite={tokenData.website}
+      tokenTicker={tokenData.code}
+      tokenName={cleanCoinName(tokenData.name)}
+    >
       <div className="container mx-auto p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
