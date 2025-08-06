@@ -1432,7 +1432,7 @@ function LiquidityContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredTokens.map((token, index) => (
+                      {filteredTokens.slice(0, 10).map((token, index) => (
                         <tr key={token.id} className="border-b border-crypto-border hover:bg-gray-800/40 hover:border-crypto-green/60 hover:shadow-lg transition-all duration-200 cursor-pointer group"
                             onClick={() => setLocation(`/coin/${token.symbol}`)}>
                           <td className="py-4 px-6">
