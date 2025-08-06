@@ -47,6 +47,10 @@ app.use((req, res, next) => {
   const { historicalDataSyncService } = await import('./services/historical-data-sync');
   await historicalDataSyncService.start();
 
+  // Start Top 10 Tokens Historical Data sync service
+  const { topTokensHistoricalSyncService } = await import('./services/top-tokens-historical-sync');
+  await topTokensHistoricalSyncService.start();
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
