@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout";
 import { PriceChart } from "@/components/price-chart";
-import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check } from "lucide-react";
+import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check, Database } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useTokenData } from "@/hooks/use-token-data";
-import type { TokenData } from "@shared/schema";
+import type { TokenData, LiveCoinWatchDbCoin } from "@shared/schema";
 
 
 
@@ -22,6 +23,29 @@ export default function TokenDetail() {
   // Get real token data from API - use the ID from URL params which is the contract address
   const contractAddress = params.id || "0x55d398326f99059fF775485246999027B3197955";
   const { data: tokenData, isLoading, error } = useTokenData(contractAddress);
+
+  // Map contract addresses to Live Coin Watch codes
+  const contractToLiveCoinCode: Record<string, string> = {
+    '0x55d398326f99059ff775485246999027b3197955': 'USDT',
+    '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c': 'BNB',
+    '0x2170ed0880ac9a755fd29b2688956bd959f933f8': 'ETH',
+    '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d': 'USDC',
+    '0x3ee2200efb3400fabb9aacf31297cbdd1d435d47': 'ADA',
+    '0xba2ae424d960c26247dd6c32edc70b295c744c43': 'DOGE',
+    '0xf8a0bf9cf54bb92f17374d9e9a321e6a111a51bd': 'LINK',
+    '0x4338665cbb7b2485a8855a139b75d5e34ab0db94': 'LTC',
+  };
+
+  // Get Live Coin Watch data for enhanced price information
+  const liveCoinCode = contractToLiveCoinCode[contractAddress.toLowerCase()];
+  const { data: liveCoinData } = useQuery<{coins: LiveCoinWatchDbCoin[], lastUpdated: string | null, isServiceRunning: boolean}>({
+    queryKey: ["/api/live-coin-watch/coins"],
+    refetchInterval: 15 * 1000, // Refresh every 15 seconds
+    enabled: !!liveCoinCode, // Only fetch if we have a matching coin code
+  });
+
+  // Find the specific coin data for this token
+  const enhancedCoinData = liveCoinData?.coins.find((coin: LiveCoinWatchDbCoin) => coin.code === liveCoinCode);
 
   // Token logos mapping
   const tokenLogos: { [key: string]: string } = {
@@ -153,42 +177,74 @@ export default function TokenDetail() {
             <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400 text-xs">Price</span>
-                <DollarSign className="w-3 h-3 text-white" />
+                <div className="flex items-center space-x-1">
+                  {enhancedCoinData && (
+                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                  )}
+                  <DollarSign className="w-3 h-3 text-white" />
+                </div>
               </div>
               <div className="text-lg font-bold text-white mb-1">
-                ${formatNumber(tokenData.price, 4)}
+                ${formatNumber(enhancedCoinData?.rate || tokenData.price, 4)}
               </div>
-              <div className={`flex items-center space-x-1 text-xs ${
-                tokenData.priceChangePercent24h >= 0 ? 'text-crypto-green' : 'text-red-400'
-              }`}>
-                {tokenData.priceChangePercent24h >= 0 ? (
-                  <TrendingUp className="w-2 h-2" />
-                ) : (
-                  <TrendingDown className="w-2 h-2" />
+              <div className="space-y-1">
+                <div className={`flex items-center space-x-1 text-xs ${
+                  (enhancedCoinData?.deltaDay ? 
+                    ((enhancedCoinData.deltaDay - 1) * 100) >= 0 : 
+                    tokenData.priceChangePercent24h >= 0
+                  ) ? 'text-crypto-green' : 'text-red-400'
+                }`}>
+                  {(enhancedCoinData?.deltaDay ? 
+                    ((enhancedCoinData.deltaDay - 1) * 100) >= 0 : 
+                    tokenData.priceChangePercent24h >= 0
+                  ) ? (
+                    <TrendingUp className="w-2 h-2" />
+                  ) : (
+                    <TrendingDown className="w-2 h-2" />
+                  )}
+                  <span className="font-medium">
+                    {enhancedCoinData?.deltaDay ? (
+                      `${((enhancedCoinData.deltaDay - 1) * 100) >= 0 ? '+' : ''}${((enhancedCoinData.deltaDay - 1) * 100).toFixed(2)}%`
+                    ) : (
+                      `${tokenData.priceChangePercent24h >= 0 ? '+' : ''}${tokenData.priceChangePercent24h.toFixed(2)}%`
+                    )}
+                  </span>
+                </div>
+                {enhancedCoinData && (
+                  <div className="text-xs text-green-400 opacity-70">
+                    Live data • {new Date(enhancedCoinData.lastUpdated).toLocaleTimeString()}
+                  </div>
                 )}
-                <span className="font-medium">
-                  {tokenData.priceChangePercent24h >= 0 ? '+' : ''}{tokenData.priceChangePercent24h.toFixed(2)}%
-                </span>
               </div>
             </Card>
             
             <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400 text-xs">Market Cap</span>
-                <BarChart3 className="w-3 h-3 text-crypto-blue" />
+                <div className="flex items-center space-x-1">
+                  {enhancedCoinData?.cap && (
+                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                  )}
+                  <BarChart3 className="w-3 h-3 text-crypto-blue" />
+                </div>
               </div>
               <div className="text-lg font-bold text-crypto-blue">
-                ${formatLargeNumber(tokenData.marketCap)}
+                ${formatLargeNumber(enhancedCoinData?.cap || tokenData.marketCap)}
               </div>
             </Card>
             
             <Card className="crypto-card p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-gray-400 text-xs">24H Volume</span>
-                <Activity className="w-3 h-3 text-crypto-green" />
+                <div className="flex items-center space-x-1">
+                  {enhancedCoinData?.volume && (
+                    <Database className="w-3 h-3 text-green-400" title="Live Coin Watch Data" />
+                  )}
+                  <Activity className="w-3 h-3 text-crypto-green" />
+                </div>
               </div>
               <div className="text-lg font-bold text-crypto-green">
-                ${formatLargeNumber(tokenData.volume24h)}
+                ${formatLargeNumber(enhancedCoinData?.volume || tokenData.volume24h)}
               </div>
             </Card>
             
@@ -212,6 +268,33 @@ export default function TokenDetail() {
               </div>
             </Card>
           </div>
+
+          {/* Live Data Indicator */}
+          {enhancedCoinData && (
+            <Card className="crypto-card border-green-500/20">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Database className="w-5 h-5 text-green-400" />
+                    <div>
+                      <h3 className="text-white font-semibold">Live Coin Watch Data Active</h3>
+                      <p className="text-gray-400 text-sm">
+                        Real-time pricing data from Live Coin Watch database • Updated every 30 seconds
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-green-400 text-sm font-medium">
+                      Last synced: {new Date(enhancedCoinData.lastUpdated).toLocaleTimeString()}
+                    </div>
+                    <div className="text-gray-400 text-xs">
+                      Service: {liveCoinData?.isServiceRunning ? 'Running' : 'Stopped'}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Chart Section */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
