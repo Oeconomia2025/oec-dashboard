@@ -175,7 +175,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
         ) : (
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={priceHistory} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <AreaChart data={priceHistory} margin={{ top: 20, right: 20, bottom: 5, left: 20 }}>
                 <defs>
                   <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={tokenColor} stopOpacity={1.0}/>
