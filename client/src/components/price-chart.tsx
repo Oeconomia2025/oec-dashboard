@@ -44,6 +44,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
         url: apiEndpoint, 
         dataLength: data?.length, 
         firstItem: data?.[0],
+        lastItem: data?.[data?.length - 1],
         expectedPrice: tokenData?.price
       });
       return data;
@@ -70,7 +71,38 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
     return data.filter((_, index) => index % reductionFactor === 0 || index === data.length - 1);
   };
 
-  const priceHistory = smoothPriceData(rawPriceHistory);
+  // Process data and ensure current price is the final point
+  const processedPriceHistory = (() => {
+    const smoothed = smoothPriceData(rawPriceHistory);
+    
+    // If we have tokenData with current price, append it as the final point
+    if (smoothed.length > 0 && tokenData?.price) {
+      const lastPoint = smoothed[smoothed.length - 1];
+      const currentTime = Date.now();
+      
+      // Update the last point to match current price instead of adding a new point
+      // This ensures the chart ends exactly at the displayed current price
+      const updatedHistory = [...smoothed];
+      updatedHistory[updatedHistory.length - 1] = {
+        ...lastPoint,
+        price: tokenData.price,
+        timestamp: currentTime
+      };
+      
+      console.log("Chart price correction:", {
+        token: tokenSymbol,
+        originalLastPrice: lastPoint.price,
+        correctedPrice: tokenData.price,
+        difference: Math.abs(lastPoint.price - tokenData.price)
+      });
+      
+      return updatedHistory;
+    }
+    
+    return smoothed;
+  })();
+
+  const priceHistory = processedPriceHistory;
 
   // Calculate evenly spaced Y-axis ticks
   const calculateYTicks = (data: PriceHistory[]) => {
