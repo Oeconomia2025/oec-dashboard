@@ -19,16 +19,12 @@ interface PriceChartProps {
 export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData, formatPercentage, getChangeColor }: PriceChartProps) {
   const [timeframe, setTimeframe] = useState("1D");
   
-  // Use different API endpoints based on token
-  const isETH = tokenSymbol === "ETH";
-  
-  // FORCE NETLIFY FUNCTIONS: Always use Netlify functions for all API calls
-  const apiEndpoint = isETH 
-    ? `/.netlify/functions/eth-history?timeframe=${timeframe}`
-    : `/.netlify/functions/price-history?contract=${contractAddress}&timeframe=${timeframe}`;
+  // UNIVERSAL TOKEN HISTORY: Use same pattern as ETH for all tokens
+  // All tokens now use the same database table and API pattern as ETH
+  const apiEndpoint = `/.netlify/functions/token-history?token=${tokenSymbol}&timeframe=${timeframe}`;
 
   const { data: rawPriceHistory, isLoading, error } = useQuery<PriceHistory[]>({
-    queryKey: isETH ? ["eth-history", timeframe] : ["price-history", contractAddress, timeframe],
+    queryKey: ["token-history", tokenSymbol, timeframe],
     queryFn: async () => {
       const response = await fetch(apiEndpoint);
       if (!response.ok) {
@@ -55,7 +51,7 @@ export function PriceChart({ contractAddress, tokenSymbol = "DEFAULT", tokenData
       return data;
     },
     refetchInterval: 5 * 60 * 1000,
-    enabled: !!(contractAddress || isETH),
+    enabled: !!tokenSymbol,
     retry: false,
     staleTime: 10 * 60 * 1000,
   });
