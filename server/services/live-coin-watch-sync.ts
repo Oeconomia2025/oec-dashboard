@@ -40,7 +40,7 @@ class LiveCoinWatchSyncService {
   private async syncData() {
     try {
       console.log('Fetching Live Coin Watch data...');
-      const coins = await liveCoinWatchApiService.getTopCoins(10);
+      const coins = await liveCoinWatchApiService.getTopCoins(100);
 
       for (const coin of coins) {
         // Skip coins without required basic data
