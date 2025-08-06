@@ -138,60 +138,42 @@ export default function TokenDetailDynamic() {
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <Card className="crypto-card p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400">Current Price</p>
-                <p className="text-lg font-semibold">${formatPrice(tokenData.price)}</p>
-                <p className={`text-sm ${getChangeColor(tokenData.priceChangePercent24h)}`}>
-                  {formatPercentage(tokenData.priceChangePercent24h)}
-                </p>
-              </div>
-              <DollarSign className="w-8 h-8 text-crypto-gold" />
+            <div>
+              <p className="text-sm text-gray-400">Current Price</p>
+              <p className="text-lg font-semibold">${formatPrice(tokenData.price)}</p>
+              <p className={`text-sm ${getChangeColor(tokenData.priceChangePercent24h)}`}>
+                {formatPercentage(tokenData.priceChangePercent24h)}
+              </p>
             </div>
           </Card>
           
           <Card className="crypto-card p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400">Market Cap</p>
-                <p className="text-lg font-semibold">${formatNumber(tokenData.marketCap)}</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-crypto-blue" />
+            <div>
+              <p className="text-sm text-gray-400">Market Cap</p>
+              <p className="text-lg font-semibold">${formatNumber(tokenData.marketCap)}</p>
             </div>
           </Card>
           
           <Card className="crypto-card p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400">24h Volume</p>
-                <p className="text-lg font-semibold">${formatNumber(tokenData.volume24h)}</p>
-              </div>
-              <Activity className="w-8 h-8 text-crypto-green" />
+            <div>
+              <p className="text-sm text-gray-400">24h Volume</p>
+              <p className="text-lg font-semibold">${formatNumber(tokenData.volume24h)}</p>
             </div>
           </Card>
           
           <Card className="crypto-card p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400">24h Change</p>
-                <p className={`text-lg font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
-                  {formatPercentage(tokenData.priceChangePercent24h)}
-                </p>
-              </div>
-              {tokenData.priceChangePercent24h >= 0 ? 
-                <TrendingUp className="w-8 h-8 text-crypto-green" /> : 
-                <TrendingDown className="w-8 h-8 text-crypto-red" />
-              }
+            <div>
+              <p className="text-sm text-gray-400">24h Change</p>
+              <p className={`text-lg font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
+                {formatPercentage(tokenData.priceChangePercent24h)}
+              </p>
             </div>
           </Card>
           
           <Card className="crypto-card p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-400">Network</p>
-                <p className="text-lg font-semibold">{tokenData.network}</p>
-              </div>
-              <Database className="w-8 h-8 text-crypto-purple" />
+            <div>
+              <p className="text-sm text-gray-400">Network</p>
+              <p className="text-lg font-semibold">{tokenData.network}</p>
             </div>
           </Card>
         </div>
