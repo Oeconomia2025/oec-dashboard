@@ -208,58 +208,52 @@ export default function TokenDetailDynamic() {
           </Card>
         </div>
 
-        {/* Extended Performance Metrics */}
-        {(tokenData.deltaHour || tokenData.deltaWeek || tokenData.deltaMonth) && (
-          <Card className="crypto-card p-6">
-            <h3 className="text-xl font-semibold mb-4">Performance Metrics</h3>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {tokenData.deltaHour && (
-                <div className="text-center">
-                  <p className="text-sm text-gray-400">1 Hour</p>
-                  <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaHour - 1) * 100)}`}>
-                    {formatPercentage((tokenData.deltaHour - 1) * 100)}
-                  </p>
-                </div>
-              )}
-              <div className="text-center">
-                <p className="text-sm text-gray-400">24 Hours</p>
-                <p className={`text-lg font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
-                  {formatPercentage(tokenData.priceChangePercent24h)}
-                </p>
-              </div>
-              {tokenData.deltaWeek && (
-                <div className="text-center">
-                  <p className="text-sm text-gray-400">7 Days</p>
-                  <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaWeek - 1) * 100)}`}>
-                    {formatPercentage((tokenData.deltaWeek - 1) * 100)}
-                  </p>
-                </div>
-              )}
-              {tokenData.deltaMonth && (
-                <div className="text-center">
-                  <p className="text-sm text-gray-400">30 Days</p>
-                  <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaMonth - 1) * 100)}`}>
-                    {formatPercentage((tokenData.deltaMonth - 1) * 100)}
-                  </p>
-                </div>
-              )}
-              {tokenData.deltaYear && (
-                <div className="text-center">
-                  <p className="text-sm text-gray-400">1 Year</p>
-                  <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaYear - 1) * 100)}`}>
-                    {formatPercentage((tokenData.deltaYear - 1) * 100)}
-                  </p>
-                </div>
-              )}
-            </div>
-          </Card>
-        )}
+
 
         {/* Chart Section */}
         <Card className="crypto-card p-6">
           <CardHeader className="px-0 pt-0">
             <CardTitle className="flex items-center justify-between">
-              <span>Price Chart</span>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                {tokenData.deltaHour && (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-400">1 Hour</p>
+                    <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaHour - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaHour - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                <div className="text-center">
+                  <p className="text-sm text-gray-400">24 Hours</p>
+                  <p className={`text-lg font-semibold ${getChangeColor(tokenData.priceChangePercent24h)}`}>
+                    {formatPercentage(tokenData.priceChangePercent24h)}
+                  </p>
+                </div>
+                {tokenData.deltaWeek && (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-400">7 Days</p>
+                    <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaWeek - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaWeek - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                {tokenData.deltaMonth && (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-400">30 Days</p>
+                    <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaMonth - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaMonth - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+                {tokenData.deltaYear && (
+                  <div className="text-center">
+                    <p className="text-sm text-gray-400">1 Year</p>
+                    <p className={`text-lg font-semibold ${getChangeColor((tokenData.deltaYear - 1) * 100)}`}>
+                      {formatPercentage((tokenData.deltaYear - 1) * 100)}
+                    </p>
+                  </div>
+                )}
+              </div>
               <Badge variant="outline" className="border-crypto-blue text-crypto-blue">
                 Real-time Data
               </Badge>
