@@ -124,30 +124,10 @@ export function WalletSetupGuide() {
             </div>
           </div>
 
-          {/* Step 3: Add BSC Network */}
+          {/* Step 3: Connect */}
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-white flex items-center">
               <div className="w-6 h-6 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">3</div>
-              Add Binance Smart Chain (BSC)
-            </h3>
-            <div className="p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <p className="text-sm text-gray-300 mb-3">
-                The Oeconomia dashboard works on BSC network. Add it to your wallet:
-              </p>
-              <div className="space-y-1 text-xs text-gray-400 font-mono bg-gray-900/50 p-3 rounded">
-                <div><span className="text-gray-300">Network Name:</span> Smart Chain</div>
-                <div><span className="text-gray-300">RPC URL:</span> https://bsc-dataseed1.binance.org</div>
-                <div><span className="text-gray-300">Chain ID:</span> 56</div>
-                <div><span className="text-gray-300">Symbol:</span> BNB</div>
-                <div><span className="text-gray-300">Explorer:</span> https://bscscan.com</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Step 4: Connect */}
-          <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white flex items-center">
-              <div className="w-6 h-6 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full flex items-center justify-center text-xs font-bold mr-3">4</div>
               Connect to Oeconomia
             </h3>
             <div className="space-y-2 ml-9">
