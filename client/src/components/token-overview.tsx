@@ -4,7 +4,7 @@ import { TrendingUp, BarChart3, ArrowUpDown, Droplets, DollarSign } from "lucide
 import type { TokenData } from "@shared/schema";
 
 interface TokenOverviewProps {
-  tokenData?: TokenData;
+  tokenData?: any; // Accept both TokenData and Live Coin Watch format
   isLoading: boolean;
 }
 
@@ -51,7 +51,17 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   const formatMarketCap = (cap: number) => formatNumber(cap);
   const formatVolume = (vol: number) => formatNumber(vol);  
   const formatLiquidity = (liq: number) => formatNumber(liq);
-  const formatSupply = (supply: number) => `${formatNumber(supply)} ${tokenData.symbol}`;
+  // Handle both database format (Live Coin Watch) and TokenData format
+  const price = tokenData.rate || tokenData.price || 0;
+  const symbol = tokenData.code || tokenData.symbol || 'ETH';
+  const name = tokenData.name || 'Ethereum';
+  const marketCap = tokenData.cap || tokenData.marketCap || 0;
+  const volume24h = tokenData.volume || tokenData.volume24h || 0;
+  const priceChange24h = tokenData.delta?.day || tokenData.priceChangePercent24h || 0;
+  const totalSupply = tokenData.totalSupply || 0;
+  const circulatingSupply = tokenData.circulatingSupply || 0;
+  
+  const formatSupply = (supply: number) => `${formatNumber(supply)} ${symbol}`;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -62,15 +72,15 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
             <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-              ((tokenData as any).priceChangePercent24h || 0) >= 0 
+              priceChange24h >= 0 
                 ? 'bg-green-600/70 text-green-100' 
                 : 'bg-red-600/70 text-red-100'
             }`}>
-              {((tokenData as any).priceChangePercent24h || 0) >= 0 ? '+' : ''}
-              {((tokenData as any).priceChangePercent24h || 0).toFixed(1)}%
+              {priceChange24h >= 0 ? '+' : ''}
+              {priceChange24h.toFixed(1)}%
             </span>
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(tokenData.price || 0)}</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatPrice(price)}</div>
           <div className="text-sm text-gray-400 mt-2">
             24h Change
           </div>
@@ -85,9 +95,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Market Cap</h3>
             <BarChart3 className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatMarketCap((tokenData as any).cap || (tokenData as any).marketCap || 0)}</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatMarketCap(marketCap)}</div>
           <div className="text-sm text-gray-400 mt-2">
-            Total Supply: {(tokenData as any).totalSupply ? formatNumber((tokenData as any).totalSupply) : 'N/A'} {tokenData.symbol}
+            Total Supply: {totalSupply ? formatNumber(totalSupply) : 'N/A'} {symbol}
           </div>
         </div>
       </Card>
@@ -100,9 +110,9 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">24h Volume</h3>
             <ArrowUpDown className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatVolume((tokenData as any).volume || (tokenData as any).volume24h || 0)}</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">${formatVolume(volume24h)}</div>
           <div className="text-sm text-gray-400 mt-2">
-            Transactions: {(tokenData as any).txCount24h || 'N/A'}
+            Volume Statistics
           </div>
         </div>
       </Card>
@@ -115,8 +125,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
             <h3 className="text-gray-200 text-sm font-medium">Circulating Supply</h3>
             <DollarSign className="text-gray-300 w-5 h-5" />
           </div>
-          <div className="text-2xl font-bold text-white drop-shadow-sm">{formatNumber((tokenData as any).circulatingSupply || 0)}</div>
-          <div className="text-sm text-gray-400 mt-2">{tokenData.symbol} in circulation</div>
+          <div className="text-2xl font-bold text-white drop-shadow-sm">{formatNumber(circulatingSupply)}</div>
+          <div className="text-sm text-gray-400 mt-2">{symbol} in circulation</div>
         </div>
       </Card>
     </div>
