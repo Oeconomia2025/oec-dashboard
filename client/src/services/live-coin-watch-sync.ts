@@ -57,4 +57,4 @@ class LiveCoinWatchSyncService {
   }
 }
 
-export const liveCoinWatchSyncService = new LiveCoinWatchSyncService();
+export const liveCoinWatchSyncService = new LiveCoinWatchSyncService();ervice();
