@@ -69,7 +69,7 @@ function SwapContent() {
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to' | 'priceCondition'>('from');
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
-  
+
   // Limit order specific state
   const [limitOrder, setLimitOrder] = useState<LimitOrder>({
     triggerPrice: "",
@@ -78,21 +78,21 @@ function SwapContent() {
   });
   const [limitOrderType, setLimitOrderType] = useState<'sell' | 'buy'>('sell');
   const [useNegativePercentages, setUseNegativePercentages] = useState(false);
-  
+
   // Track the original price condition tokens (for stablecoin behavior)
   const [priceConditionTokens, setPriceConditionTokens] = useState<{from: Token | null, to: Token | null}>({
     from: null,
     to: null
   });
-  
+
   // Buy mode specific state
   const [fiatAmount, setFiatAmount] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState("USD");
-  
+
   // Sell mode specific state
   const [sellPercentage, setSellPercentage] = useState<number | null>(null);
   const [swapPercentage, setSwapPercentage] = useState<number | null>(null);
-  
+
   // Force chart re-creation when tokens change
   const [chartKey, setChartKey] = useState(0);
   const [chartVisible, setChartVisible] = useState(false);
@@ -113,21 +113,21 @@ function SwapContent() {
       setChartKey(prev => prev + 1);
       setChartVisible(true);
     }, 50);
-    
+
     if (tokenSelectionFor === 'from') {
       setFromToken(token);
-      
+
       // Check if all three sections would have the same token
       const currentPriceCondition = getPriceConditionTokens();
       const priceConditionFrom = currentPriceCondition.from || token; // Default to new token if not set
       const priceConditionTo = currentPriceCondition.to || toToken;
-      
+
       if (token.symbol === priceConditionFrom?.symbol && token.symbol === priceConditionTo?.symbol) {
         // All three would be the same, default the other two
         const defaultToken = token.symbol === 'OEC' ? 
           tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
           tokens.find(t => t.symbol === 'OEC') || tokens[0];
-        
+
         setToToken(defaultToken);
         setPriceConditionTokens({
           from: token,
@@ -142,17 +142,17 @@ function SwapContent() {
       }
     } else if (tokenSelectionFor === 'to') {
       setToToken(token);
-      
+
       // Check if all three sections would have the same token
       const priceConditionFrom = getPriceConditionTokens().from || fromToken;
       const priceConditionTo = getPriceConditionTokens().to;
-      
+
       if (token.symbol === fromToken?.symbol && token.symbol === priceConditionFrom?.symbol) {
         // All three would be the same, default the other two
         const defaultToken = token.symbol === 'OEC' ? 
           tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
           tokens.find(t => t.symbol === 'OEC') || tokens[0];
-        
+
         setFromToken(defaultToken);
         setPriceConditionTokens(prev => ({
           from: defaultToken,
@@ -169,21 +169,21 @@ function SwapContent() {
       // Get current price condition state first
       const currentPriceCondition = getPriceConditionTokens();
       const priceConditionFrom = currentPriceCondition.from || fromToken;
-      
+
       // Update price condition tokens and sync the "For" section
       setPriceConditionTokens({
         from: priceConditionFrom,
         to: token
       });
       setToToken(token);
-      
+
       // Check if all three sections would have the same token
       if (token.symbol === fromToken?.symbol && token.symbol === priceConditionFrom?.symbol) {
         // All three would be the same, default the other two
         const defaultToken = token.symbol === 'OEC' ? 
           tokens.find(t => t.symbol === 'WETH') || tokens[1] : 
           tokens.find(t => t.symbol === 'OEC') || tokens[0];
-        
+
         setFromToken(defaultToken);
         setPriceConditionTokens({
           from: defaultToken,
@@ -263,22 +263,22 @@ function SwapContent() {
   // Simulate getting swap quote (from amount to output)
   const getSwapQuote = async (from: Token, to: Token, amount: string, direction: 'from' | 'to' = 'from') => {
     if (!amount || parseFloat(amount) === 0) return null;
-    
+
     setIsLoading(true);
-    
+
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const inputAmount = parseFloat(amount);
     let exchangeRate, outputAmount, fee, minimumReceived;
-    
+
     if (direction === 'from') {
       // Standard: User specifies input amount, calculate output
       exchangeRate = from.price / to.price;
       outputAmount = inputAmount * exchangeRate;
       fee = inputAmount * 0.003; // 0.3% fee on input
       minimumReceived = outputAmount * (1 - slippage / 100);
-      
+
       // Update toAmount based on calculation
       setToAmount(outputAmount.toFixed(6));
     } else {
@@ -288,14 +288,14 @@ function SwapContent() {
       fee = requiredInput * 0.003; // 0.3% fee on input
       const totalRequired = requiredInput + fee;
       minimumReceived = inputAmount * (1 - slippage / 100);
-      
+
       // Update fromAmount based on calculation
       setFromAmount(totalRequired.toFixed(6));
       outputAmount = inputAmount;
     }
-    
+
     const priceImpact = Math.random() * 2; // 0-2% random impact
-    
+
     const mockQuote: SwapQuote = {
       inputAmount: direction === 'from' ? amount : fromAmount,
       outputAmount: direction === 'from' ? outputAmount.toString() : amount,
@@ -305,7 +305,7 @@ function SwapContent() {
       fee,
       route: [from.symbol, to.symbol]
     };
-    
+
     setQuote(mockQuote);
     setIsLoading(false);
   };
@@ -323,9 +323,9 @@ function SwapContent() {
 
   const handleSwapExecution = async () => {
     if (!fromToken || !toToken || (!fromAmount && !toAmount)) return;
-    
+
     setIsLoading(true);
-    
+
     // Simulate swap execution
     setTimeout(() => {
       setFromAmount("");
@@ -359,7 +359,7 @@ function SwapContent() {
   // Generate realistic OEC price progression for chart display
   const generateOECPriceHistory = (timeframe: string) => {
     const now = Date.now();
-    
+
     const getTimeframeConfig = (tf: string) => {
       switch (tf) {
         case "1H":
@@ -404,15 +404,15 @@ function SwapContent() {
           };
       }
     };
-    
+
     const config = getTimeframeConfig(timeframe);
-    
+
     return Array.from({ length: config.points }, (_, i) => {
       const progress = i / (config.points - 1);
       const timestamp = Math.floor((now - (config.points - 1 - i) * config.intervalMs) / 1000);
-      
+
       let basePrice;
-      
+
       if (timeframe === "30D") {
         // Special 30-day journey: 0.73 → 4.749 (halfway) → 3.00 → 7.37
         if (progress <= 0.5) {
@@ -441,7 +441,7 @@ function SwapContent() {
         // For shorter timeframes, use smoother progression
         const totalGrowth = config.endPrice / config.startPrice;
         basePrice = config.startPrice * Math.pow(totalGrowth, progress);
-        
+
         // Add appropriate volatility based on timeframe
         const volatilityScale = timeframe === "1H" ? 0.02 : 
                                timeframe === "1D" ? 0.04 :
@@ -449,12 +449,12 @@ function SwapContent() {
         const volatility = (Math.random() - 0.5) * volatilityScale;
         basePrice *= (1 + volatility);
       }
-      
+
       // Ensure we end close to target price for all timeframes
       if (i === config.points - 1) {
         basePrice = config.endPrice + (Math.random() - 0.5) * 0.01;
       }
-      
+
       return {
         timestamp,
         price: Math.max(0.1, basePrice),
@@ -473,6 +473,10 @@ function SwapContent() {
     } else if (activeTab === "Sell") {
       setFromToken(tokens[0]); // OEC
       setToToken(tokens[1]); // USDT
+    } else if (activeTab === "Bridge") {
+      // Initialize with default tokens for bridge, or leave null
+      setFromToken(tokens[0]); // Example: Start with OEC
+      setToToken(tokens[1]);   // Example: Bridge to USDT
     } else {
       setFromToken(tokens[1]); // USDT
       setToToken(tokens[0]); // OEC
@@ -482,7 +486,7 @@ function SwapContent() {
   // Handle percentage selection for sell mode
   const handleSellPercentage = (percentage: number) => {
     if (!fromToken) return;
-    
+
     setSellPercentage(percentage);
     const balance = fromToken.balance || 0;
     const amount = (balance * percentage / 100).toString();
@@ -492,7 +496,7 @@ function SwapContent() {
 
   const handleSwapPercentage = (percentage: number) => {
     if (!fromToken) return;
-    
+
     setSwapPercentage(percentage);
     const balance = fromToken.balance || 0;
     const amount = (balance * percentage / 100).toString();
@@ -513,7 +517,7 @@ function SwapContent() {
   const calculateLimitPrice = () => {
     const conditionTokens = getPriceConditionTokens();
     if (!conditionTokens.from || !conditionTokens.to) return "";
-    
+
     const marketRate = conditionTokens.from.price / conditionTokens.to.price;
     const adjustedRate = marketRate * (1 + limitOrder.priceAdjustment / 100);
     return adjustedRate.toFixed(6);
@@ -529,12 +533,12 @@ function SwapContent() {
   // Determine which chart data to show
   const getChartData = () => {
     if (!showChart) return priceHistory;
-    
+
     // Show OEC mock data for any pair involving OEC
     if (fromToken?.symbol === 'OEC' || toToken?.symbol === 'OEC') {
       return generateOECPriceHistory(chartTimeframe);
     }
-    
+
     // For other pairs, use real API data
     return priceHistory;
   };
@@ -559,12 +563,12 @@ function SwapContent() {
     if (!hasStablecoin()) {
       return { from: fromToken, to: toToken };
     }
-    
+
     // If stablecoin involved, keep the original pair or use current
     if (priceConditionTokens.from && priceConditionTokens.to) {
       return priceConditionTokens;
     }
-    
+
     return { from: fromToken, to: toToken };
   };
 
@@ -572,12 +576,12 @@ function SwapContent() {
   const handleLimitOrderToggle = () => {
     const newType = limitOrderType === 'sell' ? 'buy' : 'sell';
     setLimitOrderType(newType);
-    
+
     // Set price condition tokens if not already set
     if (!priceConditionTokens.from || !priceConditionTokens.to) {
       setPriceConditionTokens({ from: fromToken, to: toToken });
     }
-    
+
     // For stablecoin pairs, toggle percentage sign when switching between buy/sell
     if (hasStablecoin()) {
       setUseNegativePercentages(!useNegativePercentages);
@@ -589,12 +593,12 @@ function SwapContent() {
         }));
       }
     }
-    
+
     // Swap the sell/for tokens
     const tempToken = fromToken;
     setFromToken(toToken);
     setToToken(tempToken);
-    
+
     // Clear amounts
     setFromAmount("");
     setToAmount("");
@@ -653,7 +657,7 @@ function SwapContent() {
   // Get dynamic color based on token
   const getTokenColor = (token?: Token) => {
     if (!token) return "#00D2FF"; // Default crypto blue
-    
+
     const colorMap: { [key: string]: string } = {
       'BTC': '#F7931A',
       'ETH': '#627EEA', 
@@ -673,7 +677,7 @@ function SwapContent() {
       'WBNB': '#F3BA2F',
       'BUSD': '#F0B90B',
     };
-    
+
     return colorMap[token.symbol] || "#00D2FF";
   };
 
@@ -695,7 +699,7 @@ function SwapContent() {
               {/* Tab Navigation */}
               <div className="flex items-center justify-between mb-0">
                 <div className="flex space-x-1 bg-[var(--crypto-dark)] rounded-lg p-1">
-                  {["Swap", "Limit", "Buy", "Sell"].map((tab) => (
+                  {["Swap", "Limit", "Buy", "Sell", "Bridge"].map((tab) => (
                     <Button
                       key={tab}
                       variant={activeTab === tab ? "default" : "ghost"}
@@ -833,7 +837,7 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-                    
+
                     {/* Market Price and Adjustments */}
                     <div className="flex items-center space-x-2 mt-3">
                       <Button
@@ -865,7 +869,7 @@ function SwapContent() {
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* Sell Amount Section with relative positioning for toggle */}
                   <div className="relative">
                     <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
@@ -965,7 +969,7 @@ function SwapContent() {
                       </Button>
                     </div>
                   </div>
-                  
+
                   {/* Expiry Selection */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-[var(--crypto-border)]">
                     <span className="text-gray-400 text-sm mb-2 block">Expiry</span>
@@ -993,7 +997,7 @@ function SwapContent() {
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">You're buying</span>
                     </div>
-                    
+
                     {/* Fiat Amount Input */}
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="flex items-center space-x-2">
@@ -1024,7 +1028,7 @@ function SwapContent() {
                         }}
                       />
                     </div>
-                    
+
                     {/* Preset Amount Buttons */}
                     <div className="flex space-x-2 mb-4">
                       {[100, 300, 1000].map((amount) => (
@@ -1039,7 +1043,7 @@ function SwapContent() {
                         </Button>
                       ))}
                     </div>
-                    
+
                     {/* Token Selection */}
                     <div className="flex items-center space-x-3">
                       <span className="text-gray-400 text-sm">Worth of</span>
@@ -1058,7 +1062,7 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-                    
+
                     {/* Estimated Token Amount */}
                     {toToken && fiatAmount && (
                       <div className="text-center mt-4 p-4 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/30 rounded-lg backdrop-blur-sm">
@@ -1083,7 +1087,7 @@ function SwapContent() {
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Percentage Buttons */}
                     <div className="flex space-x-2 mb-4">
                       {[25, 50, 75, 100].map((percentage) => (
@@ -1098,7 +1102,7 @@ function SwapContent() {
                         </Button>
                       ))}
                     </div>
-                    
+
                     {/* Token Amount */}
                     <div className="flex items-center space-x-3">
                       <Input
@@ -1137,7 +1141,7 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-                    
+
                     {/* Estimated USD Value */}
                     {fromToken && fromAmount && (
                       <div className="text-center mt-4 p-4 bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-400/30 rounded-lg backdrop-blur-sm">
@@ -1171,7 +1175,7 @@ function SwapContent() {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-3">
                       <Input
                         type="number"
@@ -1209,7 +1213,7 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-                    
+
                     {/* Balance below token selection */}
                     {fromToken && (
                       <div className="text-right text-gray-400 text-sm mt-2">
@@ -1297,7 +1301,8 @@ function SwapContent() {
                   (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
                   (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
                   (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
-                  (activeTab === "Sell" && (!fromToken || !fromAmount))
+                  (activeTab === "Sell" && (!fromToken || !fromAmount)) ||
+                  (activeTab === "Bridge" && (!fromToken || !toToken || !fromAmount)) // Add validation for Bridge tab
                 }
                 className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
               >
@@ -1323,6 +1328,10 @@ function SwapContent() {
                   !fromToken ? "Select Token" : 
                   !fromAmount ? "Enter Amount" : 
                   `Sell ${fromToken.symbol}`
+                ) : activeTab === "Bridge" ? ( // Handle Bridge tab text
+                  !fromToken || !toToken ? "Select Tokens" :
+                  !fromAmount ? "Enter Amount" :
+                  `Bridge ${fromToken.symbol}`
                 ) : "Connect Wallet"}
               </Button>
 
@@ -1432,6 +1441,28 @@ function SwapContent() {
                 </div>
               )}
 
+              {/* Bridge Information (Placeholder - implement actual bridge UI) */}
+              {activeTab === "Bridge" && fromToken && toToken && fromAmount && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">From</span>
+                    <span className="text-white">{formatNumber(parseFloat(fromAmount), 6)} {fromToken.symbol}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">To</span>
+                    <span className="text-white">{formatNumber(parseFloat(fromAmount), 6)} {toToken.symbol}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Network</span>
+                    <span className="text-white">OEC → Polygon</span> {/* Example network */}
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Estimated Fee</span>
+                    <span className="text-white">0.01 ETH</span> {/* Example fee */}
+                  </div>
+                </div>
+              )}
+
               {/* Liquidity Button */}
               <div className="mt-4">
                 <Button
@@ -1510,11 +1541,31 @@ function SwapContent() {
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400">24h Change:</span>
-                            <span className="text-green-400">+0.12%</span>
+                            <span className={`font-medium ${
+                              tokenData?.priceChangePercent24h && tokenData.priceChangePercent24h >= 0 
+                                ? 'text-green-400' 
+                                : 'text-red-400'
+                            }`}>
+                              {tokenData?.priceChangePercent24h 
+                                ? `${tokenData.priceChangePercent24h >= 0 ? '+' : ''}${tokenData.priceChangePercent24h.toFixed(2)}%`
+                                : '+0.12%'
+                              }
+                            </span>
                           </div>
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-400">24h Volume:</span>
-                            <span className="text-white">$24.3M</span>
+                            <span className="text-white font-medium">
+                              {tokenData?.volume24h 
+                                ? `$${formatNumber(tokenData.volume24h)}`
+                                : '$24.3M'
+                              }
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-400">{fromToken.symbol} Price:</span>
+                            <span className="text-white font-medium">
+                              ${formatNumber(fromToken.price, 6)}
+                            </span>
                           </div>
                         </div>
                       )}
@@ -1566,7 +1617,7 @@ function SwapContent() {
                         />
                       </AreaChart>
                     </ResponsiveContainer>
-                    
+
                     {/* Trading Pair Stats Overlay */}
                     {fromToken && toToken && (
                       <div className="absolute top-4 right-4 bg-[var(--crypto-card)]/90 backdrop-blur-sm rounded-lg p-3 border border-[var(--crypto-border)]">
@@ -1717,10 +1768,10 @@ function SwapContent() {
         <DialogContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white max-w-md mx-auto">
           <DialogHeader>
             <DialogTitle className="text-white">
-              Select {tokenSelectionFor === 'from' ? 'From' : 'To'} Token
+              Select {tokenSelectionFor === 'from' ? 'From' : tokenSelectionFor === 'to' ? 'To' : 'Price Condition'} Token
             </DialogTitle>
           </DialogHeader>
-          
+
           {/* Search Box */}
           <div className="mb-4">
             <Input
