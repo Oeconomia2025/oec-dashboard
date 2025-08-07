@@ -17,23 +17,9 @@ class HistoricalDataSyncService {
   };
 
   async start() {
-    if (this.isRunning) {
-      console.log('Historical data sync service is already running');
-      return;
-    }
-
-    this.isRunning = true;
-    console.log('Starting Historical Data Sync Service...');
-
-    // Initial sync
-    await this.syncETHHistoricalData();
-
-    // Schedule hourly syncs (3600000 ms = 1 hour)
-    this.syncInterval = setInterval(async () => {
-      await this.syncETHHistoricalData();
-    }, 3600000);
-
-    console.log('Historical data sync service started with 1-hour interval');
+    console.log('🚫 ETH Historical sync DISABLED - simulating Replit usage exhaustion');
+    console.log('⛽ No ETH data updates - using database cache only');
+    return;
   }
 
   async stop() {

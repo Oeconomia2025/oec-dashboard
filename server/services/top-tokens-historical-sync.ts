@@ -244,24 +244,12 @@ export const topTokensHistoricalSyncService = {
   intervalId: null as NodeJS.Timeout | null,
   
   async start() {
-    console.log("Starting ALL Available Tokens Historical Data Sync Service...");
-    
-    // Initial seeding for all available tokens
-    await seedTop10TokensHistoricalData();
-    
-    // Set up hourly updates for all tokens
-    this.intervalId = setInterval(async () => {
-      await updateTop10TokensHistoricalData();
-    }, 60 * 60 * 1000); // Every hour
-    
-    console.log("All available tokens historical data sync service started with 1-hour interval");
+    console.log("🚫 Historical sync DISABLED - simulating Replit usage exhaustion");
+    console.log("⛽ No historical data updates - using cache only");
+    return;
   },
   
   stop() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-      console.log("All tokens historical data sync service stopped");
-    }
+    console.log("🛑 Historical sync service stopped (usage exhausted)");
   }
 };

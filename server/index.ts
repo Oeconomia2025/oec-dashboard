@@ -40,10 +40,10 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // DISABLED: All sync services to eliminate Replit usage consumption
-  // Your app will work entirely from cached database data via Netlify functions
-  console.log('🚫 All sync services disabled - app running in cache-only mode');
-  console.log('📊 Data served from Neon database via Netlify functions');
+  // 🚫 SIMULATING REPLIT USAGE EXHAUSTION - ALL SERVICES STOPPED
+  console.log('⛽ REPLIT USAGE EXHAUSTED - All sync services stopped');
+  console.log('🚫 No API calls, no database writes, no background processes');
+  console.log('📊 Website continues working via Netlify functions only');
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
