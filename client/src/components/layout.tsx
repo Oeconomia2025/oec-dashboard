@@ -482,15 +482,7 @@ export function Layout({
                 </DropdownMenuContent>
               </DropdownMenu>
               
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleNavigation('/settings')}
-                className="p-2"
-                title="Settings"
-              >
-                <Settings className="w-4 h-4" />
-              </Button>
+              
             </div>
           </div>
         </header>
