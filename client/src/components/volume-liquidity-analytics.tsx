@@ -1,194 +1,226 @@
-import { Card } from "@/components/ui/card";
+
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { TrendingUp, TrendingDown, Activity, DollarSign } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { useEnvironment } from "@/hooks/use-environment";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 interface VolumeData {
-  volume24h: number;
-  volume7d: number;
-  volumeChange24h: number;
+  date: string;
+  volume: number;
   liquidity: number;
-  liquidityChange24h: number;
-  marketCap: number;
-  circulatingSupply: number;
-  holders: number;
+  price: number;
 }
 
-interface VolumeAnalyticsProps {
+interface VolumeLiquidityAnalyticsProps {
   contractAddress: string;
 }
 
-export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsProps) {
-  const { data: volumeData, isLoading, error } = useQuery<VolumeData>({
-    queryKey: ["/api/volume-analytics", contractAddress],
-    refetchInterval: false, // Disable automatic refetching
-    retry: false,
-    enabled: false, // Temporarily disable this endpoint
-    staleTime: Infinity,
+export function VolumeLiquidityAnalytics({ contractAddress }: VolumeLiquidityAnalyticsProps) {
+  const [timeframe, setTimeframe] = useState<'7d' | '30d' | '90d'>('30d');
+
+  // Fetch volume analytics data
+  const { data: volumeData, isLoading: isVolumeLoading } = useQuery({
+    queryKey: ['/api/volume-analytics', contractAddress, timeframe],
+    queryFn: async () => {
+      const endpoint = window.location.hostname === 'localhost' 
+        ? `/api/volume-analytics?contract=${contractAddress}&timeframe=${timeframe}`
+        : `/.netlify/functions/volume-analytics?contract=${contractAddress}&timeframe=${timeframe}`;
+
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`Volume analytics fetch failed: ${response.status}`);
+      }
+      return response.json();
+    },
+    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes
+    retry: 2,
+    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
   // Mock data for demonstration when API fails
-  const mockData: VolumeData = {
-    volume24h: 2850000,
-    volume7d: 18750000,
-    volumeChange24h: 12.5,
-    liquidity: 5420000,
-    liquidityChange24h: -2.3,
-    marketCap: 89750000,
-    circulatingSupply: 75000000,
-    holders: 12847
-  };
+  const mockVolumeData: VolumeData[] = [
+    { date: '2024-01-01', volume: 1250000, liquidity: 5600000, price: 0.45 },
+    { date: '2024-01-02', volume: 980000, liquidity: 5800000, price: 0.47 },
+    { date: '2024-01-03', volume: 1650000, liquidity: 6200000, price: 0.52 },
+    { date: '2024-01-04', volume: 2100000, liquidity: 6800000, price: 0.58 },
+    { date: '2024-01-05', volume: 1800000, liquidity: 7200000, price: 0.61 },
+    { date: '2024-01-06', volume: 1450000, liquidity: 7500000, price: 0.59 },
+    { date: '2024-01-07', volume: 1920000, liquidity: 7800000, price: 0.63 }
+  ];
 
-  // Use mock data if API fails or no data available
-  const data = volumeData || mockData;
+  const data = volumeData?.data || mockVolumeData;
+  
+  // Calculate metrics
+  const totalVolume = data.reduce((sum, item) => sum + item.volume, 0);
+  const avgLiquidity = data.reduce((sum, item) => sum + item.liquidity, 0) / data.length;
+  const volumeChange = data.length > 1 ? 
+    ((data[data.length - 1].volume - data[data.length - 2].volume) / data[data.length - 2].volume) * 100 : 0;
+  const liquidityChange = data.length > 1 ? 
+    ((data[data.length - 1].liquidity - data[data.length - 2].liquidity) / data[data.length - 2].liquidity) * 100 : 0;
 
-  const StatCard = ({
-    title,
-    value,
-    change,
-    icon: Icon,
-    format = "currency"
-  }: {
-    title: string;
-    value: number;
-    change?: number;
-    icon: any;
-    format?: "currency" | "number" | "percentage";
-  }) => {
-    const formatValue = () => {
-      try {
-        if (typeof value !== 'number' || isNaN(value)) {
-          return '0';
-        }
-        switch (format) {
-          case "currency":
-            return formatPrice(value);
-          case "number":
-            return formatNumber(value);
-          case "percentage":
-            return `${value.toFixed(2)}%`;
-          default:
-            return value.toString();
-        }
-      } catch (error) {
-        console.error('Error formatting value:', error, value);
-        return '0';
-      }
-    };
-
+  if (isVolumeLoading) {
     return (
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-full bg-crypto-blue/20 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-crypto-blue" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-400">{title}</p>
-            <p className="text-lg font-semibold">{formatValue()}</p>
-          </div>
-        </div>
-        {change !== undefined && (
-          <div className={`flex items-center space-x-1 ${
-            change >= 0 ? 'text-crypto-green' : 'text-crypto-red'
-          }`}>
-            {change >= 0 ? (
-              <TrendingUp className="w-4 h-4" />
-            ) : (
-              <TrendingDown className="w-4 h-4" />
-            )}
-            <span className="text-sm font-medium">
-              {Math.abs(change).toFixed(2)}%
-            </span>
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card className="crypto-card p-6">
+      <Card className="crypto-card mt-8">
+        <CardHeader>
+          <CardTitle className="text-white flex items-center">
+            <Activity className="w-5 h-5 mr-2" />
+            Volume & Liquidity Analytics
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <LoadingSpinner />
-        </Card>
-        <Card className="crypto-card p-6">
-          <LoadingSpinner />
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 mb-8">
-      {/* Volume Analytics */}
-      <Card className="crypto-card p-6">
-        <div className="flex items-center space-x-2 mb-6">
-          <BarChart3 className="w-5 h-5 text-crypto-blue" />
-          <h3 className="text-lg font-semibold">Volume Analytics</h3>
+    <Card className="crypto-card mt-8">
+      <CardHeader>
+        <CardTitle className="text-white flex items-center">
+          <Activity className="w-5 h-5 mr-2" />
+          Volume & Liquidity Analytics
+        </CardTitle>
+        <div className="flex space-x-2 mt-4">
+          {(['7d', '30d', '90d'] as const).map((period) => (
+            <button
+              key={period}
+              onClick={() => setTimeframe(period)}
+              className={`px-3 py-1 rounded text-sm transition-colors ${
+                timeframe === period
+                  ? 'bg-crypto-blue text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {period}
+            </button>
+          ))}
         </div>
-
-        <div className="space-y-6">
-          <StatCard
-            title="24h Volume"
-            value={data.volume24h}
-            change={data.volumeChange24h}
-            icon={Activity}
-          />
-
-          <StatCard
-            title="7d Volume"
-            value={data.volume7d}
-            icon={BarChart3}
-          />
-
-          <div className="pt-4 border-t border-crypto-border/30">
-            <div className="flex justify-between items-center text-sm">
-              <span className="text-gray-400">Volume/Market Cap</span>
-              <span className="font-medium">
-                {((data.volume24h / data.marketCap) * 100).toFixed(2)}%
-              </span>
+      </CardHeader>
+      <CardContent>
+        {/* Metrics Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <DollarSign className="w-4 h-4 text-crypto-gold mr-1" />
+              <span className="text-gray-400 text-sm">Total Volume</span>
             </div>
+            <p className="text-xl font-bold text-white">
+              ${(totalVolume / 1000000).toFixed(2)}M
+            </p>
+            <Badge variant={volumeChange >= 0 ? "default" : "destructive"} className="mt-1">
+              {volumeChange >= 0 ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
+              {Math.abs(volumeChange).toFixed(1)}%
+            </Badge>
+          </div>
+
+          <div className="text-center">
+            <div className="flex items-center justify-center mb-2">
+              <Activity className="w-4 h-4 text-crypto-blue mr-1" />
+              <span className="text-gray-400 text-sm">Avg Liquidity</span>
+            </div>
+            <p className="text-xl font-bold text-white">
+              ${(avgLiquidity / 1000000).toFixed(2)}M
+            </p>
+            <Badge variant={liquidityChange >= 0 ? "default" : "destructive"} className="mt-1">
+              {liquidityChange >= 0 ? <TrendingUp className="w-3 h-3 mr-1" /> : <TrendingDown className="w-3 h-3 mr-1" />}
+              {Math.abs(liquidityChange).toFixed(1)}%
+            </Badge>
+          </div>
+
+          <div className="text-center">
+            <span className="text-gray-400 text-sm">24h Volume</span>
+            <p className="text-xl font-bold text-white">
+              ${(data[data.length - 1]?.volume / 1000000 || 0).toFixed(2)}M
+            </p>
+          </div>
+
+          <div className="text-center">
+            <span className="text-gray-400 text-sm">Current Liquidity</span>
+            <p className="text-xl font-bold text-white">
+              ${(data[data.length - 1]?.liquidity / 1000000 || 0).toFixed(2)}M
+            </p>
           </div>
         </div>
-      </Card>
 
-      {/* Liquidity Analytics */}
-      <Card className="crypto-card p-6">
-        <div className="flex items-center space-x-2 mb-6">
-          <Droplets className="w-5 h-5 text-crypto-purple" />
-          <h3 className="text-lg font-semibold">Liquidity Analytics</h3>
-        </div>
-
-        <div className="space-y-6">
-          <StatCard
-            title="Total Liquidity"
-            value={data.liquidity}
-            change={data.liquidityChange24h}
-            icon={Droplets}
-          />
-
-          <StatCard
-            title="Market Cap"
-            value={data.marketCap}
-            icon={TrendingUp}
-          />
-
-          <div className="pt-4 border-t border-crypto-border/30">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-400 block">Circulating</span>
-                <span className="font-medium">{formatNumber(data.circulatingSupply)}</span>
-              </div>
-              <div>
-                <span className="text-gray-400 block">Holders</span>
-                <span className="font-medium">{formatNumber(data.holders)}</span>
-              </div>
-            </div>
+        {/* Volume Chart */}
+        <div className="mb-8">
+          <h4 className="text-white font-semibold mb-4">Trading Volume</h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                />
+                <YAxis 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#F9FAFB'
+                  }}
+                  formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M`, 'Volume']}
+                  labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                />
+                <Bar dataKey="volume" fill="#06B6D4" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
-      </Card>
-    </div>
+
+        {/* Liquidity Chart */}
+        <div>
+          <h4 className="text-white font-semibold mb-4">Liquidity Trend</h4>
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                  tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                />
+                <YAxis 
+                  stroke="#9CA3AF"
+                  fontSize={12}
+                  tickFormatter={(value) => `$${(value / 1000000).toFixed(1)}M`}
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151',
+                    borderRadius: '8px',
+                    color: '#F9FAFB'
+                  }}
+                  formatter={(value: number) => [`$${(value / 1000000).toFixed(2)}M`, 'Liquidity']}
+                  labelFormatter={(label) => new Date(label).toLocaleDateString()}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="liquidity" 
+                  stroke="#10B981" 
+                  strokeWidth={3}
+                  dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, fill: '#10B981' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
