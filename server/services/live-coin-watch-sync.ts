@@ -9,23 +9,9 @@ class LiveCoinWatchSyncService {
   private readonly SYNC_INTERVAL = 30 * 1000; // 30 seconds
 
   async start() {
-    if (this.isRunning) {
-      console.log('Live Coin Watch sync service is already running');
-      return;
-    }
-
-    console.log('Starting Live Coin Watch sync service...');
-    this.isRunning = true;
-
-    // Initial sync
-    await this.syncData();
-
-    // Set up recurring sync every 30 seconds
-    this.intervalId = setInterval(async () => {
-      await this.syncData();
-    }, this.SYNC_INTERVAL);
-
-    console.log(`Live Coin Watch sync service started with ${this.SYNC_INTERVAL / 1000}s interval`);
+    console.log('🚫 Live Coin Watch sync service DISABLED - no usage consumption');
+    console.log('📊 App will serve data from database cache only');
+    return;
   }
 
   stop() {

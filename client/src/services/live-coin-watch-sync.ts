@@ -18,7 +18,6 @@ class LiveCoinWatchSyncService {
     console.log('📊 All data served from database cache, no API calls made');
     this.isInitialized = true;
     return;
-    }
   }
 
   async triggerSync(): Promise<SyncResult> {
