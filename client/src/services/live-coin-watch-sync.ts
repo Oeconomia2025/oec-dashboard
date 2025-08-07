@@ -23,16 +23,16 @@ class LiveCoinWatchSyncService {
   async triggerSync(): Promise<SyncResult> {
     try {
       console.log('🔄 Triggering Live Coin Watch data sync...');
-      
+
       const response = await apiRequest('POST', '/api/live-coin-watch/sync');
       const result = await response.json() as SyncResult;
-      
+
       if (result.success) {
         console.log(`✅ Sync completed: ${result.message}`);
       } else {
         console.warn(`⚠️ Sync warning: ${result.message}`);
       }
-      
+
       return result;
     } catch (error) {
       const errorResult: SyncResult = {
@@ -41,7 +41,7 @@ class LiveCoinWatchSyncService {
         error: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString()
       };
-      
+
       console.error('❌ Sync failed:', error);
       return errorResult;
     }
