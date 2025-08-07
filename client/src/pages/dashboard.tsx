@@ -18,14 +18,15 @@ import { useQuery } from "@tanstack/react-query";
 import { TONE_TOKEN_CONFIG } from "@shared/schema";
 import { Layout } from "@/components/layout";
 import { formatCryptoData } from "@/utils/crypto-logos";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function Dashboard() {
   const [contractAddress, setContractAddress] = useState(TONE_TOKEN_CONFIG.contractAddress);
   const [inputAddress, setInputAddress] = useState(contractAddress);
-  const [selectedToken, setSelectedToken] = useState("BTC");
-  
+  const [selectedToken, setSelectedToken] = "BTC";
+
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
-  
+
   // PRODUCTION-READY: Fetch data from database only - no Live Coin Watch API
   const { data: liveCoinData, isLoading: isLiveCoinLoading } = useQuery({
     queryKey: ['/api/tokens/coins-database'],
@@ -33,7 +34,7 @@ export default function Dashboard() {
       const endpoint = window.location.hostname === 'localhost' 
         ? '/api/tokens/coins'
         : '/.netlify/functions/token-coins-data';
-        
+
       const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error(`Database fetch failed: ${response.status}`);
@@ -44,7 +45,7 @@ export default function Dashboard() {
     retry: 2,
     staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   }) as { data: { coins: any[] } | undefined; isLoading: boolean };
-  
+
   // Get selected token data from Live Coin Watch
   const selectedTokenData = liveCoinData?.coins?.find((coin: any) => 
     coin.code === selectedToken
@@ -63,7 +64,7 @@ export default function Dashboard() {
       const endpoint = window.location.hostname === 'localhost' 
         ? '/api/tokens/ETH'
         : '/.netlify/functions/token-data?token=ETH';
-        
+
       const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error(`ETH database fetch failed: ${response.status}`);
@@ -84,13 +85,13 @@ export default function Dashboard() {
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
           {/* Token Overview Cards - Use Live Data */}
-          <TokenOverview tokenData={defaultTokenData} isLoading={isEthLoading} />
+          {isEthLoading ? <LoadingSpinner /> : <TokenOverview tokenData={defaultTokenData} />}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Price Chart */}
           <div className="lg:col-span-2">
             <ETHHistoricalChart />
-            
+
             {/* Volume and Liquidity Analytics */}
             <VolumeLiquidityAnalytics contractAddress={contractAddress} />
 
@@ -99,7 +100,7 @@ export default function Dashboard() {
           </div>
 
           {/* Token Information Panel */}
-          <TokenInfoPanel tokenData={defaultTokenData} isLoading={isEthLoading} />
+          {isEthLoading ? <LoadingSpinner /> : <TokenInfoPanel tokenData={defaultTokenData} />}
           </div>
 
           {/* Recent Transactions Table */}

@@ -8,6 +8,7 @@ import { PriceChart } from "@/components/price-chart";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check, Database } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useTokenData } from "@/hooks/use-token-data";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import type { TokenData, LiveCoinWatchDbCoin } from "@shared/schema";
 
 
@@ -122,9 +123,7 @@ export default function TokenDetail() {
       <Layout>
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center py-12">
-              <div className="text-gray-400 mb-2">Loading token data...</div>
-            </div>
+            <LoadingSpinner text="Loading token data" size="lg" />
           </div>
         </div>
       </Layout>

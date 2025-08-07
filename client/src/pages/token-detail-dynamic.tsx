@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Layout } from "@/components/layout";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { PriceChart } from "@/components/price-chart";
 import { ArrowLeft, ExternalLink, TrendingUp, TrendingDown, Users, DollarSign, BarChart3, Activity, Plus, Copy, Check, Database } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -76,11 +77,7 @@ export default function TokenDetailDynamic() {
     return (
       <Layout>
         <div className="container mx-auto p-6 space-y-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-300 rounded w-1/3"></div>
-            <div className="h-32 bg-gray-300 rounded"></div>
-            <div className="h-64 bg-gray-300 rounded"></div>
-          </div>
+          <LoadingSpinner text="Loading token details" size="lg" />
         </div>
       </Layout>
     );

@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { WalletConnect } from "@/components/wallet-connect"
 import { WalletSetupGuide } from "@/components/wallet-setup-guide"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Layout } from "@/components/layout"
 
 interface TokenBalance {
@@ -260,25 +261,7 @@ export function Portfolio() {
           {holdingsExpanded && (
             <div>
               {balancesLoading ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <div className="relative">
-                    <img 
-                      src="/oec-logo.png" 
-                      alt="OEC Logo" 
-                      className="w-16 h-16 animate-pulse"
-                      style={{
-                        animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-400/20 to-purple-600/20 rounded-full animate-ping"></div>
-                  </div>
-                  <p className="text-gray-400 mt-4 text-lg font-medium">Loading</p>
-                  <div className="flex space-x-1 mt-2">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                  </div>
-                </div>
+                <LoadingSpinner text="Loading portfolio" size="lg" />
               ) : (
                 <div className="space-y-1">
                   {/* BNB Balance */}

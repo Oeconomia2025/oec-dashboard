@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { TrendingUp, BarChart3, ArrowUpDown, Droplets, DollarSign } from "lucide-react";
 import type { TokenData } from "@shared/schema";
 
@@ -36,20 +37,20 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
 
   const formatNumber = (num: number) => {
     const fixed = num.toFixed(5);
-    return parseFloat(fixed).toLocaleString('en-US', { 
-      minimumFractionDigits: 0, 
-      maximumFractionDigits: 5 
+    return parseFloat(fixed).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 5
     });
   };
 
   const formatPrice = (price: number) => {
-    return price.toLocaleString('en-US', { 
-      minimumFractionDigits: 2, 
-      maximumFractionDigits: 2 
+    return price.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     });
   };
   const formatMarketCap = (cap: number) => formatNumber(cap);
-  const formatVolume = (vol: number) => formatNumber(vol);  
+  const formatVolume = (vol: number) => formatNumber(vol);
   const formatLiquidity = (liq: number) => formatNumber(liq);
   // Handle both database format (Live Coin Watch) and TokenData format
   const price = tokenData.rate || tokenData.price || 0;
@@ -60,7 +61,7 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
   const priceChange24h = tokenData.delta?.day || tokenData.priceChangePercent24h || 0;
   const totalSupply = tokenData.totalSupply || 0;
   const circulatingSupply = tokenData.circulatingSupply || 0;
-  
+
   const formatSupply = (supply: number) => `${formatNumber(supply)} ${symbol}`;
 
   return (
@@ -72,8 +73,8 @@ export function TokenOverview({ tokenData, isLoading }: TokenOverviewProps) {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-gray-200 text-sm font-medium">Current Price</h3>
             <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-              priceChange24h >= 0 
-                ? 'bg-green-600/70 text-green-100' 
+              priceChange24h >= 0
+                ? 'bg-green-600/70 text-green-100'
                 : 'bg-red-600/70 text-red-100'
             }`}>
               {priceChange24h >= 0 ? '+' : ''}

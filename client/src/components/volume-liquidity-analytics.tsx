@@ -1,7 +1,9 @@
 import { Card } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Droplets, Activity, BarChart3 } from "lucide-react";
-import { formatPrice, formatNumber } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useEnvironment } from "@/hooks/use-environment";
 
 interface VolumeData {
   volume24h: number;
@@ -42,12 +44,12 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
   // Use mock data if API fails or no data available
   const data = volumeData || mockData;
 
-  const StatCard = ({ 
-    title, 
-    value, 
-    change, 
-    icon: Icon, 
-    format = "currency" 
+  const StatCard = ({
+    title,
+    value,
+    change,
+    icon: Icon,
+    format = "currency"
   }: {
     title: string;
     value: number;
@@ -108,19 +110,11 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <Card className="crypto-card p-6 animate-pulse">
-          <div className="h-4 bg-gray-700 rounded mb-4 w-1/3"></div>
-          <div className="space-y-4">
-            <div className="h-6 bg-gray-700 rounded"></div>
-            <div className="h-6 bg-gray-700 rounded"></div>
-          </div>
+        <Card className="crypto-card p-6">
+          <LoadingSpinner />
         </Card>
-        <Card className="crypto-card p-6 animate-pulse">
-          <div className="h-4 bg-gray-700 rounded mb-4 w-1/3"></div>
-          <div className="space-y-4">
-            <div className="h-6 bg-gray-700 rounded"></div>
-            <div className="h-6 bg-gray-700 rounded"></div>
-          </div>
+        <Card className="crypto-card p-6">
+          <LoadingSpinner />
         </Card>
       </div>
     );
@@ -134,7 +128,7 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
           <BarChart3 className="w-5 h-5 text-crypto-blue" />
           <h3 className="text-lg font-semibold">Volume Analytics</h3>
         </div>
-        
+
         <div className="space-y-6">
           <StatCard
             title="24h Volume"
@@ -142,13 +136,13 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
             change={data.volumeChange24h}
             icon={Activity}
           />
-          
+
           <StatCard
             title="7d Volume"
             value={data.volume7d}
             icon={BarChart3}
           />
-          
+
           <div className="pt-4 border-t border-crypto-border/30">
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400">Volume/Market Cap</span>
@@ -166,7 +160,7 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
           <Droplets className="w-5 h-5 text-crypto-purple" />
           <h3 className="text-lg font-semibold">Liquidity Analytics</h3>
         </div>
-        
+
         <div className="space-y-6">
           <StatCard
             title="Total Liquidity"
@@ -174,13 +168,13 @@ export function VolumeLiquidityAnalytics({ contractAddress }: VolumeAnalyticsPro
             change={data.liquidityChange24h}
             icon={Droplets}
           />
-          
+
           <StatCard
             title="Market Cap"
             value={data.marketCap}
             icon={TrendingUp}
           />
-          
+
           <div className="pt-4 border-t border-crypto-border/30">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
