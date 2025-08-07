@@ -40,16 +40,10 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Start Live Coin Watch sync service
-  await liveCoinWatchSyncService.start();
-
-  // Start Historical Data sync service
-  const { historicalDataSyncService } = await import('./services/historical-data-sync');
-  await historicalDataSyncService.start();
-
-  // Start Top 10 Tokens Historical Data sync service
-  const { topTokensHistoricalSyncService } = await import('./services/top-tokens-historical-sync');
-  await topTokensHistoricalSyncService.start();
+  // DISABLED: All sync services to eliminate Replit usage consumption
+  // Your app will work entirely from cached database data via Netlify functions
+  console.log('🚫 All sync services disabled - app running in cache-only mode');
+  console.log('📊 Data served from Neon database via Netlify functions');
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

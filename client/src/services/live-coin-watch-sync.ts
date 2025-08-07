@@ -13,33 +13,11 @@ class LiveCoinWatchSyncService {
   private syncTimer?: NodeJS.Timeout;
 
   async initializeProductionSync(): Promise<void> {
-    // FORCE NETLIFY FUNCTIONS: Always initialize sync, never depend on Replit
-    const isProduction = true; // Force production mode to ensure Netlify function usage
-    
-    if (this.isInitialized) {
-      console.log('Environment: Production (Forced) - Sync already initialized');
-      return;
-    }
-
-    console.log('🚀 Initializing Live Coin Watch sync for production environment');
-    
-    try {
-      // Trigger initial sync
-      await this.triggerSync();
-      
-      // Set up automatic sync every 5 minutes in production
-      this.syncTimer = setInterval(async () => {
-        try {
-          await this.triggerSync();
-        } catch (error) {
-          console.warn('Scheduled sync failed:', error);
-        }
-      }, 5 * 60 * 1000); // 5 minutes
-      
-      this.isInitialized = true;
-      console.log('✅ Production Live Coin Watch sync initialized');
-    } catch (error) {
-      console.error('Failed to initialize production sync:', error);
+    // DISABLED: No sync to eliminate Replit usage consumption
+    console.log('🚫 Sync disabled - app running in cache-only mode via Netlify functions');
+    console.log('📊 All data served from database cache, no API calls made');
+    this.isInitialized = true;
+    return;
     }
   }
 
