@@ -1441,24 +1441,281 @@ function SwapContent() {
                 </div>
               )}
 
-              {/* Bridge Information (Placeholder - implement actual bridge UI) */}
+              {/* Bridge Mode Interface */}
+              {activeTab === "Bridge" && (
+                <div className="space-y-4">
+                  {/* From Network and Token */}
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">From Network</span>
+                      <div className="flex space-x-2">
+                        {[25, 50, 75, 100].map((percentage) => (
+                          <Button
+                            key={percentage}
+                            variant={swapPercentage === percentage ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handleSwapPercentage(percentage)}
+                            className={swapPercentage === percentage ? "bg-crypto-blue hover:bg-crypto-blue/80" : "text-crypto-blue border-crypto-blue hover:bg-crypto-blue hover:text-white"}
+                          >
+                            {percentage === 100 ? "Max" : `${percentage}%`}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Network Selection */}
+                    <div className="flex items-center space-x-3 mb-4">
+                      <Select value="oec" onValueChange={() => {}}>
+                        <SelectTrigger className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                              O
+                            </div>
+                            <span>OEC Chain</span>
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)]">
+                          <SelectItem value="oec" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                O
+                              </div>
+                              <span>OEC Chain</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="bsc" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-black">
+                                B
+                              </div>
+                              <span>BSC</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="ethereum" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                E
+                              </div>
+                              <span>Ethereum</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="polygon" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                P
+                              </div>
+                              <span>Polygon</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Token Amount */}
+                    <div className="flex items-center space-x-3">
+                      <Input
+                        type="number"
+                        value={fromAmount}
+                        onChange={(e) => {
+                          setFromAmount(e.target.value);
+                          setSwapPercentage(null);
+                          setLastEditedField('from');
+                        }}
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
+                      />
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('from')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {fromToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={fromToken.logo} alt={fromToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{fromToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Balance */}
+                    {fromToken && (
+                      <div className="text-right text-gray-400 text-sm mt-2">
+                        Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bridge Arrow */}
+                  <div className="relative">
+                    <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {}}
+                        className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                      >
+                        <div className="transform rotate-90">
+                          <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* To Network and Token */}
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">To Network</span>
+                    </div>
+
+                    {/* Network Selection */}
+                    <div className="flex items-center space-x-3 mb-4">
+                      <Select value="polygon" onValueChange={() => {}}>
+                        <SelectTrigger className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
+                          <div className="flex items-center space-x-2">
+                            <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                              P
+                            </div>
+                            <span>Polygon</span>
+                          </div>
+                        </SelectTrigger>
+                        <SelectContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)]">
+                          <SelectItem value="polygon" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                P
+                              </div>
+                              <span>Polygon</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="ethereum" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                E
+                              </div>
+                              <span>Ethereum</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="bsc" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-black">
+                                B
+                              </div>
+                              <span>BSC</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="arbitrum" className="text-white hover:bg-[var(--crypto-dark)]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                                A
+                              </div>
+                              <span>Arbitrum</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Received Amount Display */}
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-1 text-white font-bold text-4xl">
+                        {fromAmount || "0.0"}
+                      </div>
+                      <Button
+                        variant="outline"
+                        onClick={() => openTokenModal('to')}
+                        className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        {toToken ? (
+                          <div className="flex items-center space-x-2">
+                            <img src={toToken.logo} alt={toToken.symbol} className="w-6 h-6 rounded-full" />
+                            <span>{toToken.symbol}</span>
+                          </div>
+                        ) : (
+                          <span>Select token</span>
+                        )}
+                      </Button>
+                    </div>
+
+                    {/* Estimated Value */}
+                    {toToken && fromAmount && (
+                      <div className="text-right text-gray-400 text-sm mt-2">
+                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * toToken.price, 2)}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Bridge Route Information */}
+                  <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-gray-400 text-sm">Bridge Route</span>
+                      <div className="flex items-center space-x-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                        <span className="text-green-400 text-xs">Available</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 text-sm">
+                        <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                          O
+                        </div>
+                        <span className="text-white">OEC Chain</span>
+                      </div>
+                      <div className="flex-1 h-px bg-gradient-to-r from-crypto-blue to-crypto-green" />
+                      <div className="flex items-center space-x-2 text-sm">
+                        <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                          P
+                        </div>
+                        <span className="text-white">Polygon</span>
+                      </div>
+                    </div>
+
+                    <div className="text-center mt-2">
+                      <span className="text-xs text-gray-400">via LayerZero Protocol</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Bridge Information */}
               {activeTab === "Bridge" && fromToken && toToken && fromAmount && (
                 <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)] space-y-2">
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">From</span>
+                    <span className="text-gray-400">You Send</span>
                     <span className="text-white">{formatNumber(parseFloat(fromAmount), 6)} {fromToken.symbol}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">To</span>
+                    <span className="text-gray-400">You Receive</span>
                     <span className="text-white">{formatNumber(parseFloat(fromAmount), 6)} {toToken.symbol}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Network</span>
-                    <span className="text-white">OEC → Polygon</span> {/* Example network */}
+                    <span className="text-gray-400">Bridge Fee</span>
+                    <span className="text-white">$2.50</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">Estimated Fee</span>
-                    <span className="text-white">0.01 ETH</span> {/* Example fee */}
+                    <span className="text-gray-400">Gas Fee</span>
+                    <span className="text-white">~$8.75</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-gray-400">Estimated Time</span>
+                    <span className="text-white">~2-5 minutes</span>
+                  </div>
+                  <div className="text-xs text-yellow-400 mt-2 flex items-center">
+                    <AlertTriangle className="w-3 h-3 inline mr-1" />
+                    Bridge transactions are irreversible. Ensure destination address is correct.
                   </div>
                 </div>
               )}
