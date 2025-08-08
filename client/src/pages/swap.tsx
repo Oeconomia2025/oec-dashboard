@@ -362,6 +362,7 @@ function SwapContent() {
   // Get price history for the selected token pair
   const chartContractAddress = fromToken?.address || "0x55d398326f99059fF775485246999027B3197955"; // Default to USDT
   const { data: tokenData } = useTokenData(chartContractAddress);
+  const { data: priceHistory } = usePriceHistory(chartContractAddress, chartTimeframe);
 
   // Generate realistic OEC price progression for chart display
   const generateOECPriceHistory = (timeframe: string) => {
