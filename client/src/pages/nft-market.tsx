@@ -2369,7 +2369,7 @@ export function NFTMarket() {
                             </div>
                             
                             {/* Overlay with actions */}
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-2">
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start p-2 space-x-2">
                               <Button
                                 size="sm"
                                 variant="outline"
