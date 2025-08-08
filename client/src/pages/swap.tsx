@@ -1302,51 +1302,44 @@ function SwapContent() {
 
 
 
-              {/* Action Button - Show for all tabs including Bridge */}
-              <Button
-                onClick={handleSwapExecution}
-                disabled={
-                  isLoading || 
-                  (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
-                  (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
-                  (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
-                  (activeTab === "Sell" && (!fromToken || !fromAmount)) ||
-                  (activeTab === "Bridge" && (!fromToken || !toToken || !fromAmount))
-                }
-                className={`w-full ${
-                  activeTab === "Bridge" 
-                    ? "bg-gradient-to-r from-purple-500 to-pink-500" 
-                    : "bg-gradient-to-r from-crypto-blue to-crypto-green"
-                } hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg`}
-              >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>{activeTab === "Bridge" ? "Bridging..." : "Processing..."}</span>
-                  </div>
-                ) : activeTab === "Swap" ? (
-                  !fromToken || !toToken ? "Select Tokens" : 
-                  (!fromAmount && !toAmount) ? "Enter Amount" : 
-                  `Swap ${fromToken.symbol}`
-                ) : activeTab === "Limit" ? (
-                  !fromToken || !toToken ? "Select Tokens" : 
-                  !fromAmount ? "Enter Amount" : 
-                  !limitOrder.triggerPrice ? "Set Limit Price" :
-                  `Place Limit Order`
-                ) : activeTab === "Buy" ? (
-                  !toToken ? "Select Token" : 
-                  !fiatAmount ? "Enter Amount" : 
-                  `Buy ${toToken.symbol}`
-                ) : activeTab === "Sell" ? (
-                  !fromToken ? "Select Token" : 
-                  !fromAmount ? "Enter Amount" : 
-                  `Sell ${fromToken.symbol}`
-                ) : activeTab === "Bridge" ? (
-                  !fromToken || !toToken ? "Select Tokens" : 
-                  !fromAmount ? "Enter Amount" : 
-                  `Bridge ${fromToken.symbol}`
-                ) : "Connect Wallet"}
-              </Button>
+              {/* Action Button - Show for all tabs except Bridge */}
+              {activeTab !== "Bridge" && (
+                <Button
+                  onClick={handleSwapExecution}
+                  disabled={
+                    isLoading || 
+                    (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
+                    (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
+                    (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
+                    (activeTab === "Sell" && (!fromToken || !fromAmount))
+                  }
+                  className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Processing...</span>
+                    </div>
+                  ) : activeTab === "Swap" ? (
+                    !fromToken || !toToken ? "Select Tokens" : 
+                    (!fromAmount && !toAmount) ? "Enter Amount" : 
+                    `Swap ${fromToken.symbol}`
+                  ) : activeTab === "Limit" ? (
+                    !fromToken || !toToken ? "Select Tokens" : 
+                    !fromAmount ? "Enter Amount" : 
+                    !limitOrder.triggerPrice ? "Set Limit Price" :
+                    `Place Limit Order`
+                  ) : activeTab === "Buy" ? (
+                    !toToken ? "Select Token" : 
+                    !fiatAmount ? "Enter Amount" : 
+                    `Buy ${toToken.symbol}`
+                  ) : activeTab === "Sell" ? (
+                    !fromToken ? "Select Token" : 
+                    !fromAmount ? "Enter Amount" : 
+                    `Sell ${fromToken.symbol}`
+                  ) : "Connect Wallet"}
+                </Button>
+              )}
 
               {/* Quote and Trade Information */}
               {activeTab === "Swap" && fromToken && toToken && (fromAmount || toAmount) && (
