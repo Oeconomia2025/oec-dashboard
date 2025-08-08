@@ -69,6 +69,8 @@ function SwapContent() {
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [tokenSelectionFor, setTokenSelectionFor] = useState<'from' | 'to' | 'priceCondition'>('from');
   const [tokenSearchQuery, setTokenSearchQuery] = useState("");
+  const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false);
+  const [networkSelectionFor, setNetworkSelectionFor] = useState<'from' | 'to'>('from');
 
   // Limit order specific state
   const [limitOrder, setLimitOrder] = useState<LimitOrder>({
@@ -104,6 +106,12 @@ function SwapContent() {
     }
     setTokenSearchQuery(""); // Clear search when opening modal
     setIsTokenModalOpen(true);
+  };
+
+  // Helper functions for network selection
+  const openNetworkModal = (type: 'from' | 'to') => {
+    setNetworkSelectionFor(type);
+    setIsNetworkModalOpen(true);
   };
 
   const selectToken = (token: Token) => {
@@ -1293,47 +1301,44 @@ function SwapContent() {
                 </div>
               )}
 
-              {/* Action Button */}
-              <Button
-                onClick={handleSwapExecution}
-                disabled={
-                  isLoading || 
-                  (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
-                  (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
-                  (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
-                  (activeTab === "Sell" && (!fromToken || !fromAmount)) ||
-                  (activeTab === "Bridge" && (!fromToken || !toToken || !fromAmount)) // Add validation for Bridge tab
-                }
-                className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
-              >
-                {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Processing...</span>
-                  </div>
-                ) : activeTab === "Swap" ? (
-                  !fromToken || !toToken ? "Select Tokens" : 
-                  (!fromAmount && !toAmount) ? "Enter Amount" : 
-                  `Swap ${fromToken.symbol}`
-                ) : activeTab === "Limit" ? (
-                  !fromToken || !toToken ? "Select Tokens" : 
-                  !fromAmount ? "Enter Amount" : 
-                  !limitOrder.triggerPrice ? "Set Limit Price" :
-                  `Place Limit Order`
-                ) : activeTab === "Buy" ? (
-                  !toToken ? "Select Token" : 
-                  !fiatAmount ? "Enter Amount" : 
-                  `Buy ${toToken.symbol}`
-                ) : activeTab === "Sell" ? (
-                  !fromToken ? "Select Token" : 
-                  !fromAmount ? "Enter Amount" : 
-                  `Sell ${fromToken.symbol}`
-                ) : activeTab === "Bridge" ? ( // Handle Bridge tab text
-                  !fromToken || !toToken ? "Select Tokens" :
-                  !fromAmount ? "Enter Amount" :
-                  `Bridge ${fromToken.symbol}`
-                ) : "Connect Wallet"}
-              </Button>
+              {/* Action Button - Only show for non-Bridge tabs */}
+              {activeTab !== "Bridge" && (
+                <Button
+                  onClick={handleSwapExecution}
+                  disabled={
+                    isLoading || 
+                    (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
+                    (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
+                    (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
+                    (activeTab === "Sell" && (!fromToken || !fromAmount))
+                  }
+                  className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Processing...</span>
+                    </div>
+                  ) : activeTab === "Swap" ? (
+                    !fromToken || !toToken ? "Select Tokens" : 
+                    (!fromAmount && !toAmount) ? "Enter Amount" : 
+                    `Swap ${fromToken.symbol}`
+                  ) : activeTab === "Limit" ? (
+                    !fromToken || !toToken ? "Select Tokens" : 
+                    !fromAmount ? "Enter Amount" : 
+                    !limitOrder.triggerPrice ? "Set Limit Price" :
+                    `Place Limit Order`
+                  ) : activeTab === "Buy" ? (
+                    !toToken ? "Select Token" : 
+                    !fiatAmount ? "Enter Amount" : 
+                    `Buy ${toToken.symbol}`
+                  ) : activeTab === "Sell" ? (
+                    !fromToken ? "Select Token" : 
+                    !fromAmount ? "Enter Amount" : 
+                    `Sell ${fromToken.symbol}`
+                  ) : "Connect Wallet"}
+                </Button>
+              )}
 
               {/* Quote and Trade Information */}
               {activeTab === "Swap" && fromToken && toToken && (fromAmount || toAmount) && (
@@ -1447,7 +1452,7 @@ function SwapContent() {
                   {/* From Network and Token */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">From Network</span>
+                      <span className="text-gray-400 text-sm">From</span>
                       <div className="flex space-x-2">
                         {[25, 50, 75, 100].map((percentage) => (
                           <Button
@@ -1465,50 +1470,18 @@ function SwapContent() {
 
                     {/* Network Selection */}
                     <div className="flex items-center space-x-3 mb-4">
-                      <Select value="oec" onValueChange={() => {}}>
-                        <SelectTrigger className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                              O
-                            </div>
-                            <span>OEC Chain</span>
+                      <Button
+                        variant="outline"
+                        onClick={() => openNetworkModal('from')}
+                        className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                            O
                           </div>
-                        </SelectTrigger>
-                        <SelectContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)]">
-                          <SelectItem value="oec" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                O
-                              </div>
-                              <span>OEC Chain</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bsc" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-black">
-                                B
-                              </div>
-                              <span>BSC</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="ethereum" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                E
-                              </div>
-                              <span>Ethereum</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="polygon" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                P
-                              </div>
-                              <span>Polygon</span>
-                            </div>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                          <span>OEC Chain</span>
+                        </div>
+                      </Button>
                     </div>
 
                     {/* Token Amount */}
@@ -1577,55 +1550,23 @@ function SwapContent() {
                   {/* To Network and Token */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">To Network</span>
+                      <span className="text-gray-400 text-sm">To</span>
                     </div>
 
                     {/* Network Selection */}
                     <div className="flex items-center space-x-3 mb-4">
-                      <Select value="polygon" onValueChange={() => {}}>
-                        <SelectTrigger className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                              P
-                            </div>
-                            <span>Polygon</span>
+                      <Button
+                        variant="outline"
+                        onClick={() => openNetworkModal('to')}
+                        className="w-40 bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white hover:bg-[var(--crypto-dark)] px-3 py-2 h-auto"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                            P
                           </div>
-                        </SelectTrigger>
-                        <SelectContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)]">
-                          <SelectItem value="polygon" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                P
-                              </div>
-                              <span>Polygon</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="ethereum" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                E
-                              </div>
-                              <span>Ethereum</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bsc" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-xs font-bold text-black">
-                                B
-                              </div>
-                              <span>BSC</span>
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="arbitrum" className="text-white hover:bg-[var(--crypto-dark)]">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-6 h-6 bg-blue-400 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                                A
-                              </div>
-                              <span>Arbitrum</span>
-                            </div>
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
+                          <span>Polygon</span>
+                        </div>
+                      </Button>
                     </div>
 
                     {/* Received Amount Display */}
@@ -1656,6 +1597,26 @@ function SwapContent() {
                       </div>
                     )}
                   </div>
+
+                  {/* Bridge OEC Button */}
+                  <Button
+                    onClick={handleSwapExecution}
+                    disabled={isLoading || !fromToken || !toToken || !fromAmount}
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Bridging...</span>
+                      </div>
+                    ) : !fromToken || !toToken ? (
+                      "Select Tokens"
+                    ) : !fromAmount ? (
+                      "Enter Amount"
+                    ) : (
+                      `Bridge ${fromToken.symbol}`
+                    )}
+                  </Button>
 
                   {/* Bridge Route Information */}
                   <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
@@ -2065,6 +2026,151 @@ function SwapContent() {
                 </div>
               </Button>
             ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Network Selection Modal */}
+      <Dialog open={isNetworkModalOpen} onOpenChange={setIsNetworkModalOpen}>
+        <DialogContent className="bg-[var(--crypto-card)] border-[var(--crypto-border)] text-white max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              Select {networkSelectionFor === 'from' ? 'Source' : 'Destination'} Network
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {/* OEC Chain */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                    O
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">OEC Chain</div>
+                    <div className="text-sm text-gray-400">Fast & Low Cost</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 66</div>
+                </div>
+              </div>
+            </Button>
+
+            {/* Ethereum */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                    E
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">Ethereum</div>
+                    <div className="text-sm text-gray-400">Mainnet</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 1</div>
+                </div>
+              </div>
+            </Button>
+
+            {/* Polygon */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                    P
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">Polygon</div>
+                    <div className="text-sm text-gray-400">PoS Chain</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 137</div>
+                </div>
+              </div>
+            </Button>
+
+            {/* BSC */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
+                    B
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">BNB Smart Chain</div>
+                    <div className="text-sm text-gray-400">BSC Mainnet</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 56</div>
+                </div>
+              </div>
+            </Button>
+
+            {/* Arbitrum */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                    A
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">Arbitrum One</div>
+                    <div className="text-sm text-gray-400">L2 Rollup</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 42161</div>
+                </div>
+              </div>
+            </Button>
+
+            {/* Optimism */}
+            <Button
+              variant="ghost"
+              onClick={() => setIsNetworkModalOpen(false)}
+              className="w-full justify-start p-3 hover:bg-[var(--crypto-dark)] text-white"
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
+                    O
+                  </div>
+                  <div className="text-left">
+                    <div className="font-medium">Optimism</div>
+                    <div className="text-sm text-gray-400">L2 Rollup</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-gray-400">Chain ID: 10</div>
+                </div>
+              </div>
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
