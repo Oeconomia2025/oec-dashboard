@@ -7,12 +7,10 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Scheduled function for Live Coin Watch sync every 5 minutes
 [[functions]]
   path = "netlify/functions/dist/live-coin-watch-sync.js"
   schedule = "*/5 * * * *"
 
-# API function redirects
 [[redirects]]
   from = "/api/token/*"
   to = "/.netlify/functions/token"
@@ -78,7 +76,6 @@
   to = "/.netlify/functions/token-supply-data"
   status = 200
 
-# SPA fallback
 [[redirects]]
   from = "/*"
   to = "/index.html"
