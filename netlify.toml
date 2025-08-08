@@ -1,3 +1,4 @@
+
 [build]
   publish = "dist/public"
   command = "npm install --include=dev && npx vite build --config vite.config.netlify.ts && npx esbuild netlify/functions/*.ts --platform=node --target=node20 --format=cjs --bundle --packages=external --outdir=netlify/functions/dist --out-extension:.js=.js"
@@ -8,7 +9,7 @@
 
 # Scheduled function for Live Coin Watch sync every 5 minutes
 [[functions]]
-  path = "netlify/functions/live-coin-watch-sync.ts"
+  path = "netlify/functions/dist/live-coin-watch-sync.js"
   schedule = "*/5 * * * *"
 
 # API function redirects
