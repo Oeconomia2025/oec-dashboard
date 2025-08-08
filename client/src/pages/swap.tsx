@@ -1869,6 +1869,100 @@ function SwapContent() {
         {/* Sidebar Info */}
         {!hideSidebar && (
         <div className="space-y-6">
+          {/* Bridge Status */}
+          <Card className="crypto-card border">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center space-x-2">
+                <div className="w-5 h-5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                  <ArrowUpDown className="w-3 h-3 text-white transform rotate-90" />
+                </div>
+                <span>Bridge Status</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Outgoing Bridge Transaction */}
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-purple-500/30">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                      O
+                    </div>
+                    <span className="text-sm font-medium text-white">OEC Chain</span>
+                  </div>
+                  <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30">
+                    Pending
+                  </Badge>
+                </div>
+                <div className="space-y-1 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Amount:</span>
+                    <span className="text-white">125.5 OEC</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">To:</span>
+                    <span className="text-white">Polygon</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Status:</span>
+                    <span className="text-yellow-400">Confirming...</span>
+                  </div>
+                </div>
+                <div className="mt-2 bg-gray-700 rounded-full h-1.5">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-1.5 rounded-full w-3/4 animate-pulse"></div>
+                </div>
+                <div className="text-xs text-gray-400 mt-1">Estimated: 2-5 minutes</div>
+              </div>
+
+              {/* Incoming Bridge - Ready to Claim */}
+              <div className="bg-[var(--crypto-dark)] rounded-lg p-3 border border-green-500/30">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                      P
+                    </div>
+                    <span className="text-sm font-medium text-white">Polygon</span>
+                  </div>
+                  <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
+                    Ready
+                  </Badge>
+                </div>
+                <div className="space-y-1 text-xs mb-3">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Amount:</span>
+                    <span className="text-white">485.25 USDT</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">From:</span>
+                    <span className="text-white">BSC</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Status:</span>
+                    <span className="text-green-400">Complete</span>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-medium"
+                >
+                  <div className="flex items-center space-x-1">
+                    <span>Claim</span>
+                    <ArrowUpDown className="w-3 h-3" />
+                  </div>
+                </Button>
+              </div>
+
+              {/* No Active Bridges State */}
+              {/* Uncomment this section and comment above when no bridges are active
+              <div className="text-center py-4">
+                <div className="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <ArrowUpDown className="w-6 h-6 text-gray-400 transform rotate-90" />
+                </div>
+                <p className="text-gray-400 text-sm">No active bridges</p>
+              </div>
+              */}
+            </CardContent>
+          </Card>
+
           {/* Market Stats */}
           <Card className="crypto-card border">
             <CardHeader>
