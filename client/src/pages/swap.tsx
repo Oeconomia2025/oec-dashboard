@@ -278,26 +278,25 @@ function SwapContent() {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const inputAmount = parseFloat(amount);
-    let exchangeRate, outputAmount, fee, minimumReceived;
+    let outputAmount, fee, minimumReceived;
+
+    let exchangeRate = from.price / to.price;
+    if (direction === 'to') {
+      exchangeRate = to.price / from.price;
+    }
 
     if (direction === 'from') {
-      // Standard: User specifies input amount, calculate output
-      exchangeRate = from.price / to.price;
       outputAmount = inputAmount * exchangeRate;
       fee = inputAmount * 0.003; // 0.3% fee on input
       minimumReceived = outputAmount * (1 - slippage / 100);
 
-      // Update toAmount based on calculation
       setToAmount(outputAmount.toFixed(6));
     } else {
-      // Reverse: User specifies desired output, calculate required input
-      exchangeRate = to.price / from.price;
       const requiredInput = inputAmount * exchangeRate;
       fee = requiredInput * 0.003; // 0.3% fee on input
       const totalRequired = requiredInput + fee;
       minimumReceived = inputAmount * (1 - slippage / 100);
 
-      // Update fromAmount based on calculation
       setFromAmount(totalRequired.toFixed(6));
       outputAmount = inputAmount;
     }
@@ -1655,6 +1654,29 @@ function SwapContent() {
                       )}
                     </div>
                   </div>
+
+                  {/* Bridge Action Button - Only shown in Bridge tab */}
+                  <Button
+                    onClick={handleSwapExecution}
+                    disabled={
+                      isLoading || 
+                      !fromToken || 
+                      !toToken || 
+                      !fromAmount
+                    }
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg mt-4"
+                  >
+                    {isLoading ? (
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Bridging...</span>
+                      </div>
+                    ) : (
+                      !fromToken || !toToken ? "Select Tokens" : 
+                      !fromAmount ? "Enter Amount" : 
+                      `Bridge ${fromToken.symbol}`
+                    )}
+                  </Button>
                 </>
               )}
 
@@ -1687,22 +1709,6 @@ function SwapContent() {
                   </div>
                 </div>
               )}
-
-              {/* Bridge Button */}
-              <div className="mt-4">
-                <Button
-                  onClick={() => handleTabChange("Bridge")}
-                  variant="outline"
-                  className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10 py-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="transform rotate-90">
-                      <ArrowUpDown className="w-5 h-5" />
-                    </div>
-                    <span>Enter Amount and Bridge</span>
-                  </div>
-                </Button>
-              </div>
 
               {/* Liquidity Button */}
               <div className="mt-4">
