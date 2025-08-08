@@ -2360,11 +2360,11 @@ export function NFTMarket() {
                       <DialogTrigger asChild>
                         <Card className="crypto-card border cursor-pointer hover:border-crypto-blue/50 transition-all duration-300 overflow-hidden group">
                           <div className="relative">
-                            <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                            <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center overflow-hidden">
                               <img 
                                 src={nft.image} 
                                 alt={nft.name}
-                                className="w-16 h-16 object-cover group-hover:scale-110 transition-transform duration-300"
+                                className="w-16 h-16 object-cover group-hover:scale-125 transition-transform duration-500 ease-in-out"
                               />
                             </div>
                             
