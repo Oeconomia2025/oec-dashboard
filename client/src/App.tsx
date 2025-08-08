@@ -17,6 +17,7 @@ import Lend from "@/pages/lend";
 import TokenDetail from "@/pages/token-detail";
 import TokenDetailDynamic from "@/pages/token-detail-dynamic";
 import Staking from "@/pages/staking";
+import NFTMarket from "@/pages/nft-market";
 import Governance from "@/pages/governance";
 import Learn from "@/pages/learn";
 import LiveCoinWatch from "@/pages/live-coin-watch";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/token/:id" component={TokenDetail} />
       <Route path="/coin/:code" component={TokenDetailDynamic} />
       <Route path="/staking" component={Staking} />
+      <Route path="/nft-market" component={NFTMarket} />
       <Route path="/governance" component={Governance} />
       <Route path="/learn" component={Learn} />
       <Route path="/live-coin-watch" component={LiveCoinWatch} />

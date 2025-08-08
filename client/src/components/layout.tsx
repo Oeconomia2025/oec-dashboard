@@ -28,7 +28,8 @@ import {
   DollarSign,
   ChevronDown,
   AlertTriangle,
-  Heart
+  Heart,
+  Image // Added Image icon import
 } from "lucide-react";
 import { SiX, SiMedium, SiYoutube, SiDiscord, SiGithub, SiTelegram } from "react-icons/si";
 import { WalletConnect } from "@/components/wallet-connect";
@@ -40,6 +41,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuContent,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 
 interface LayoutProps {
   children: ReactNode;
@@ -91,6 +101,10 @@ const pageInfo = {
   '/learn': {
     title: 'Learn',
     description: 'Educational resources about Oeconomia ecosystem and blockchain technology'
+  },
+  '/nft-market': { // Added NFT Market route information
+    title: 'NFT Market',
+    description: 'Stake tokens and discover unique NFTs'
   }
 } as const;
 
@@ -165,7 +179,7 @@ export function Layout({
       enabled: false
     }
   ];
-  
+
   // Get current page info - use custom props if provided, otherwise use route-based info
   const routePageInfo = pageInfo[location as keyof typeof pageInfo] || pageInfo['/'];
   const currentPageInfo = {
@@ -211,25 +225,25 @@ export function Layout({
     // Store and lock the current collapsed state BEFORE any navigation
     const wasCollapsed = sidebarCollapsed;
     console.log('Navigation clicked, current collapsed state:', wasCollapsed);
-    
+
     // On mobile, just navigate and close sidebar
     if (window.innerWidth < 1024) {
       navigate(path);
       setSidebarOpen(false);
       return;
     }
-    
+
     // On desktop, prevent any state changes during navigation
     lockedCollapsedStateRef.current = wasCollapsed;
     isNavigatingRef.current = true;
     console.log('Locking collapsed state to:', wasCollapsed);
-    
+
     // Force the current state to localStorage before navigation
     localStorage.setItem('sidebar-collapsed', wasCollapsed.toString());
-    
+
     // Navigate to the path
     navigate(path);
-    
+
     // Immediately after navigation, force the state back
     setTimeout(() => {
       console.log('Post-navigation: forcing state back to', wasCollapsed);
@@ -303,7 +317,7 @@ export function Layout({
             </Button>
           </div>
         </div>
-        
+
         <div className="sticky top-20 bg-gray-950 z-10 border-b border-gray-700">
           <nav className="p-4">
             <ul className="space-y-2">
@@ -332,11 +346,11 @@ export function Layout({
             </ul>
           </nav>
         </div>
-        
+
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {/* Content area - social media moved to header dropdown */}
         </div>
-        
+
         {/* Alert/Caution Icon - Sticky at bottom of sidebar viewport */}
         <div className="sticky bottom-0 bg-gray-950 p-4 border-t border-gray-700 flex justify-center">
           <Button
@@ -378,7 +392,7 @@ export function Layout({
               >
                 <Menu className="w-5 h-5" />
               </Button>
-              
+
               <div className="flex items-center space-x-3">
                 {(tokenLogo || pageLogo) && (
                   <img 
@@ -432,7 +446,7 @@ export function Layout({
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
@@ -443,11 +457,11 @@ export function Layout({
               >
                 <Heart className="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors fill-current" />
               </Button>
-              
+
               <div className="max-w-xs">
                 <WalletConnect />
               </div>
-              
+
               {/* Social Media Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -481,8 +495,8 @@ export function Layout({
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-              
-              
+
+
             </div>
           </div>
         </header>
@@ -490,7 +504,7 @@ export function Layout({
         {/* Page Content */}
         <main className="flex-1">
           {children}
-          
+
           {/* Footer */}
           <footer className="border-t border-gray-700 mt-8 py-6 px-6 text-center">
             <p className="text-sm text-muted-foreground">
@@ -499,7 +513,7 @@ export function Layout({
           </footer>
         </main>
       </div>
-      
+
       {/* Disclaimer Modal */}
       {disclaimerOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -525,7 +539,7 @@ export function Layout({
               <p className="text-gray-300">
                 Please note that this DApp is currently in active development and is not yet ready for production use.
               </p>
-              
+
               <p className="text-gray-300">
                 This dashboard serves as a preview and testing environment. All data, transactions, and features are for demonstration purposes only.
               </p>
@@ -546,7 +560,7 @@ export function Layout({
           </Card>
         </div>
       )}
-      
+
       {/* Support Modal */}
       {supportOpen && (
         <div 
@@ -576,7 +590,7 @@ export function Layout({
               <div className="animate-in fade-in duration-500">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500/20 to-red-500/20 flex items-center justify-center">
-                    <Heart className="w-6 h-6 text-pink-400 fill-current" />
+                    <Heart className="w-6 h-6 text-pink-400 fill-current animate-pulse" />
                   </div>
                   <div>
                     <h2 className="text-xl font-bold">Support Development</h2>
@@ -588,14 +602,14 @@ export function Layout({
               <p className="text-gray-300">
                 Your support helps fund essential infrastructure including servers, databases, APIs, and blockchain node operations. These resources are critical for maintaining the platform's performance and reliability.
               </p>
-              
+
               <p className="text-gray-300">
                 Additionally, upcoming marketing initiatives will help expand the Oeconomia ecosystem and reach new users. Every contribution directly supports continued development and innovation.
               </p>
 
               <div className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/30 rounded-lg p-4 space-y-3">
                 <h3 className="text-sm font-semibold text-cyan-400 mb-2">Donation Addresses (Click to Copy):</h3>
-                
+
                 <div className="space-y-3 text-sm">
                   <div className="flex items-center gap-4">
                     <span className="text-gray-400 font-medium min-w-[120px]">EVM Networks:</span>
@@ -620,7 +634,7 @@ export function Layout({
                       {copiedAddress === 'evm' ? '✓ Copied!' : '0xD02dbe54454F6FE3c2F9F1F096C5460284E418Ed'}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <span className="text-gray-400 font-medium min-w-[120px]">Solana:</span>
                     <div 
@@ -644,7 +658,7 @@ export function Layout({
                       {copiedAddress === 'sol' ? '✓ Copied!' : 'HkJhW2X9xYw9n4sp3e9BBh33Np6iNghpU7gtDJ5ATqYx'}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <span className="text-gray-400 font-medium min-w-[120px]">Sui Network:</span>
                     <div 
@@ -668,7 +682,7 @@ export function Layout({
                       {copiedAddress === 'sui' ? '✓ Copied!' : '0xef000226f93506df5a3b1eaaae7835e919ff69c18d4929ed1537d656fb324dfe'}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <span className="text-gray-400 font-medium min-w-[120px]">Bitcoin:</span>
                     <div 
@@ -692,7 +706,7 @@ export function Layout({
                       {copiedAddress === 'btc' ? '✓ Copied!' : 'bc1qwtzdtx6ghfzy065wmv3xfk8tyqqr2w87tnrx9r'}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-4">
                     <span className="text-gray-400 font-medium min-w-[120px]">CashApp:</span>
                     <div 
@@ -718,7 +732,7 @@ export function Layout({
                   </div>
                 </div>
               </div>
-              
+
                 <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-3">
                   <p className="text-sm text-green-400">
                     <strong>Thank you for your support!</strong> Every contribution is deeply appreciated and will be remembered. When the opportunity arises, I am committed to giving back to the community.
