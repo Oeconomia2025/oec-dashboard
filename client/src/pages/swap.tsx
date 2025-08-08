@@ -1301,43 +1301,83 @@ function SwapContent() {
                 </div>
               )}
 
-              {/* Action Button - Only show for non-Bridge tabs */}
-              {activeTab !== "Bridge" && (
-                <Button
-                  onClick={handleSwapExecution}
-                  disabled={
-                    isLoading || 
-                    (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
-                    (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
-                    (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
-                    (activeTab === "Sell" && (!fromToken || !fromAmount))
-                  }
-                  className="w-full bg-gradient-to-r from-crypto-blue to-crypto-green hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
-                >
-                  {isLoading ? (
-                    <div className="flex items-center space-x-2">
-                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Processing...</span>
+              {/* Action Button - Show for all tabs including Bridge */}
+              <Button
+                onClick={handleSwapExecution}
+                disabled={
+                  isLoading || 
+                  (activeTab === "Swap" && (!fromToken || !toToken || (!fromAmount && !toAmount))) ||
+                  (activeTab === "Limit" && (!fromToken || !toToken || !fromAmount || !limitOrder.triggerPrice)) ||
+                  (activeTab === "Buy" && (!toToken || !fiatAmount)) ||
+                  (activeTab === "Sell" && (!fromToken || !fromAmount)) ||
+                  (activeTab === "Bridge" && (!fromToken || !toToken || !fromAmount))
+                }
+                className={`w-full ${
+                  activeTab === "Bridge" 
+                    ? "bg-gradient-to-r from-purple-500 to-pink-500" 
+                    : "bg-gradient-to-r from-crypto-blue to-crypto-green"
+                } hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg`}
+              >
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>{activeTab === "Bridge" ? "Bridging..." : "Processing..."}</span>
+                  </div>
+                ) : activeTab === "Swap" ? (
+                  !fromToken || !toToken ? "Select Tokens" : 
+                  (!fromAmount && !toAmount) ? "Enter Amount" : 
+                  `Swap ${fromToken.symbol}`
+                ) : activeTab === "Limit" ? (
+                  !fromToken || !toToken ? "Select Tokens" : 
+                  !fromAmount ? "Enter Amount" : 
+                  !limitOrder.triggerPrice ? "Set Limit Price" :
+                  `Place Limit Order`
+                ) : activeTab === "Buy" ? (
+                  !toToken ? "Select Token" : 
+                  !fiatAmount ? "Enter Amount" : 
+                  `Buy ${toToken.symbol}`
+                ) : activeTab === "Sell" ? (
+                  !fromToken ? "Select Token" : 
+                  !fromAmount ? "Enter Amount" : 
+                  `Sell ${fromToken.symbol}`
+                ) : activeTab === "Bridge" ? (
+                  !fromToken || !toToken ? "Select Tokens" : 
+                  !fromAmount ? "Enter Amount" : 
+                  `Bridge ${fromToken.symbol}`
+                ) : "Connect Wallet"}
+              </Button>
+
+              {/* Bridge Route Information - Only show for Bridge tab */}
+              {activeTab === "Bridge" && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-gray-400 text-sm">Bridge Route</span>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                      <span className="text-green-400 text-xs">Available</span>
                     </div>
-                  ) : activeTab === "Swap" ? (
-                    !fromToken || !toToken ? "Select Tokens" : 
-                    (!fromAmount && !toAmount) ? "Enter Amount" : 
-                    `Swap ${fromToken.symbol}`
-                  ) : activeTab === "Limit" ? (
-                    !fromToken || !toToken ? "Select Tokens" : 
-                    !fromAmount ? "Enter Amount" : 
-                    !limitOrder.triggerPrice ? "Set Limit Price" :
-                    `Place Limit Order`
-                  ) : activeTab === "Buy" ? (
-                    !toToken ? "Select Token" : 
-                    !fiatAmount ? "Enter Amount" : 
-                    `Buy ${toToken.symbol}`
-                  ) : activeTab === "Sell" ? (
-                    !fromToken ? "Select Token" : 
-                    !fromAmount ? "Enter Amount" : 
-                    `Sell ${fromToken.symbol}`
-                  ) : "Connect Wallet"}
-                </Button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        O
+                      </div>
+                      <span className="text-white">OEC Chain</span>
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-crypto-blue to-crypto-green" />
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        P
+                      </div>
+                      <span className="text-white">Polygon</span>
+                    </div>
+                  </div>
+
+                  <div className="text-center mt-2">
+                    <span className="text-xs text-gray-400">via LayerZero Protocol</span>
+                  </div>
+                </div>
               )}
 
               {/* Quote and Trade Information */}
@@ -1448,8 +1488,7 @@ function SwapContent() {
 
               {/* Bridge Mode Interface */}
               {activeTab === "Bridge" && (
-                <div className="space-y-4">
-                  {/* From Network and Token */}
+                <>
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">From</span>
@@ -1523,7 +1562,7 @@ function SwapContent() {
                       </Button>
                     </div>
 
-                    {/* Balance */}
+                    {/* Balance below token selection */}
                     {fromToken && (
                       <div className="text-right text-gray-400 text-sm mt-2">
                         Balance: {formatNumber(fromToken.balance || 0, 2)} {fromToken.symbol}
@@ -1531,26 +1570,29 @@ function SwapContent() {
                     )}
                   </div>
 
-                  {/* Bridge Arrow */}
-                  <div className="relative">
-                    <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {}}
-                        className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
-                      >
-                        <div className="transform rotate-90">
-                          <ArrowUpDown className="w-5 h-5 text-gray-400" />
-                        </div>
-                      </Button>
-                    </div>
+                  {/* Bridge Arrow - positioned to match swap arrow */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-6 z-30">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {}}
+                      className="bg-[var(--crypto-dark)] border-2 border-[var(--crypto-border)] rounded-full w-12 h-12 p-0 hover:bg-[var(--crypto-card)]/80 shadow-xl"
+                    >
+                      <div className="transform rotate-90">
+                        <ArrowUpDown className="w-5 h-5 text-gray-400" />
+                      </div>
+                    </Button>
                   </div>
 
                   {/* To Network and Token */}
                   <div className="bg-[var(--crypto-dark)] rounded-lg p-4 border border-[var(--crypto-border)]">
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-gray-400 text-sm">To</span>
+                      {toToken && (
+                        <span className="text-gray-400 text-sm">
+                          Balance: {formatNumber(toToken.balance || 0, 2)} {toToken.symbol}
+                        </span>
+                      )}
                     </div>
 
                     {/* Network Selection */}
@@ -1571,9 +1613,23 @@ function SwapContent() {
 
                     {/* Received Amount Display */}
                     <div className="flex items-center space-x-3">
-                      <div className="flex-1 text-white font-bold text-4xl">
-                        {fromAmount || "0.0"}
-                      </div>
+                      <Input
+                        type="number"
+                        value={fromAmount || "0.0"}
+                        readOnly
+                        placeholder="0.0"
+                        className="flex-1 bg-transparent border-none font-bold text-white placeholder-gray-500 p-0 m-0 h-12 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
+                        style={{ 
+                          padding: 0, 
+                          margin: 0, 
+                          fontSize: '2.25rem',
+                          lineHeight: '1',
+                          fontWeight: 'bold',
+                          outline: 'none',
+                          border: 'none',
+                          boxShadow: 'none'
+                        }}
+                      />
                       <Button
                         variant="outline"
                         onClick={() => openTokenModal('to')}
@@ -1589,67 +1645,20 @@ function SwapContent() {
                         )}
                       </Button>
                     </div>
-
-                    {/* Estimated Value */}
-                    {toToken && fromAmount && (
-                      <div className="text-right text-gray-400 text-sm mt-2">
-                        ≈ ${formatNumber((parseFloat(fromAmount) || 0) * toToken.price, 2)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Bridge OEC Button */}
-                  <Button
-                    onClick={handleSwapExecution}
-                    disabled={isLoading || !fromToken || !toToken || !fromAmount}
-                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold py-6 text-lg"
-                  >
-                    {isLoading ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        <span>Bridging...</span>
-                      </div>
-                    ) : !fromToken || !toToken ? (
-                      "Select Tokens"
-                    ) : !fromAmount ? (
-                      "Enter Amount"
-                    ) : (
-                      `Bridge ${fromToken.symbol}`
-                    )}
-                  </Button>
-
-                  {/* Bridge Route Information */}
-                  <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-gray-400 text-sm">Bridge Route</span>
-                      <div className="flex items-center space-x-1">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                        <span className="text-green-400 text-xs">Available</span>
-                      </div>
-                    </div>
                     
-                    <div className="flex items-center space-x-2">
-                      <div className="flex items-center space-x-2 text-sm">
-                        <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                          O
-                        </div>
-                        <span className="text-white">OEC Chain</span>
-                      </div>
-                      <div className="flex-1 h-px bg-gradient-to-r from-crypto-blue to-crypto-green" />
-                      <div className="flex items-center space-x-2 text-sm">
-                        <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                          P
-                        </div>
-                        <span className="text-white">Polygon</span>
-                      </div>
-                    </div>
-
-                    <div className="text-center mt-2">
-                      <span className="text-xs text-gray-400">via LayerZero Protocol</span>
+                    {/* Estimated Value or Default */}
+                    <div className="text-right text-gray-400 text-sm mt-2">
+                      {toToken && fromAmount && parseFloat(fromAmount) > 0 ? (
+                        `≈ $${formatNumber(parseFloat(fromAmount) * toToken.price, 2)}`
+                      ) : (
+                        "≈ $0"
+                      )}
                     </div>
                   </div>
-                </div>
+                </>
               )}
+
+                  
 
               {/* Bridge Information */}
               {activeTab === "Bridge" && fromToken && toToken && fromAmount && (
