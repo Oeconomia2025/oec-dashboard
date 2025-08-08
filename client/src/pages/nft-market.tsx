@@ -341,30 +341,7 @@ export function NFTMarket() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">OEC NFT Marketplace</h1>
-              <p className="text-gray-400">Discover, collect, and trade unique digital assets</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline"
-                className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
-              >
-                <Camera className="w-4 h-4 mr-2" />
-                Create NFT
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => setShowFilters(!showFilters)}
-                className="border-gray-600 hover:bg-gray-600/10"
-              >
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-              </Button>
-            </div>
-          </div>
+          
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Filters Sidebar */}
@@ -504,6 +481,21 @@ export function NFTMarket() {
                         <SelectItem value="popular">Most Popular</SelectItem>
                       </SelectContent>
                     </Select>
+                    <Button 
+                      variant="outline"
+                      className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+                    >
+                      <Camera className="w-4 h-4 mr-2" />
+                      Create NFT
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => setShowFilters(!showFilters)}
+                      className="border-gray-600 hover:bg-gray-600/10"
+                    >
+                      <Filter className="w-4 h-4 mr-2" />
+                      Filters
+                    </Button>
                   </div>
                   
                   <div className="flex items-center space-x-2">
