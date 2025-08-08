@@ -1301,6 +1301,39 @@ function SwapContent() {
                 </div>
               )}
 
+              {/* Bridge Route Information - Only show for Bridge tab */}
+              {activeTab === "Bridge" && (
+                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-gray-400 text-sm">Bridge Route</span>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                      <span className="text-green-400 text-xs">Available</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        O
+                      </div>
+                      <span className="text-white">OEC Chain</span>
+                    </div>
+                    <div className="flex-1 h-px bg-gradient-to-r from-crypto-blue to-crypto-green" />
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        P
+                      </div>
+                      <span className="text-white">Polygon</span>
+                    </div>
+                  </div>
+
+                  <div className="text-center mt-2">
+                    <span className="text-xs text-gray-400">via LayerZero Protocol</span>
+                  </div>
+                </div>
+              )}
+
               {/* Action Button - Show for all tabs including Bridge */}
               <Button
                 onClick={handleSwapExecution}
@@ -1346,39 +1379,6 @@ function SwapContent() {
                   `Bridge ${fromToken.symbol}`
                 ) : "Connect Wallet"}
               </Button>
-
-              {/* Bridge Route Information - Only show for Bridge tab */}
-              {activeTab === "Bridge" && (
-                <div className="bg-[var(--crypto-card)] rounded-lg p-4 border border-[var(--crypto-border)]">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-gray-400 text-sm">Bridge Route</span>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                      <span className="text-green-400 text-xs">Available</span>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                        O
-                      </div>
-                      <span className="text-white">OEC Chain</span>
-                    </div>
-                    <div className="flex-1 h-px bg-gradient-to-r from-crypto-blue to-crypto-green" />
-                    <div className="flex items-center space-x-2 text-sm">
-                      <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
-                        P
-                      </div>
-                      <span className="text-white">Polygon</span>
-                    </div>
-                  </div>
-
-                  <div className="text-center mt-2">
-                    <span className="text-xs text-gray-400">via LayerZero Protocol</span>
-                  </div>
-                </div>
-              )}
 
               {/* Quote and Trade Information */}
               {activeTab === "Swap" && fromToken && toToken && (fromAmount || toAmount) && (
