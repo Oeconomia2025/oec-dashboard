@@ -22,8 +22,8 @@ export const handler: Handler = async (event) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      isRunning: true, // Scheduled function is now active
-      syncInterval: "5 minutes (automated via Netlify scheduled functions)",
+      isRunning: false, // Netlify functions are stateless
+      syncInterval: "Manual sync via scheduled functions",
     }),
   };
 };
