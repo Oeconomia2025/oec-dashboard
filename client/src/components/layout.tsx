@@ -273,7 +273,16 @@ export function Layout({
     { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
     { icon: Droplets, label: 'Pools', path: '/liquidity', active: location === '/liquidity' },
     { icon: DollarSign, label: 'Lend', path: '/lend', active: location === '/lend' },
-    { icon: Lock, label: 'OEC Staking', path: '/staking', active: location === '/staking' },
+    { 
+      icon: Lock, 
+      label: 'OEC Staking', 
+      path: '/staking', 
+      active: location === '/staking' || location === '/nft-market',
+      subItems: [
+        { icon: Lock, label: 'Staking', path: '/staking', active: location === '/staking' },
+        { icon: Image, label: 'NFT Market', path: '/nft-market', active: location === '/nft-market' }
+      ]
+    },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
   ];
@@ -341,6 +350,27 @@ export function Layout({
                       </div>
                     )}
                   </button>
+                  
+                  {/* Sub-items */}
+                  {item.subItems && !sidebarCollapsed && (
+                    <ul className="ml-8 mt-2 space-y-1">
+                      {item.subItems.map((subItem, subIndex) => (
+                        <li key={subIndex}>
+                          <button
+                            onClick={() => handleNavigation(subItem.path)}
+                            className={`w-full flex items-center space-x-2 px-3 py-1.5 rounded-md text-left text-sm transition-colors group relative ${
+                              subItem.active
+                                ? 'text-white bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border border-cyan-500/30'
+                                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                            }`}
+                          >
+                            <subItem.icon className="w-4 h-4 flex-shrink-0" />
+                            <span>{subItem.label}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
