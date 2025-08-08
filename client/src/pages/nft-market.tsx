@@ -2074,7 +2074,7 @@ export function NFTMarket() {
   const [showFilters, setShowFilters] = useState(true);
   const [likedNFTs, setLikedNFTs] = useState<Set<number>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage] = useState(20);
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -2354,7 +2354,7 @@ export function NFTMarket() {
 
               {/* NFT Grid/List */}
               {viewMode === "grid" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6"></div>
                   {paginatedNFTs.map((nft) => (
                     <Dialog key={nft.id}>
                       <DialogTrigger asChild>
