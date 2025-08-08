@@ -1688,6 +1688,22 @@ function SwapContent() {
                 </div>
               )}
 
+              {/* Bridge Button */}
+              <div className="mt-4">
+                <Button
+                  onClick={() => handleTabChange("Bridge")}
+                  variant="outline"
+                  className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10 py-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <div className="transform rotate-90">
+                      <ArrowUpDown className="w-5 h-5" />
+                    </div>
+                    <span>Enter Amount and Bridge</span>
+                  </div>
+                </Button>
+              </div>
+
               {/* Liquidity Button */}
               <div className="mt-4">
                 <Button
