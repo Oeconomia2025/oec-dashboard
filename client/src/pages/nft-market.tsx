@@ -2176,7 +2176,7 @@ export function NFTMarket() {
         <div className="max-w-7xl mx-auto">
           
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Filters Sidebar */}
             {showFilters && (
               <Card className="crypto-card p-6 border h-fit">
@@ -2294,7 +2294,7 @@ export function NFTMarket() {
             )}
 
             {/* Main Content */}
-            <div className={showFilters ? "lg:col-span-3" : "lg:col-span-4"}>
+            <div className={showFilters ? "lg:col-span-4" : "lg:col-span-5"}>
               {/* Sort and View Controls */}
               <Card className="crypto-card p-4 border mb-6">
                 <div className="flex items-center justify-between">
