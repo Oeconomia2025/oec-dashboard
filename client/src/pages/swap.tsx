@@ -1922,6 +1922,89 @@ function SwapContent() {
             </CardContent>
           </Card>
 
+          {/* Bridge Status - Only show when Bridge tab is active */}
+          {activeTab === "Bridge" && (
+            <Card className="crypto-card border">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center space-x-2">
+                  <ArrowUpDown className="w-5 h-5 text-purple-400" />
+                  <span>Bridge Status</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* From Chain Status */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        O
+                      </div>
+                      <span className="text-sm text-gray-300">OEC Chain</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                      <span className="text-xs text-green-400">Ready</span>
+                    </div>
+                  </div>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-2 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">Transaction</span>
+                      <span className="text-white font-mono">0x1a2b...3c4d</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs mt-1">
+                      <span className="text-gray-400">Confirmations</span>
+                      <span className="text-green-400">12/12</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Arrow */}
+                <div className="flex justify-center py-2">
+                  <div className="w-6 h-6 rounded-full border-2 border-purple-400 flex items-center justify-center">
+                    <div className="w-1 h-1 bg-purple-400 rounded-full animate-pulse" />
+                  </div>
+                </div>
+
+                {/* To Chain Status */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 bg-purple-600 rounded-full flex items-center justify-center text-xs font-bold text-white">
+                        P
+                      </div>
+                      <span className="text-sm text-gray-300">Polygon</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <div className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+                      <span className="text-xs text-yellow-400">Processing</span>
+                    </div>
+                  </div>
+                  <div className="bg-[var(--crypto-dark)] rounded-lg p-2 border border-[var(--crypto-border)]">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-400">Estimated Time</span>
+                      <span className="text-white">~2 minutes</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs mt-1">
+                      <span className="text-gray-400">Status</span>
+                      <span className="text-yellow-400">Validating...</span>
+                    </div>
+                  </div>
+
+                  {/* Claim Button */}
+                  <Button 
+                    disabled={true}
+                    className="w-full mt-2 bg-gradient-to-r from-purple-500 to-pink-500 opacity-50 cursor-not-allowed"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Processing...</span>
+                    </div>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Safety Features */}
           <Card className="crypto-card border">
             <CardHeader>
