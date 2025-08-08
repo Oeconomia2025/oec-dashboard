@@ -6,6 +6,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Scheduled function for Live Coin Watch sync every 5 minutes
+[[functions]]
+  path = "netlify/functions/live-coin-watch-sync.ts"
+  schedule = "*/5 * * * *"
+
 # API function redirects
 [[redirects]]
   from = "/api/token/*"

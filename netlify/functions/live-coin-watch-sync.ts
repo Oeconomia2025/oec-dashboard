@@ -27,16 +27,20 @@ export const handler: Handler = async (event) => {
     return { statusCode: 200, headers, body: '' };
   }
 
-  if (event.httpMethod !== 'POST') {
+  // Allow both POST (manual trigger) and GET (scheduled execution)
+  if (event.httpMethod !== 'POST' && event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
       headers,
-      body: JSON.stringify({ message: 'Method not allowed. Use POST to trigger sync.' }),
+      body: JSON.stringify({ message: 'Method not allowed. Use POST to trigger sync or GET for scheduled execution.' }),
     };
   }
 
+  const isScheduled = event.httpMethod === 'GET';
+
   try {
-    console.log('Starting Live Coin Watch data sync...');
+    const syncType = isScheduled ? 'SCHEDULED' : 'MANUAL';
+    console.log(`Starting Live Coin Watch data sync... (${syncType})`);
     const coins = await liveCoinWatchApiService.getTopCoins(100);
 
     const coinNames: Record<string, string> = {
@@ -131,10 +135,12 @@ export const handler: Handler = async (event) => {
       syncedCount++;
     }
 
+    const syncType = isScheduled ? 'scheduled' : 'manual';
     const response = {
       success: true,
-      message: `Successfully synced ${syncedCount} coins from Live Coin Watch`,
+      message: `Successfully synced ${syncedCount} coins from Live Coin Watch (${syncType} execution)`,
       syncedCount,
+      syncType,
       timestamp: new Date().toISOString()
     };
 
