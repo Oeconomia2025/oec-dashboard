@@ -82,10 +82,10 @@ export function WalletConnect() {
       <Button 
         onClick={() => {
           disconnect()
-          // Refresh the page after disconnecting
-          setTimeout(() => {
-            window.location.reload()
-          }, 100)
+          toast({
+            title: "Wallet disconnected",
+            description: "Your wallet has been disconnected successfully",
+          })
         }}
         className="w-full text-white hover:text-white shadow-lg transition-all duration-200 font-medium border-0"
         style={{ background: 'linear-gradient(45deg, #00d4ff, #ff00ff)' }}
