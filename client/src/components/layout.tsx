@@ -175,8 +175,8 @@ export function Layout({
     {
       name: 'Telegram',
       icon: SiTelegram,
-      url: '#',
-      enabled: false
+      url: 'https://t.me/OeconomiaDAO',
+      enabled: true
     }
   ];
 
