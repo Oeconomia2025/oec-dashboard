@@ -81,7 +81,21 @@ export function WalletConnect() {
     return (
       <Button 
         onClick={() => {
+          // Clear localStorage wallet data
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('wagmi.store')
+            localStorage.removeItem('wagmi.wallet')
+            localStorage.removeItem('wagmi.connected')
+            localStorage.removeItem('wagmi.recentConnectorId')
+          }
+          
           disconnect()
+          
+          // Force a small delay then reload to ensure clean state
+          setTimeout(() => {
+            window.location.reload()
+          }, 500)
+          
           toast({
             title: "Wallet disconnected",
             description: "Your wallet has been disconnected successfully",
