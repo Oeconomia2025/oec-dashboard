@@ -2150,31 +2150,37 @@ export function NFTMarket() {
     }, 1000);
   };
 
-  if (!isConnected) {
-    return (
-      <Layout>
-        <div className="p-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center py-16">
-              <ImageIcon className="w-16 h-16 text-crypto-blue mx-auto mb-6" />
-              <h1 className="text-3xl font-bold mb-4">OEC NFT Marketplace</h1>
-              <p className="text-gray-400 mb-8">Connect your wallet to explore and trade NFTs</p>
-              <div className="max-w-xs mx-auto">
-                <WalletConnect />
-                <WalletSetupGuide />
-              </div>
-            </div>
-          </div>
-        </div>
-      </Layout>
-    );
-  }
+  
 
   return (
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          
+          {/* Header with title and wallet connection notice */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold mb-2">OEC NFT Marketplace</h1>
+                <p className="text-gray-400">Discover, collect, and trade unique digital assets</p>
+              </div>
+              {!isConnected && (
+                <Card className="crypto-card p-4 border border-yellow-500/30 bg-yellow-500/5">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                      <ImageIcon className="w-4 h-4 text-yellow-500" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-yellow-400">Wallet Not Connected</p>
+                      <p className="text-xs text-gray-400">Connect to buy, sell, or bid on NFTs</p>
+                    </div>
+                    <div className="max-w-xs">
+                      <WalletConnect />
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Filters Sidebar */}
@@ -2317,6 +2323,8 @@ export function NFTMarket() {
                     <Button 
                       variant="outline"
                       className="border-crypto-blue/30 text-crypto-blue hover:bg-crypto-blue/10"
+                      disabled={!isConnected}
+                      title={!isConnected ? "Connect wallet to create NFTs" : ""}
                     >
                       <Camera className="w-4 h-4 mr-2" />
                       Create NFT
@@ -2496,7 +2504,11 @@ export function NFTMarket() {
                             {/* Actions */}
                             <div className="flex space-x-2">
                               {nft.listed && (
-                                <Button className="flex-1 bg-crypto-blue hover:bg-crypto-blue/80">
+                                <Button 
+                                  className="flex-1 bg-crypto-blue hover:bg-crypto-blue/80"
+                                  disabled={!isConnected}
+                                  title={!isConnected ? "Connect wallet to transact" : ""}
+                                >
                                   {nft.auction ? 'Place Bid' : 'Buy Now'}
                                 </Button>
                               )}
@@ -2547,7 +2559,12 @@ export function NFTMarket() {
                             View
                           </Button>
                           {nft.listed && (
-                            <Button size="sm" className="bg-crypto-blue hover:bg-crypto-blue/80">
+                            <Button 
+                              size="sm" 
+                              className="bg-crypto-blue hover:bg-crypto-blue/80"
+                              disabled={!isConnected}
+                              title={!isConnected ? "Connect wallet to buy" : ""}
+                            >
                               Buy
                             </Button>
                           )}
