@@ -2156,31 +2156,7 @@ export function NFTMarket() {
     <Layout>
       <div className="p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header with title and wallet connection notice */}
-          <div className="mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold mb-2">OEC NFT Marketplace</h1>
-                <p className="text-gray-400">Discover, collect, and trade unique digital assets</p>
-              </div>
-              {!isConnected && (
-                <Card className="crypto-card p-4 border border-yellow-500/30 bg-yellow-500/5">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center">
-                      <ImageIcon className="w-4 h-4 text-yellow-500" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-yellow-400">Wallet Not Connected</p>
-                      <p className="text-xs text-gray-400">Connect to buy, sell, or bid on NFTs</p>
-                    </div>
-                    <div className="max-w-xs">
-                      <WalletConnect />
-                    </div>
-                  </div>
-                </Card>
-              )}
-            </div>
-          </div>
+          
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
             {/* Filters Sidebar */}
