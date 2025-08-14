@@ -10,7 +10,6 @@ import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
 import { usePriceHistory, useTokenData } from "@/hooks/use-token-data";
 import { parseUnits, formatUnits } from "viem";
 import { useWalletClient } from "wagmi";
-
 import { 
   ArrowUpDown, 
   Settings, 
@@ -35,7 +34,8 @@ interface Token {
   balance?: number;
 }
 
-@@ -76,50 +78,52 @@ function SwapContent() {
+interface SwapQuote {
+@@ -76,50 +77,52 @@ function SwapContent() {
   const [limitOrder, setLimitOrder] = useState<LimitOrder>({
     triggerPrice: "",
     expiry: "1 day",
@@ -88,7 +88,7 @@ interface Token {
     }, 50);
 
     if (tokenSelectionFor === 'from') {
-@@ -246,123 +250,140 @@ function SwapContent() {
+@@ -246,123 +249,140 @@ function SwapContent() {
       address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c",
       decimals: 18,
       logo: "https://assets.coingecko.com/coins/images/14108/small/Binance-bitcoin.png",
@@ -170,7 +170,7 @@ interface Token {
     } finally {
       setIsLoading(false);
     }
- };
+  };
 
   // Handle token swap
   const handleSwapTokens = () => {
@@ -229,7 +229,7 @@ interface Token {
   // Generate realistic OEC price progression for chart display
   const generateOECPriceHistory = (timeframe: string) => {
     const now = Date.now();
-@@ -640,51 +661,51 @@ function SwapContent() {
+@@ -640,51 +660,51 @@ function SwapContent() {
   // Chart formatting functions
   const formatXAxis = (tickItem: number) => {
     const date = new Date(tickItem * 1000);
