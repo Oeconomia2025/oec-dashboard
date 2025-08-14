@@ -194,7 +194,7 @@ export default function Dashboard() {
                 className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white"
               />
             </div>
-            <Button 
+            <Button
               onClick={handleAddressUpdate}
               className="mt-6 bg-crypto-blue hover:bg-crypto-blue/80"
             >
@@ -204,6 +204,6 @@ export default function Dashboard() {
         </Card>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
