@@ -170,3 +170,113 @@ interface Token {
     } finally {
       setIsLoading(false);
     }
+ };
+
+  // Handle token swap
+  const handleSwapTokens = () => {
+    const temp = fromToken;
+    setFromToken(toToken);
+    setToToken(temp);
+    const tempAmount = fromAmount;
+    setFromAmount(toAmount);
+    setToAmount(tempAmount);
+    setQuote(null);
+  };
+
+  const handleSwapExecution = async () => {
+    if (!fromToken || !toToken || (!fromAmount && !toAmount) || !rawQuote || !walletClient) return;
+
+    setIsLoading(true);
+
+    try {
+      await walletClient.sendTransaction({
+        to: rawQuote.to as `0x${string}`,
+        data: rawQuote.data as `0x${string}`,
+        value: rawQuote.value ? BigInt(rawQuote.value) : undefined,
+      });
+
+      setFromAmount("");
+      setToAmount("");
+      setQuote(null);
+      setRawQuote(null);
+    } catch (error) {
+      console.error('Swap execution failed', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle amount changes for both fields
+  useEffect(() => {
+    if (fromToken && toToken) {
+      if (lastEditedField === 'from' && fromAmount) {
+        getSwapQuote(fromToken, toToken, fromAmount, 'from');
+      } else if (lastEditedField === 'to' && toAmount) {
+        getSwapQuote(fromToken, toToken, toAmount, 'to');
+      } else {
+        setQuote(null);
+      }
+    } else {
+      setQuote(null);
+    }
+  }, [fromToken, toToken, fromAmount, toAmount, lastEditedField, slippage]);
+
+  // Get price history for the selected token pair
+  const chartContractAddress = fromToken?.address || "0x55d398326f99059fF775485246999027B3197955"; // Default to USDT
+  const { data: tokenData } = useTokenData(chartContractAddress);
+  const { data: priceHistory } = usePriceHistory(chartContractAddress, chartTimeframe);
+
+  // Generate realistic OEC price progression for chart display
+  const generateOECPriceHistory = (timeframe: string) => {
+    const now = Date.now();
+@@ -640,51 +661,51 @@ function SwapContent() {
+  // Chart formatting functions
+  const formatXAxis = (tickItem: number) => {
+    const date = new Date(tickItem * 1000);
+    switch (chartTimeframe) {
+      case "1H":
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      case "1D":
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      case "7D":
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      case "30D":
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      default:
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+  };
+
+  const formatTooltip = (value: any, name: string) => {
+    if (name === 'price') {
+      return [`$${Number(value).toFixed(6)}`, 'Price'];
+    }
+    return [value, name];
+  };
+
+  // Get dynamic color based on token
+  const getTokenColor = (token?: Token | null) => {
+    if (!token) return "#00D2FF"; // Default crypto blue
+
+    const colorMap: { [key: string]: string } = {
+      'BTC': '#F7931A',
+      'ETH': '#627EEA', 
+      'BNB': '#F3BA2F',
+      'USDT': '#26A17B',
+      'USDC': '#2775CA',
+      'XRP': '#23292F',
+      'ADA': '#0033AD',
+      'SOL': '#9945FF',
+      'DOT': '#E6007A',
+      'MATIC': '#8247E5',
+      'AVAX': '#E84142',
+      'LINK': '#375BD2',
+      'UNI': '#FF007A',
+      'CAKE': '#D1884F',
+      'OEC': '#8B5CF6', // Purple for OEC token
+      'WBNB': '#F3BA2F',
+      'BUSD': '#F0B90B',
+    };
+
+    return colorMap[token.symbol] || "#00D2FF";
+  };
