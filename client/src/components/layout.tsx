@@ -357,11 +357,15 @@ export function Layout({
           <Button
             variant="ghost"
             onClick={() => setDisclaimerOpen(true)}
-            className={`${sidebarCollapsed ? 'px-2 justify-center' : 'px-3 justify-center space-x-2'} py-2 text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
+            className={`${sidebarCollapsed ? 'px-2 justify-center' : 'px-3 justify-start space-x-2'} py-2 w-full text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
             title={sidebarCollapsed ? "Under Development Notice" : undefined}
           >
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            {!sidebarCollapsed && <span className="text-sm font-medium">Under Development Notice</span>}
+            {!sidebarCollapsed && (
+              <span className="text-xs font-medium truncate leading-tight">
+                Under Development Notice
+              </span>
+            )}
             {sidebarCollapsed && (
               <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                 Under Development Notice
