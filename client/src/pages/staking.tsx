@@ -836,7 +836,7 @@ export function Staking() {
                             <div className="text-xs text-gray-400">
                               Min: {pool.minStake} OEC | Max: {formatNumber(pool.maxStake)} OEC
                             </div>
-                            <div className="flex space-x-1" style="margin-right: 20px">
+                            <div className="flex space-x-1">
                               {[25, 50, 75, 100].map((percentage) => (
                                 <Button
                                   key={percentage}
