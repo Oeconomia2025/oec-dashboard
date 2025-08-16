@@ -780,7 +780,7 @@ export function Staking() {
                         </div>
                         
                         {/* Right: Staked Amount + Expand */}
-                        <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-6">
                           <div className="text-right">
                             <div className="text-lg font-semibold">
                               {formatNumber(pool.userStaked)} {pool.tokenSymbol}
@@ -822,7 +822,7 @@ export function Staking() {
                               placeholder={`Min: ${pool.minStake} OEC`}
                               value={stakeAmount}
                               onChange={(e) => setStakeAmount(e.target.value)}
-                              className="flex-1"
+                              className="flex-1 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-gray-600 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                             />
                             <Button
                               onClick={() => handleStake(pool.id)}
@@ -831,6 +831,27 @@ export function Staking() {
                             >
                               {isStaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Stake'}
                             </Button>
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex space-x-2">
+                              {[25, 50, 75, 100].map((percentage) => (
+                                <Button
+                                  key={percentage}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // Calculate percentage of available balance (mock 10000 OEC for demo)
+                                    const availableBalance = 10000;
+                                    const maxAllowed = Math.min(availableBalance, pool.maxStake);
+                                    const amount = (maxAllowed * percentage / 100).toString();
+                                    setStakeAmount(amount);
+                                  }}
+                                  className="text-xs bg-black/20 border-white/20 hover:bg-white/10"
+                                >
+                                  {percentage === 100 ? 'Max' : `${percentage}%`}
+                                </Button>
+                              ))}
+                            </div>
                           </div>
                           <div className="text-xs text-gray-400 mt-1">
                             Min: {pool.minStake} OEC | Max: {formatNumber(pool.maxStake)} OEC
@@ -869,7 +890,7 @@ export function Staking() {
                               placeholder={`Available: ${formatNumber(pool.userStaked)} OEC`}
                               value={unstakeAmount}
                               onChange={(e) => setUnstakeAmount(e.target.value)}
-                              className="flex-1"
+                              className="flex-1 focus-visible:ring-0 focus:outline-none focus:ring-0 focus:border-gray-600 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [-moz-appearance:textfield]"
                             />
                             <Button
                               onClick={() => handleUnstake(pool.id)}
@@ -879,6 +900,24 @@ export function Staking() {
                             >
                               {isUnstaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Unstake'}
                             </Button>
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex space-x-2">
+                              {[25, 50, 75, 100].map((percentage) => (
+                                <Button
+                                  key={percentage}
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const amount = (pool.userStaked * percentage / 100).toString();
+                                    setUnstakeAmount(amount);
+                                  }}
+                                  className="text-xs bg-black/20 border-white/20 hover:bg-white/10"
+                                >
+                                  {percentage === 100 ? 'Max' : `${percentage}%`}
+                                </Button>
+                              ))}
+                            </div>
                           </div>
                           <div className="text-xs text-gray-400 mt-1">
                             Available: {formatNumber(pool.userStaked)} OEC
