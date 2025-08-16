@@ -832,8 +832,8 @@ export function Staking() {
                               {isStaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Stake'}
                             </Button>
                           </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex space-x-2">
+                          <div className="flex justify-end mt-2">
+                            <div className="flex space-x-1">
                               {[25, 50, 75, 100].map((percentage) => (
                                 <Button
                                   key={percentage}
@@ -901,8 +901,8 @@ export function Staking() {
                               {isUnstaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Unstake'}
                             </Button>
                           </div>
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex space-x-2">
+                          <div className="flex justify-end mt-2">
+                            <div className="flex space-x-1">
                               {[25, 50, 75, 100].map((percentage) => (
                                 <Button
                                   key={percentage}
