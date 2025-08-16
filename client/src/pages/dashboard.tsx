@@ -87,51 +87,37 @@ export default function Dashboard() {
           {/* Token Overview Cards - Use Live Data */}
           {isEthLoading ? <LoadingSpinner /> : <TokenOverview tokenData={defaultTokenData} />}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Price Chart */}
-          <div className="lg:col-span-2">
-            <ETHHistoricalChart />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Price Chart */}
+            <div>
+              <PriceChart contractAddress={contractAddress} tokenSymbol="TONE" />
 
-            {/* Volume and Liquidity Analytics */}
-            <VolumeLiquidityAnalytics contractAddress={contractAddress} />
+              {/* ETH Historical Chart */}
+              <div className="mt-8">
+                <ETHHistoricalChart />
+              </div>
+            </div>
 
-            {/* Historical Performance Charts */}
-            <HistoricalPerformance contractAddress={contractAddress} />
+            {/* Volume & Liquidity Analytics */}
+            <div>
+              <VolumeLiquidityAnalytics contractAddress={contractAddress} />
+            </div>
           </div>
 
-          {/* Token Information Panel */}
-          {isEthLoading ? <LoadingSpinner /> : <TokenInfoPanel tokenData={defaultTokenData} />}
-          </div>
-
-          {/* Recent Transactions Table */}
-          <TransactionsTable contractAddress={contractAddress} />
-
-          {/* Holder Statistics */}
-          <HolderStatistics contractAddress={contractAddress} tokenData={defaultTokenData} />
+          {/* Contract Information Panel */}
+          <TokenInfoPanel tokenData={tokenData} isLoading={isLoading} />
 
           {/* Quick Actions */}
           <QuickActions contractAddress={contractAddress} />
 
-          {/* Contract Address Input - Admin Section */}
-          <Card className="crypto-card p-4 mt-8 border border-dashed border-gray-600">
-          <div className="flex items-center space-x-4">
-            <div className="flex-1">
-              <label className="text-gray-400 text-sm mb-2 block">Admin: Update Token Contract Address</label>
-              <Input
-                value={inputAddress}
-                onChange={(e) => setInputAddress(e.target.value)}
-                placeholder="0x..."
-                className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white"
-              />
-            </div>
-            <Button 
-              onClick={handleAddressUpdate}
-              className="mt-6 bg-crypto-blue hover:bg-crypto-blue/80"
-            >
-              Update
-            </Button>
-          </div>
-        </Card>
+          {/* Historical Performance */}
+          <HistoricalPerformance contractAddress={contractAddress} />
+
+          {/* Recent Transactions */}
+          <TransactionsTable contractAddress={contractAddress} />
+
+          {/* Holder Statistics */}
+          <HolderStatistics contractAddress={contractAddress} tokenData={tokenData} />
         </div>
       </div>
     </Layout>
