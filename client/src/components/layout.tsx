@@ -276,7 +276,7 @@ export function Layout({
     { icon: Lock, label: 'OEC Staking', path: '/staking', active: location === '/staking' },
     { icon: Image, label: 'NFT Market', path: '/nft-market', active: location === '/nft-market' },
     { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
-    { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
+    // { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
   ];
 
   return (
@@ -358,13 +358,13 @@ export function Layout({
             variant="ghost"
             onClick={() => setDisclaimerOpen(true)}
             className={`${sidebarCollapsed ? 'px-2 justify-center' : 'px-3 justify-center space-x-2'} py-2 text-crypto-gold hover:bg-crypto-gold/10 hover:text-crypto-gold transition-colors group relative`}
-            title={sidebarCollapsed ? "Development Notice" : undefined}
+            title={sidebarCollapsed ? "Under Development Notice" : undefined}
           >
             <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-            {!sidebarCollapsed && <span className="text-sm font-medium">Development Notice</span>}
+            {!sidebarCollapsed && <span className="text-sm font-medium">Under Development Notice</span>}
             {sidebarCollapsed && (
               <div className="absolute left-full ml-2 px-2 py-1 bg-[var(--crypto-dark)] text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
-                Development Notice
+                Under Development Notice
               </div>
             )}
           </Button>
@@ -531,7 +531,7 @@ export function Layout({
                 <AlertTriangle className="w-6 h-6 text-crypto-gold" />
               </div>
               <div>
-                <h2 className="text-xl font-bold">Development Notice</h2>
+                <h2 className="text-xl font-bold">Under Development Notice</h2>
                 <p className="text-sm text-gray-400">Oeconomia DApp</p>
               </div>
             </div>
