@@ -832,7 +832,10 @@ export function Staking() {
                               {isStaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Stake'}
                             </Button>
                           </div>
-                          <div className="flex justify-end mt-2">
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="text-xs text-gray-400">
+                              Min: {pool.minStake} OEC | Max: {formatNumber(pool.maxStake)} OEC
+                            </div>
                             <div className="flex space-x-1">
                               {[25, 50, 75, 100].map((percentage) => (
                                 <Button
@@ -852,9 +855,6 @@ export function Staking() {
                                 </Button>
                               ))}
                             </div>
-                          </div>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Min: {pool.minStake} OEC | Max: {formatNumber(pool.maxStake)} OEC
                           </div>
                         </div>
                         <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
@@ -901,7 +901,10 @@ export function Staking() {
                               {isUnstaking ? <RefreshCw className="w-4 h-4 animate-spin" /> : 'Unstake'}
                             </Button>
                           </div>
-                          <div className="flex justify-end mt-2">
+                          <div className="flex justify-between items-center mt-2">
+                            <div className="text-xs text-gray-400">
+                              Available: {formatNumber(pool.userStaked)} OEC
+                            </div>
                             <div className="flex space-x-1">
                               {[25, 50, 75, 100].map((percentage) => (
                                 <Button
@@ -918,9 +921,6 @@ export function Staking() {
                                 </Button>
                               ))}
                             </div>
-                          </div>
-                          <div className="text-xs text-gray-400 mt-1">
-                            Available: {formatNumber(pool.userStaked)} OEC
                           </div>
                         </div>
                         <div className="bg-black/30 p-4 rounded-lg border border-white/10 backdrop-blur-sm">
