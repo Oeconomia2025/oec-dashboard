@@ -1,4 +1,4 @@
-# replit.md
+# dash.md
 
 ## Overview
 This project is a cryptocurrency token dashboard for the "Oeconomia" (OEC) token on the Binance Smart Chain (BSC) network. Its purpose is to provide comprehensive token analytics, real-time price tracking, holder statistics, transaction monitoring, and integration with popular DeFi platforms like PancakeSwap. The business vision is to create a professional trading interface with intuitive controls, transparent fee disclosure, industry-standard layout, and optimal screen space utilization, making it an essential tool for OEC token holders and traders. Key capabilities include a dynamic token system supporting all major cryptocurrencies, a three-tab lending interface, and integrated real-time charting with dynamic, token-specific brand colors.
