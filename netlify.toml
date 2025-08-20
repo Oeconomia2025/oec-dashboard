@@ -6,6 +6,17 @@
 [build.environment]
   NODE_VERSION = "20"
 
+[functions]
+  node_bundler = "esbuild"
+  # Neon needs ws in Netlify functions
+  external_node_modules = ["ws"]
+  included_files = ["shared/schema.js"]
+
+[functions."live-coin-watch-sync"]
+  schedule = "*/1 * * * *"
+
+
+
 # API function redirects
 [[redirects]]
   from = "/api/token/*"
@@ -62,6 +73,21 @@
   to = "/.netlify/functions/live-coin-watch-sync"
   status = 200
 
+[[redirects]]
+  from = "/.netlify/functions/token-coins-data"
+  to   = "/.netlify/functions/live-coin-watch-coins"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/token-data"
+  to   = "/.netlify/functions/live-coin-watch-token"
+  status = 200
+
+[[redirects]]
+  from = "/.netlify/functions/token-historical-data"
+  to   = "/.netlify/functions/live-coin-watch-historical"
+  status = 200
+  
 [[redirects]]
   from = "/api/authentic-token-sync"
   to = "/.netlify/functions/authentic-token-sync"
