@@ -23,7 +23,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 export default function Dashboard() {
   const [contractAddress, setContractAddress] = useState(TONE_TOKEN_CONFIG.contractAddress);
   const [inputAddress, setInputAddress] = useState(contractAddress);
-  const [selectedToken, setSelectedToken] = "BTC";
+  const [selectedToken, setSelectedToken] = useState("ETH");
 
   const { data: tokenData, isLoading } = useTokenData(contractAddress);
 
@@ -41,9 +41,11 @@ export default function Dashboard() {
       }
       return response.json();
     },
-    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes from database
+    refetchInterval: 60 * 1000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    staleTime: 30 * 1000,
     retry: 2,
-    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   }) as { data: { coins: any[] } | undefined; isLoading: boolean };
 
   // Get selected token data from Live Coin Watch
@@ -71,9 +73,11 @@ export default function Dashboard() {
       }
       return response.json();
     },
-    refetchInterval: 5 * 60 * 1000, // Refresh every 5 minutes from database
+    refetchInterval: 60 * 1000,
+    refetchIntervalInBackground: true,
+    refetchOnWindowFocus: true,
+    staleTime: 30 * 1000,
     retry: 2,
-    staleTime: 2 * 60 * 1000, // Cache for 2 minutes
   });
 
   const defaultTokenData = ethTokenData as any;
