@@ -112,26 +112,7 @@ export default function Dashboard() {
           {/* Quick Actions */}
           <QuickActions contractAddress={contractAddress} />
 
-          {/* Contract Address Input - Admin Section */}
-          <Card className="crypto-card p-4 mt-8 border border-dashed border-gray-600">
-          <div className="flex items-center space-x-4">
-            <div className="flex-1">
-              <label className="text-gray-400 text-sm mb-2 block">Admin: Update Token Contract Address</label>
-              <Input
-                value={inputAddress}
-                onChange={(e) => setInputAddress(e.target.value)}
-                placeholder="0x..."
-                className="bg-[var(--crypto-dark)] border-[var(--crypto-border)] text-white"
-              />
-            </div>
-            <Button 
-              onClick={handleAddressUpdate}
-              className="mt-6 bg-crypto-blue hover:bg-crypto-blue/80"
-            >
-              Update
-            </Button>
-          </div>
-        </Card>
+          
         </div>
       </div>
     </Layout>
