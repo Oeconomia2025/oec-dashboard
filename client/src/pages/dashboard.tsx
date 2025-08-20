@@ -91,9 +91,9 @@ export default function Dashboard() {
           {/* Token Overview Cards - Use Live Data */}
           {isEthLoading ? <LoadingSpinner /> : <TokenOverview tokenData={defaultTokenData} />}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Price Chart */}
-          <div className="lg:col-span-2">
+  <div className="grid grid-cols-1 gap-8">
+    {/* Charts block (full width) */}
+    <div>
             <ETHHistoricalChart />
 
             {/* Volume and Liquidity Analytics */}
@@ -103,8 +103,8 @@ export default function Dashboard() {
             <HistoricalPerformance contractAddress={contractAddress} />
           </div>
 
-          {/* Token Information Panel */}
-          {isEthLoading ? <LoadingSpinner /> : <TokenInfoPanel tokenData={defaultTokenData} />}
+    {/* Token Information (now below the charts) */}
+    {isEthLoading ? <LoadingSpinner /> : <TokenInfoPanel tokenData={defaultTokenData} />}
           </div>
 
           {/* Recent Transactions Table */}
