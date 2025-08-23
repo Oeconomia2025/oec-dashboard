@@ -11,8 +11,8 @@ interface QuickActionsProps {
 export function QuickActions({ contractAddress }: QuickActionsProps) {
   const [showTestnetModal, setShowTestnetModal] = useState(false);
 
-  const pancakeSwapUrl = `https://pancakeswap.finance/swap?outputCurrency=${contractAddress}`;
-  const bscscanUrl = `https://bscscan.com/token/${contractAddress}`;
+  const pancakeSwapUrl = `https://app.uniswap.org/swap?outputCurrency=0xb62870F6861BF065F5a6782996AB070EB9385d05`;
+  const bscscanUrl = `https://etherscan.io/address/0xb62870F6861BF065F5a6782996AB070EB9385d05`;
 
   return (
     <>
@@ -28,8 +28,8 @@ export function QuickActions({ contractAddress }: QuickActionsProps) {
               <a href={pancakeSwapUrl} target="_blank" rel="noopener noreferrer">
                 <ArrowUpDown className="text-crypto-blue text-2xl group-hover:scale-110 transition-transform" />
                 <div className="text-center">
-                  <div className="font-medium">Trade on PancakeSwap</div>
-                  <div className="text-sm text-gray-400">Buy/Sell TONE tokens</div>
+                  <div className="font-medium">Trade on UniSwap</div>
+                  <div className="text-sm text-gray-400">Buy/Sell OEC tokens</div>
                 </div>
               </a>
             </Button>
@@ -42,7 +42,7 @@ export function QuickActions({ contractAddress }: QuickActionsProps) {
               <a href={bscscanUrl} target="_blank" rel="noopener noreferrer">
                 <Search className="text-crypto-green text-2xl group-hover:scale-110 transition-transform" />
                 <div className="text-center">
-                  <div className="font-medium">View on BSCScan</div>
+                  <div className="font-medium">View on Etherscan</div>
                   <div className="text-sm text-gray-400">Explore transactions</div>
                 </div>
               </a>

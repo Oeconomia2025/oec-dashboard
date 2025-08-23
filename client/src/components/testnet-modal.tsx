@@ -14,13 +14,13 @@ export function TestnetModal({ isOpen, onClose }: TestnetModalProps) {
   
   // Placeholder testnet contract address
   const testnetContract = "0xTestContract123456789012345678901234567890";
-  const testnetBSCScanUrl = `https://testnet.bscscan.com/token/${testnetContract}`;
+  const testnetBSCScanUrl = `https://etherscan.io/address/0xb62870f6861bf065f5a6782996ab070eb9385d05`;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="crypto-card border-[var(--crypto-border)] max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">BSC Testnet Information</DialogTitle>
+          <DialogTitle className="text-lg font-semibold">ETH Testnet Information</DialogTitle>
           <DialogDescription className="text-gray-400">
             Test deployment details for development purposes
           </DialogDescription>
@@ -31,7 +31,7 @@ export function TestnetModal({ isOpen, onClose }: TestnetModalProps) {
             <label className="text-gray-400 text-sm">Testnet Contract</label>
             <div className="flex items-center space-x-2 mt-1">
               <code className="bg-[var(--crypto-dark)] px-3 py-2 rounded text-sm font-mono flex-1 text-white">
-                {testnetContract.slice(0, 10)}...{testnetContract.slice(-8)}
+                {testnetContract}
               </code>
               <Button
                 variant="ghost"
@@ -50,7 +50,7 @@ export function TestnetModal({ isOpen, onClose }: TestnetModalProps) {
               <div>
                 <div className="font-medium text-crypto-gold mb-1">Testing Mode</div>
                 <div className="text-sm text-gray-400">
-                  Use BSC Testnet for testing. Get test BNB from faucet before testing transactions.
+                  Use ETH Testnet for testing. Get test BNB from faucet before testing transactions.
                 </div>
               </div>
             </div>
@@ -60,16 +60,16 @@ export function TestnetModal({ isOpen, onClose }: TestnetModalProps) {
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400">Network</span>
               <Badge variant="outline" className="border-crypto-gold/30 text-crypto-gold">
-                BSC Testnet
+                Sepolia Testnet
               </Badge>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400">Chain ID</span>
-              <span>97</span>
+              <span>11155111</span>
             </div>
             <div className="flex justify-between items-center text-sm">
               <span className="text-gray-400">RPC URL</span>
-              <span className="text-xs">https://data-seed-prebsc-1-s1.binance.org:8545</span>
+              <span className="text-xs">sepolia.infura.io</span>
             </div>
           </div>
 
@@ -90,12 +90,12 @@ export function TestnetModal({ isOpen, onClose }: TestnetModalProps) {
               className="w-full border-crypto-gold/30 text-crypto-gold hover:bg-crypto-gold/10"
             >
               <a 
-                href="https://testnet.binance.org/faucet-smart" 
+                href="https://www.alchemy.com/faucets/ethereum-sepolia" 
                 target="_blank" 
                 rel="noopener noreferrer"
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
-                Get Testnet BNB
+                Get Sepolia ETH
               </a>
             </Button>
           </div>

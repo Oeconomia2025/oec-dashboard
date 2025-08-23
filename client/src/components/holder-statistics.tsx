@@ -91,7 +91,7 @@ export function HolderStatistics({ contractAddress, tokenData }: HolderStatistic
               <span className="text-gray-400">Circulating Supply</span>
               <span>
                 {tokenData ? 
-                  `${(tokenData.circulatingSupply / 1000000).toFixed(0)}M ${tokenData.symbol} (${((tokenData.circulatingSupply / tokenData.totalSupply) * 100).toFixed(0)}%)` :
+                  `${(tokenData.circulatingSupply / 2000000).toFixed(0)}M ${tokenData.symbol} (${((tokenData.circulatingSupply / tokenData.totalSupply) * 100).toFixed(0)}%)` :
                   '95M TONE (95%)'
                 }
               </span>
