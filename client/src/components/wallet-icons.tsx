@@ -91,7 +91,7 @@ export function WalletIcon({
     <img
       src={src}
       alt={alt || `${wallet} logo`}
-      className="!w-10 !h-10"
+      className="!w-8 !h-8"
       style={{ backgroundColor: "transparent" }}
       loading="lazy"
       decoding="async"
