@@ -275,7 +275,7 @@ export function Layout({
     { icon: DollarSign, label: 'Lend', path: '/lend', active: location === '/lend' },
     { icon: Lock, label: 'OEC Staking', path: '/staking', active: location === '/staking' },
     { icon: Image, label: 'NFT Market', path: '/nft-market', active: location === '/nft-market' },
-    { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
+    // { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     // { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
   ];
 
