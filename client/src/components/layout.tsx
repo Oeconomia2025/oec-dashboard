@@ -270,12 +270,12 @@ export function Layout({
     { icon: BarChart3, label: 'Dashboard', path: '/', active: location === '/' },
     { icon: TrendingUp, label: 'Analytics', path: '/analytics', active: location === '/analytics' },
     { icon: Wallet, label: 'Portfolio', path: '/portfolio', active: location === '/portfolio' },
-    // { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
-    // { icon: Droplets, label: 'Pools', path: '/liquidity', active: location === '/liquidity' },
+    { icon: ArrowUpDown, label: 'Swap', path: '/swap', active: location === '/swap' },
+    { icon: Droplets, label: 'Pools', path: '/liquidity', active: location === '/liquidity' },
     { icon: DollarSign, label: 'Lend', path: '/lend', active: location === '/lend' },
-    // { icon: Lock, label: 'OEC Staking', path: '/staking', active: location === '/staking' },
+    { icon: Lock, label: 'OEC Staking', path: '/staking', active: location === '/staking' },
     { icon: Image, label: 'NFT Market', path: '/nft-market', active: location === '/nft-market' },
-    // { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
+    { icon: Vote, label: 'Governance', path: '/governance', active: location === '/governance' },
     // { icon: BookOpen, label: 'Learn', path: '/learn', active: location === '/learn' },
   ];
 
